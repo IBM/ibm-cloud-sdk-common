@@ -1,0 +1,150 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Example service
+  x-alternate-name: ExampleService
+  license:
+    name: MIT
+  x-codegen-config:
+    java:
+      apiPackage: 'com.ibm.cloud.mysdk'
+    go:
+      apiPackage: 'github.com/ibm/mysdk'
+    python:
+      apiPackage: 'mysdk'
+servers:
+  - url: http://cloud.ibm.com/mysdk/v1
+tags:
+  - name: resources
+    description: Access resources
+paths:
+  /resources:
+    get:
+      summary: List all resources
+      operationId: list_resources
+      tags:
+        - resources
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: A paginated list of resources
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Resources"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: Create a resource
+      operationId: create_resource
+      tags:
+        - resources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Resource'
+        required: true
+      responses:
+        '201':
+          description: Resource was created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Resource"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /resources/{resource_id}:
+    get:
+      summary: Info for a specific resource
+      operationId: get_resource
+      tags:
+        - resources
+      parameters:
+        - name: resource_id
+          in: path
+          required: true
+          description: The id of the resource to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Resource"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    Resource:
+      description: A resource
+      type: object
+      required:
+        - resource_id
+        - name
+      properties:
+        resource_id:
+          type: string
+          description: The id of the resource
+        name:
+          type: string
+          description: The name of the resource
+        tag:
+          type: string
+          description: A tag value for the resource
+        read_only:
+          type: string
+          description: This is a read only string
+          readOnly: true
+    Resources:
+      description: List of resources
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int32
+          description: Offset value for this portion of the resource list
+        limit:
+          type: integer
+          format: int32
+          description: Limit value specified or defaulted in the list_resources request
+        resources:
+          description: A list of resources
+          type: array
+          items:
+            $ref: "#/components/schemas/Resource"
+    ErrorResponse:
+      description: Error response
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: The error code
+        message:
+          type: string
+          description: A description of the error
