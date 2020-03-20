@@ -38,6 +38,7 @@ This project contains documentation and other resources related to IBM Cloud SDK
     + [Programmtically](#programmtically)
   * [Error Handling](#error-handling)
   * [Logging](#logging)
+  * [Synchronous and asynchronous requests](#synchronous-and-asynchronous-requests)
 - [Questions](#questions)
 - [Open source @ IBM](#open-source--ibm)
 - [License](#license)
@@ -1440,6 +1441,62 @@ from http.client import HTTPConnection
 HTTPConnection.debuglevel = 1
 ```
 
+</details>
+
+### Synchronous and asynchronous requests
+
+For some languages, the SDK supports both synchronous (blocking) and asynchronous (non-blocking)
+execution of service methods.
+
+<details><summary>Go</summary>
+The Go SDK supports only synchronous execution of service methods.
+</details>
+<details><summary>Java</summary>
+
+For Java, all service methods implement the [`ServiceCall`][service-call] interface.
+
+[service-call]: https://ibm.github.io/java-sdk-core/docs/8.1.3/com/ibm/cloud/sdk/core/http/ServiceCall.html
+
+To call a method synchronously, use the `execute()` method of the `ServiceCall<T>` interface,
+like this:  
+
+```java
+// Invoke the operation.
+GetResourceOptions options = /* construct options model */
+Response<Resource> response = myservice.getResource(options).execute();
+
+// Continue execution...
+```
+
+To call a method asynchronously, use the `enqueue()` method of the `ServiceCall<T>` interface
+to receive a callback when the response arrives.
+The `ServiceCallback<T>` interface provides `onResponse` and `onFailure` methods that you
+override to handle the callback, like this:
+
+```java
+// Invoke the operation in the background
+GetResourceOptions options = /* construct options model */
+myservice.getResource(options).enqueue(new ServiceCallback<ResourceInstance>() {
+  @Override
+  public void onResponse(Response<Resource> response) {
+    System.out.println("We did it! " + response);
+  }
+
+  @Override
+  public void onFailure(Exception e) {
+    System.out.println("Whoops...");
+  }
+});
+
+// Continue execution in the meantime!
+```
+
+</details>
+<details><summary>Node.js</summary>
+The Node.js SDK executes each request asynchronously and returns the response as a Promise.
+</details>
+<details><summary>Python</summary>
+The Python SDK supports only synchronous execution of service methods.
 </details>
 
 ## Questions
