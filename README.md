@@ -1279,20 +1279,26 @@ my_service.set_disable_ssl_verification(True)
 ### Error Handling
 This section provides information about how to deal with errors resulting from request invocations.
 
+The SDK uses standard HTTP response codes to indicate whether a method completed successfully.
+HTTP response codes in the 2xx range indicate success.
+A response in the 4xx range is some sort of failure, and a response in the 5xx range usually indicates an internal system error
+that cannot be resolved by the user.
+
 <details><summary>Go</summary>
 
 In the case of an error response from the server endpoint, the Go SDK will do the following:  
 1. The service method (operation) will return a non-nil `error` object.  This `error` object will
 contain the error message retrieved from the HTTP response if possible, or a generic error message
 otherwise.
-2. The `detailedResponse.StatusCode` field will contain the HTTP status code returned by the operation.
-3. The `detailedResponse.Headers` field will contain the response headers.
-4. The `detailedResponse.Result` field will contain the unmarshalled response (in the form of a
-`map[string]interface{}`) if the operation returned a JSON response.  
+2. The `detailedResponse` return value will contain the following fields:  -
+- `StatusCode`: the HTTP status code returned in the response.
+- `Headers`: the HTTP headers returned in the response.
+- `Result`: if the operation returned a JSON error response, this will contain
+the unmarshalled response in the form of a `map[string]interface{}`.
 This allows the application to examine all of the error information returned in the HTTP
 response message.
-5. The `detailedResponse.RawResult` field will contain the raw response body as a `[]byte` if the
-operation returned a non-JSON response.
+- `RawResult`: if the operation returned a non-JSON error response, this will contain
+the raw response body as a `[]byte`.
 
 Here's an example of checking the `error` object after invoking the `GetResource` operation:
 
@@ -1302,6 +1308,7 @@ options := myservice.NewGetResourceOptions("bad-resource-id")
 result, detailedResponse, err := myservice.GetResource(options)
 if err != nil {
     fmt.Println("Error retrieving the resource: ", err.Error())
+    fmt.Println("   status code: ", detailedResponse.StatusCode)
     fmt.Println("   full error response: ", detailedResponse.Result)
 }
 ```
@@ -1311,10 +1318,10 @@ if err != nil {
 In the case of an error response from the server endpoint, the Java SDK will throw an exception
 from the `com.ibm.cloud.sdk.core.service.exception` package.
 All service exceptions contain the following fields:  
-- statusCode: the HTTP response code that was returned in the response
-- message: a message that describes the error
-- headers: the HTTP headers returned in the response
-- debuggingInfo: a `Map<String, Object>` which contains the unmarshalled error response object
+- `statusCode`: the HTTP response code that was returned in the response
+- `message`: a message that describes the error
+- `headers`: the HTTP headers returned in the response
+- `debuggingInfo`: a `Map<String, Object>` which contains the unmarshalled error response object
 in the event that a JSON error response is returned.  This will provide more information beyond
 the error message.
 
@@ -1354,18 +1361,43 @@ try {
   System.out.println("Detailed error info:\n" + e.getDebuggingInfo().toString());
 }
 ```
+
 </details>
-<!--
 <details><summary>Node.js</summary>
+
+In the case of an error response from the server endpoint, the Node SDK will
+create an `Error` object with information that describes the error that occurred.
+This error object is passed as the first parameter to the callback function for the method,
+and will contain the following fields:  
+- `status`: the HTTP status code that was returned in the response
+- `statusText`: a text description of the status code
+- `message`: the error message returned in the response
+- `body` : the error response body.  If a JSON response was returned, this will be
+the stringified response body.  If a non-JSON response was returned, this will
+simply be the raw response body obtained from the response.
+
+Here's an example of how to access the error object:
+
+```js
+myService.getResource({
+  'resourceId': 'bad-resource-id',
+}).then((response) => {
+    // ...handle successful response...
+  }).catch((err) => {
+    // ...handle error response...
+    console.log("Error status code: " + err.status + " (" + err.statusText + ")");
+    console.log("Error message:     " + err.message);
+  });
+```
+
 </details>
--->
 <details><summary>Python</summary>
 
 In the case of an error response from the server endpoint, the Python SDK will throw an exception
 with the following fields:  
-- code: the HTTP status code that was returned in the response
-- message: a message that describes the error
-- info: a dictionary of additional information about the error
+- `code`: the HTTP status code that was returned in the response
+- `message`: a message that describes the error
+- `info`: a dictionary of additional information about the error
 
 Here's an example:
 
