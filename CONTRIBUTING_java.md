@@ -107,5 +107,9 @@ By making a contribution to this project, I certify that:
 
 # Additional Resources
 - [General GitHub documentation](https://help.github.com/)
-- [GitHub pull request documentation](https://help.github.com/send-pull-requests/)
+- [GitHub pull request documentation](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests)
 - [Maven Getting Started](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
+- [GoogleJavaStyleGuidelines][GoogleJavaStyleGuidelines]
+- [Angular Commit Message Guidelines](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines)
+- [commitizen](https://github.com/commitizen/cz-cli)
+- [commitlint](https://github.com/conventional-changelog/commitlint)

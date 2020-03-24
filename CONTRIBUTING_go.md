@@ -89,7 +89,7 @@ By making a contribution to this project, I certify that:
 
 # Additional Resources
 - [General GitHub documentation](https://help.github.com/)
-- [GitHub pull request documentation](https://help.github.com/send-pull-requests/)
+- [GitHub pull request documentation](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests)
 - [Effective Go](https://golang.org/doc/effective_go.html)
 - [Angular Commit Message Guidelines](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines)
 - [commitizen](https://github.com/commitizen/cz-cli)
