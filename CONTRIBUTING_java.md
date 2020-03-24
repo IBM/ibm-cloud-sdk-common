@@ -2,7 +2,7 @@ This file provides general guidance for anyone contributing to IBM Cloud Java SD
 by the IBM OpenAPI SDK Generator.
 
 # Questions
-If you are having problems using this SDK or have a question about IBM Cloud services,
+If you are having problems using the SDK or have a question about IBM Cloud services,
 please ask a question on [Stack Overflow](http://stackoverflow.com/questions/ask) or
 [dW Answers](https://developer.ibm.com/answers/questions/ask).
 
