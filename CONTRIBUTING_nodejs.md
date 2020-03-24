@@ -1,4 +1,4 @@
-This file provides general guidance for anyone contributing to IBM Cloud Go SDK projects produced
+This file provides general guidance for anyone contributing to IBM Cloud Node.js SDK projects produced
 by the IBM OpenAPI SDK Generator.
 
 # Questions
@@ -8,9 +8,14 @@ or [Stack Overflow](http://stackoverflow.com/questions/ask?tags=ibm-cloud).
 
 # Code
 ## Coding Style
-The SDK follows the Go coding conventions documented [here](https://golang.org/doc/effective_go.html).
-You can run the linter with the following command:
-- `golangci-lint run`
+This SDK project follows a coding style based on the [Airbnb conventions](https://github.com/airbnb/javascript).
+This repository uses `tslint` for linting the TypeScript code and `eslint` for linting the JavaScript test files.
+The rules for each are defined in `tslint.json` and `test/.eslintrc.js`, respectively.
+It is recommended that you do not change these files, since the automatically generated code complies with the defined rules.
+
+You can run the linter with the following commands. Replacing “check” with “fix” will cause the linter to automatically fix any linting errors that it can.
+- `npm run tslint:check`
+- `npm run eslint:check`
 
 ## Commit Messages
 Commit messages should follow the [Angular Commit Message Guidelines](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines).
@@ -22,48 +27,46 @@ Here are some examples of acceptable commit messages, along with the release typ
 
 | Commit message                                                                                                                                                              | Release type               |
 |-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|
-| `fix(resource controller): fix integration test to use correct credentials`                                                                                                 | Patch Release              |
+| `fix(example service): fix integration test to use correct credentials`                                                                                                 | Patch Release              |
 | `feat(global catalog): add global-catalog service to project`                                                                                                               | ~~Minor~~ Feature Release  |
 | `feat(global search): re-gen service code with new v3 API definition`<br><br>`BREAKING CHANGE: The global-search service has been updated to reflect version 3 of the API.` | ~~Major~~ Breaking Release |
 
 # Pull Requests
 If you want to contribute to the repository, follow these steps:  
-  1. Fork the repository
-  2. Develop and test your code changes:  
-    - To build/test: `go test ./...`
-  3. Please add one or more tests to validate your changes.
-  4. Make sure everything builds/tests cleanly
-  5. Commit your changes  
-  6. Push to your fork and submit a pull request to the **master** branch
+1. Fork the repo.
+2. Install dependencies: `npm install`
+3. Build the code: `npm run build`
+4. Verify the build before beginning your changes: `npm run test-unit`
+5. Develop and test your code changes.
+6. Commit your changes. Remember to follow the correct commit message guidelines.
+7. Push to your fork and submit a pull request.
+8. Be sure to sign the CLA.
 
-# Running tests
-The tests within the SDK consist of both unit tests and integration tests.
+# Running Tests
+Out of the box, `npm run test` runs linting, unit tests, and integration tests (which require credentials).
 
-## Unit tests
-Unit tests exercise the SDK function with local "mock" service endpoints.
+## Unit Tests
+To run only the unit tests (sufficient for most cases), use `npm run test-unit`.
 
-To run all the unit tests contained in the project:
-- `go test ./...`
+## Integration Tests
+To run integration tests, copy `test/resources/auth.example.js` to `test/resources/auth.js` and fill in
+credentials for the service(s) you wish to test.
 
-To run a unit test for a specific package within the SDK project:
-- `cd <package-dir>` (e.g. `cd globalsearchv2`)
-- `go test`
+Currently this enables integration tests for all services so, unless all credentials are supplied, some tests will fail.
+(This will be improved eventually.)
 
-## Integration tests
-Integration tests use actual service endpoints deployed in IBM Cloud, and therefore require the appropriate
-credentials.
+## Running a Single Test
+To run only a specific test, pass the file name to `jest`. For example:
 
-To run all integration tests contained in the project:
-- Make sure you have provided the appropriate credentials for all the services
-- `go test ./... -tags=integration`
+```
+npm i -g jest
+jest test/integration/example-service.v1.test.js
+```
 
-To run the integration test for a single service:
-- Make sure you have provided the appropriate credentials for the service being tested
-- `cd <package-dir>` (e.g. `cd globalsearchv2`)
-- `go test -tags=integration`
+See [the jest documentation](https://jestjs.io/docs/en/cli) for all the options you can use to further configure `jest`.
 
 # Developer's Certificate of Origin 1.1
-By making a contribution to this project, I certify that:  
+By making a contribution to this project, I certify that:
 
 (a) The contribution was created in whole or in part by me and I
    have the right to submit it under the open source license
@@ -90,8 +93,9 @@ By making a contribution to this project, I certify that:
 # Additional Resources
 - [General GitHub documentation](https://help.github.com/)
 - [GitHub pull request documentation](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests)
-- [Effective Go](https://golang.org/doc/effective_go.html)
+- [Airbnb conventions](https://github.com/airbnb/javascript)
 - [Angular Commit Message Guidelines](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines)
 - [semantic-release](https://github.com/semantic-release/semantic-release)
 - [commitizen](https://github.com/commitizen/cz-cli)
 - [commitlint](https://github.com/conventional-changelog/commitlint)
+- [Jest Documentation](https://jestjs.io/docs/en/cli)

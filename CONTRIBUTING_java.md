@@ -111,5 +111,6 @@ By making a contribution to this project, I certify that:
 - [Maven Getting Started](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
 - [GoogleJavaStyleGuidelines][GoogleJavaStyleGuidelines]
 - [Angular Commit Message Guidelines](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines)
+- [semantic-release](https://github.com/semantic-release/semantic-release)
 - [commitizen](https://github.com/commitizen/cz-cli)
 - [commitlint](https://github.com/conventional-changelog/commitlint)
