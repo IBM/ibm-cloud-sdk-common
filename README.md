@@ -1281,7 +1281,6 @@ messages, like this:
 Adding certificate verification is strongly advised.
 See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
 ```
-</details>
 
 To suppress these warning messages, you can add this code to your application:
 ```python
@@ -1292,6 +1291,8 @@ urllib3.disable_warnings()
 
 See [this link](https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings)
 for more details.
+</details>
+
 
 
 ### Error Handling
