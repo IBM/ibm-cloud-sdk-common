@@ -1273,7 +1273,25 @@ For Python, use the `set_disable_ssl_verification()` method on the service clien
 my_service.set_disable_ssl_verification(True)
 ```
 
+When you disable SSL verification, the python `urllib3` library might log an excessive number of warning
+messages, like this:
+
+```
+.../connectionpool.py:1004: InsecureRequestWarning: Unverified HTTPS request is being made to host '<my-insecure-host>'.
+Adding certificate verification is strongly advised.
+See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+```
 </details>
+
+To suppress these warning messages, you can add this code to your application:
+```python
+import urllib3
+
+urllib3.disable_warnings()
+```
+
+See [this link](https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings)
+for more details.
 
 
 ### Error Handling
