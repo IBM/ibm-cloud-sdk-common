@@ -62,6 +62,11 @@ To run the integration test for a single service:
 - `cd <package-dir>` (e.g. `cd globalsearchv2`)
 - `go test -tags=integration`
 
+# Encrypting secrets
+To run integration tests within a Travis build, you'll need to encrypt the file containing the
+required external configuration properties.
+For details on how to do this, please see [Encrypting Secrets](EncryptingSecrets.md).
+
 # Developer's Certificate of Origin 1.1
 By making a contribution to this project, I certify that:  
 
