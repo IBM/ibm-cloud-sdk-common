@@ -126,9 +126,9 @@ travis encrypt-file example-service.env --com
 ```
 
 Notes:  
+- If you are using Public Travis (travis-ci.com), be sure to use the `--com` option on all your travis cli commands.
 - If you are using Travis Enterprise (travis.ibm.com), be sure to include the
-- If you are using Public Travis (travis-ci.com), be sure to use the `--com` option on all your travis cli commands
-`--api-endpoint https://travis.ibm.com/api` command-line option.
+`--api-endpoint https://travis.ibm.com/api` command-line option on all your travis cli commands.
 - The `encrypt-file` command output mentions the use of the `--add` option.
 Be aware that this option will re-write your `.travis.yml` file and strip out all comments
 and blank lines. In other words, proceed with caution.
