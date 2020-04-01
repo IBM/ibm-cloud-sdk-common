@@ -115,18 +115,19 @@ travis login --github-token <your-public-github-token> --com
 ### 3. Encrypt the credentials file
 Next, use the Travis CLI `encrypt-file` command to encrypt your credentials file:  
 
-On Public Travis:
-```sh
-travis encrypt-file example-service.env
-```
-
 On Travis Enterprise:
 ```sh
 travis encrypt-file example-service.env --api-endpoint https://travis.ibm.com/api
 ```
 
+On Public Travis:
+```sh
+travis encrypt-file example-service.env --com
+```
+
 Notes:  
 - If you are using Travis Enterprise (travis.ibm.com), be sure to include the
+- If you are using Public Travis (travis-ci.com), be sure to use the `--com` option on all your travis cli commands
 `--api-endpoint https://travis.ibm.com/api` command-line option.
 - The `encrypt-file` command output mentions the use of the `--add` option.
 Be aware that this option will re-write your `.travis.yml` file and strip out all comments
