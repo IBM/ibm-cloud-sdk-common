@@ -17,9 +17,8 @@ by the IBM OpenAPI SDK Generator.
 <!-- toc -->
 
 - [Questions](#questions)
-- [Code](#code)
-  * [Coding Style](#coding-style)
-  * [Commit Messages](#commit-messages)
+- [Coding Style](#coding-style)
+- [Commit Messages](#commit-messages)
 - [Pull Requests](#pull-requests)
 - [Running tests](#running-tests)
   * [Unit tests](#unit-tests)
@@ -31,18 +30,16 @@ by the IBM OpenAPI SDK Generator.
 <!-- tocstop -->
 
 ## Questions
-If you are having problems using the APIs or have a question about IBM Cloud services, please ask a question on
-[dW Answers](https://developer.ibm.com/answers/questions/ask/?topics=ibm-cloud)
-or [Stack Overflow](http://stackoverflow.com/questions/ask?tags=ibm-cloud).
+If you are having problems using the APIs or have a question about IBM Cloud services,
+please ask a question at
+[Stack Overflow](http://stackoverflow.com/questions/ask?tags=ibm-cloud).
 
-## Code
-
-### Coding Style
+## Coding Style
 The SDK follows the Go coding conventions documented [here](https://golang.org/doc/effective_go.html).
 You can run the linter with the following command:
 - `golangci-lint run`
 
-### Commit Messages
+## Commit Messages
 Commit messages should follow the [Angular Commit Message Guidelines](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines).
 This is because our release tool - [semantic-release](https://github.com/semantic-release/semantic-release) -
 uses this format for determining release versions and generating changelogs.

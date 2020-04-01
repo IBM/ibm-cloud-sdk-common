@@ -1,12 +1,40 @@
+# Contributing
+
 This file provides general guidance for anyone contributing to IBM Cloud Node.js SDK projects produced
 by the IBM OpenAPI SDK Generator.
 
-# Questions
+## Table of Contents
+<!--
+  The TOC below is generated using the `markdown-toc` node package.
+
+      https://github.com/jonschlinkert/markdown-toc
+
+  You should regenerate the TOC after making changes to this file.
+
+      npx markdown-toc -i README.md
+  -->
+
+<!-- toc -->
+
+  * [Questions](#questions)
+  * [Coding Style](#coding-style)
+  * [Commit Messages](#commit-messages)
+  * [Pull Requests](#pull-requests)
+  * [Running Tests](#running-tests)
+    + [Unit Tests](#unit-tests)
+    + [Integration Tests](#integration-tests)
+    + [Running a Single Test](#running-a-single-test)
+  * [Encrypting secrets](#encrypting-secrets)
+- [Developer's Certificate of Origin 1.1](#developers-certificate-of-origin-11)
+- [Additional Resources](#additional-resources)
+
+<!-- tocstop -->
+
+## Questions
 If you are having problems using the APIs or have a question about IBM Cloud services, please ask a question on
 [dW Answers](https://developer.ibm.com/answers/questions/ask/?topics=ibm-cloud)
 or [Stack Overflow](http://stackoverflow.com/questions/ask?tags=ibm-cloud).
 
-# Code
 ## Coding Style
 This SDK project follows a coding style based on the [Airbnb conventions](https://github.com/airbnb/javascript).
 This repository uses `tslint` for linting the TypeScript code and `eslint` for linting the JavaScript test files.
@@ -31,7 +59,7 @@ Here are some examples of acceptable commit messages, along with the release typ
 | `feat(global catalog): add global-catalog service to project`                                                                                                               | ~~Minor~~ Feature Release  |
 | `feat(global search): re-gen service code with new v3 API definition`<br><br>`BREAKING CHANGE: The global-search service has been updated to reflect version 3 of the API.` | ~~Major~~ Breaking Release |
 
-# Pull Requests
+## Pull Requests
 If you want to contribute to the repository, follow these steps:  
 1. Fork the repo.
 2. Install dependencies: `npm install`
@@ -42,20 +70,20 @@ If you want to contribute to the repository, follow these steps:
 7. Push to your fork and submit a pull request.
 8. Be sure to sign the CLA.
 
-# Running Tests
+## Running Tests
 Out of the box, `npm run test` runs linting, unit tests, and integration tests (which require credentials).
 
-## Unit Tests
+### Unit Tests
 To run only the unit tests (sufficient for most cases), use `npm run test-unit`.
 
-## Integration Tests
+### Integration Tests
 To run integration tests, copy `test/resources/auth.example.js` to `test/resources/auth.js` and fill in
 credentials for the service(s) you wish to test.
 
 Currently this enables integration tests for all services so, unless all credentials are supplied, some tests will fail.
 (This will be improved eventually.)
 
-## Running a Single Test
+### Running a Single Test
 To run only a specific test, pass the file name to `jest`. For example:
 
 ```
@@ -64,6 +92,11 @@ jest test/integration/example-service.v1.test.js
 ```
 
 See [the jest documentation](https://jestjs.io/docs/en/cli) for all the options you can use to further configure `jest`.
+
+## Encrypting secrets
+To run integration tests within a Travis build, you'll need to encrypt the file containing the
+required external configuration properties.
+For details on how to do this, please see [Encrypting Secrets](EncryptingSecrets.md).
 
 # Developer's Certificate of Origin 1.1
 By making a contribution to this project, I certify that:
