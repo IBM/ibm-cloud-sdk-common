@@ -1,7 +1,9 @@
+# Contributing
+
 This file provides general guidance for anyone contributing to IBM Cloud Go SDK projects produced
 by the IBM OpenAPI SDK Generator.
 
-# Table of Contents
+## Table of Contents
 <!--
   The TOC below is generated using the `markdown-toc` node package.
 
@@ -28,18 +30,19 @@ by the IBM OpenAPI SDK Generator.
 
 <!-- tocstop -->
 
-# Questions
+## Questions
 If you are having problems using the APIs or have a question about IBM Cloud services, please ask a question on
 [dW Answers](https://developer.ibm.com/answers/questions/ask/?topics=ibm-cloud)
 or [Stack Overflow](http://stackoverflow.com/questions/ask?tags=ibm-cloud).
 
-# Code
-## Coding Style
+## Code
+
+### Coding Style
 The SDK follows the Go coding conventions documented [here](https://golang.org/doc/effective_go.html).
 You can run the linter with the following command:
 - `golangci-lint run`
 
-## Commit Messages
+### Commit Messages
 Commit messages should follow the [Angular Commit Message Guidelines](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines).
 This is because our release tool - [semantic-release](https://github.com/semantic-release/semantic-release) -
 uses this format for determining release versions and generating changelogs.
@@ -53,7 +56,7 @@ Here are some examples of acceptable commit messages, along with the release typ
 | `feat(global catalog): add global-catalog service to project`                                                                                                               | ~~Minor~~ Feature Release  |
 | `feat(global search): re-gen service code with new v3 API definition`<br><br>`BREAKING CHANGE: The global-search service has been updated to reflect version 3 of the API.` | ~~Major~~ Breaking Release |
 
-# Pull Requests
+## Pull Requests
 If you want to contribute to the repository, follow these steps:  
   1. Fork the repository
   2. Develop and test your code changes:  
@@ -63,10 +66,10 @@ If you want to contribute to the repository, follow these steps:
   5. Commit your changes  
   6. Push to your fork and submit a pull request to the **master** branch
 
-# Running tests
+## Running tests
 The tests within the SDK consist of both unit tests and integration tests.
 
-## Unit tests
+### Unit tests
 Unit tests exercise the SDK function with local "mock" service endpoints.
 
 To run all the unit tests contained in the project:
@@ -76,7 +79,7 @@ To run a unit test for a specific package within the SDK project:
 - `cd <package-dir>` (e.g. `cd globalsearchv2`)
 - `go test`
 
-## Integration tests
+### Integration tests
 Integration tests use actual service endpoints deployed in IBM Cloud, and therefore require the appropriate
 credentials.
 
@@ -89,12 +92,12 @@ To run the integration test for a single service:
 - `cd <package-dir>` (e.g. `cd globalsearchv2`)
 - `go test -tags=integration`
 
-# Encrypting secrets
+## Encrypting secrets
 To run integration tests within a Travis build, you'll need to encrypt the file containing the
 required external configuration properties.
 For details on how to do this, please see [Encrypting Secrets](EncryptingSecrets.md).
 
-# Developer's Certificate of Origin 1.1
+## Developer's Certificate of Origin 1.1
 By making a contribution to this project, I certify that:  
 
 (a) The contribution was created in whole or in part by me and I
@@ -119,7 +122,7 @@ By making a contribution to this project, I certify that:
    maintained indefinitely and may be redistributed consistent with
    this project or the open source license(s) involved.
 
-# Additional Resources
+## Additional Resources
 - [General GitHub documentation](https://help.github.com/)
 - [GitHub pull request documentation](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests)
 - [Effective Go](https://golang.org/doc/effective_go.html)
