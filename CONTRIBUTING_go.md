@@ -1,6 +1,33 @@
 This file provides general guidance for anyone contributing to IBM Cloud Go SDK projects produced
 by the IBM OpenAPI SDK Generator.
 
+# Table of Contents
+<!--
+  The TOC below is generated using the `markdown-toc` node package.
+
+      https://github.com/jonschlinkert/markdown-toc
+
+  You should regenerate the TOC after making changes to this file.
+
+      npx markdown-toc -i README.md
+  -->
+
+<!-- toc -->
+
+- [Questions](#questions)
+- [Code](#code)
+  * [Coding Style](#coding-style)
+  * [Commit Messages](#commit-messages)
+- [Pull Requests](#pull-requests)
+- [Running tests](#running-tests)
+  * [Unit tests](#unit-tests)
+  * [Integration tests](#integration-tests)
+- [Encrypting secrets](#encrypting-secrets)
+- [Developer's Certificate of Origin 1.1](#developers-certificate-of-origin-11)
+- [Additional Resources](#additional-resources)
+
+<!-- tocstop -->
+
 # Questions
 If you are having problems using the APIs or have a question about IBM Cloud services, please ask a question on
 [dW Answers](https://developer.ibm.com/answers/questions/ask/?topics=ibm-cloud)
