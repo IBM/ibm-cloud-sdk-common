@@ -36,7 +36,7 @@ please ask a question at
 
 ## Coding Style
 The SDK follows the Go coding conventions documented [here](https://golang.org/doc/effective_go.html).
-You can run the linter with the following command:
+You can run the [linter](https://github.com/golangci/golangci-lint) with the following command:
 - `golangci-lint run`
 
 ## Commit Messages
