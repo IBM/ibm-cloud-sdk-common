@@ -118,7 +118,7 @@ Next, use the Travis CLI `encrypt-file` command to encrypt your credentials file
 On Public Travis:
 ```sh
 travis encrypt-file example-service.env
-``
+```
 
 On Travis Enterprise:
 ```sh
