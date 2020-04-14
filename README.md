@@ -35,7 +35,7 @@ This project contains documentation and other resources related to IBM Cloud SDK
   * [Configuring the HTTP Client](#configuring-the-http-client)
   * [Disabling SSL Verification - Discouraged](#disabling-ssl-verification---discouraged)
     + [With external configuration](#with-external-configuration)
-    + [Programmtically](#programmtically)
+    + [Programmatically](#programmatically)
   * [Error Handling](#error-handling)
   * [Logging](#logging)
   * [Synchronous and asynchronous requests](#synchronous-and-asynchronous-requests)
@@ -167,7 +167,7 @@ const myService = new ExampleServiceV1({
 from mysdk import ExampleServiceV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
-# Create an IAM authenticator. 
+# Create an IAM authenticator.
 authenticator = IAMAuthenticator('<iam-api-key>')
 
 # Construct the service client.
@@ -722,6 +722,16 @@ Each operation will return the following values:
 3. `err` - An error object.  This will be nil if the operation was successful, or non-nil  
 if an error occurred.
 
+Here is an example of how to access the response and get additional Information
+beyond the response object:
+
+```go
+result, detailedResponse, err := myService.GetResource(options)
+
+responseHeaders := detailedResponse.GetHeaders()
+responseId := responseHeaders.Get("response-id")
+```
+
 </details>
 <details><summary>Java</summary>
 
@@ -744,6 +754,8 @@ Resource resource  = response.getResult();
 // Retrieve response headers.
 Headers responseHeaders = response.getHeaders();
 System.out.println("Response header names: " + responseHeaders.names());
+
+String responseId = responseHeaders.values("response-id").get(0);
 ```
 
 </details>
@@ -753,7 +765,7 @@ Each operation will return a response via a Promise.
 The response is an object containing the result of the operation, HTTP status code and text message,
 and the HTTP response headers.  
 
-Here is an example of how to access the various fields from an operation response:  
+Here is an example of how to access the various fields and headers from an operation response:  
 
 ```js
 myService.getResource({
@@ -765,6 +777,7 @@ myService.getResource({
     // statusText is the text message associated with the HTTP status code
     const { result, status, headers, statusText } = response;
     console.log(JSON.stringify(headers, null, 4));
+    transactionId = headers['response-id'];
   }).catch((err) => {
     console.log(JSON.stringify(err, null, 4));
   });
@@ -781,6 +794,10 @@ beyond the response object:
 ```python
 detailedResponse = my_service.get_resource(resource_id='resource-id-1')
 print(detailedResponse)
+
+responseHeaders = detailedResponse.get_headers()
+
+responseId = responseHeaders.get('response-id')
 ```
 This would display a `DetailedResponse` instance having the structure:
 ```
@@ -1195,7 +1212,7 @@ export EXAMPLE_SERVICE_AUTH_DISABLE_SSL=true
 After setting these properties, be sure to construct your service client similar to the
 examples in the [Construct service client](#construct-service-client) section above.
 
-#### Programmtically
+#### programmatically
 Alternatively, you can disable SSL verification programmatically.
 See the expandable sections below to see how this is done in each language:
 <details><summary>Go</summary>
@@ -1364,7 +1381,7 @@ try {
   Response<Resource> response = myService.getResource(options).execute();
 
   // Process response...
-  
+
 } catch (BadRequestException e) {
   // Handle Bad Request (400) exception
 } catch (UnauthorizedException e) {
