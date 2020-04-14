@@ -167,7 +167,7 @@ const myService = new ExampleServiceV1({
 from mysdk import ExampleServiceV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
-# Create an IAM authenticator. 
+# Create an IAM authenticator.
 authenticator = IAMAuthenticator('<iam-api-key>')
 
 # Construct the service client.
@@ -928,19 +928,18 @@ resourceInstance = my_service.get_resource(
 
 
 ### Transaction IDs
-Each API invocation will receive a response that contains a transaction ID in the
-`x-global-transaction-id` HTTP header.
+Each API invocation will receive a response that contains a transaction ID in the HTTP header.
 This transaction ID can be useful for troubleshooting and accessing relevant logs from your service
-instance.
+instance. Check the documentation of the service for the correct field name of this property.
 
-Here are examples of how to retrieve the `x-global-transaction-id` response header:
+Here are examples of how to retrieve the response header:
 <details><summary>Go</summary>
 
 ```go
 
 result, detailedResponse, err := myService.GetResource(options)
 
-transactionId := detailedResponse.GetHeaders().Get("x-global-transaction-id")
+transactionId := detailedResponse.GetHeaders().Get("transaction-id-field-name")
 
 ```
 </details>
@@ -953,9 +952,9 @@ method, or from the exception in case of an error:
 String transactionId;
 try {
   Response<Resource> response = myService.getResource(options).execute();
-  transactionId = response.getHeaders().values("x-global-transaction-id").get(0);
+  transactionId = response.getHeaders().values("transaction-id-field-name").get(0);
 } catch (ServiceResponseException e) {
-  transactionId = e.getHeaders().values("x-global-transaction-id").get(0);
+  transactionId = e.getHeaders().values("transaction-id-field-name").get(0);
 }
 ```
 
@@ -970,7 +969,7 @@ const params = {
 
 myService.getResource(params).then(
   response => {
-    transactionId = response.headers['x-global-transaction-id'];
+    transactionId = response.headers['transaction-id-field-name'];
   },
   err => {
     transactionId = TBD;
@@ -984,9 +983,9 @@ myService.getResource(params).then(
 ```python
 try:
     response = my_service.get_resource(resource_id='resource-id-1')
-    transaction_id = response.get_headers().get('x-global-transaction-id')
+    transaction_id = response.get_headers().get('transaction-id-field-name')
 except ApiException as e:
-    transaction_id = e.http_response.headers.get('x-global-transaction-id')
+    transaction_id = e.http_response.headers.get('transaction-id-field-name')
 ```
 
 </details>
@@ -1364,7 +1363,7 @@ try {
   Response<Resource> response = myService.getResource(options).execute();
 
   // Process response...
-  
+
 } catch (BadRequestException e) {
   // Handle Bad Request (400) exception
 } catch (UnauthorizedException e) {
