@@ -779,7 +779,10 @@ myService.getResource({
     console.log(JSON.stringify(headers, null, 4));
     transactionId = headers['response-id'];
   }).catch((err) => {
-    console.log(JSON.stringify(err, null, 4));
+    if (err.status && err.statusText) {
+      console.log("Error status code: " + err.status + " (" + err.statusText + ")");
+    }
+    console.log("Error message:     " + err.message);
   });
 ```
 </details>
