@@ -20,6 +20,7 @@ by the IBM OpenAPI SDK Generator.
 - [Coding Style](#coding-style)
 - [Commit Messages](#commit-messages)
 - [Pull Requests](#pull-requests)
+- [Adding a new service](#adding-a-new-service)
 - [Running Tests](#running-tests)
 - [Encrypting secrets](#encrypting-secrets)
 - [Code Coverage](#code-coverage)
@@ -72,20 +73,97 @@ If you want to contribute to the repository, here's a quick guide:
   5. Push to your fork and submit a pull request to the **master** branch.
   6. Be sure to sign the CLA.
 
+## Adding a new service
+
+This section will guide you through the steps to generate the Java code for a service
+and add the generated code to your SDK project.
+
+1. Validate the API definition - before trying to process the API definition with the SDK generator, we strongly
+recommend that you validate the API definition with the
+[IBM OpenAPI Validator ](https://github.com/IBM/openapi-validator).
+Example:
+```
+lint-openapi -s example-service.yaml
+```
+This command will display a list of errors and warnings found in the API definition
+as well as a summary at the end.
+It's not required that you fix all errors and warnings before trying to use the SDK generator, but
+this step should identify any critical errors that will need to be fixed prior to the generation step.
+
+2. **Recommended**: Modify your API definition to configure the `apiPackage` property.
+The value of this property should be the base package name associated with your
+SDK project (e.g. `com.ibm.cloud.platform_services`).  All the generated service and model
+classes for the project will be contained in packages whose names start with this base package name.
+Here's an example:
+```yaml
+  info:
+    x-codegen-config:
+      java:
+        apiPackage: 'com.ibm.cloud.platform_services'
+```
+
+By adding this configuration property to your API definition, you can avoid using the `--api-package`
+command line option when running the SDK generator.
+
+More details about SDK generator configuration properties can be found
+[here](https://github.ibm.com/CloudEngineering/openapi-sdkgen/wiki/Config-Options).
+
+3. Next, run the SDK generator to process your API definition and generate the service and unit test
+code for the service.
+
+You'll find instructions on how to install and run the SDK generator on the
+[generator repository wiki](https://github.ibm.com/CloudEngineering/openapi-sdkgen/wiki/Usage-Instructions).
+
+Set the output location for the generated files to be the `./modules` directory of the project.
+
+If you did not configure the `apiPackage` configuration property in your API definition file(s), then
+be sure to use the `--api-package <base-package-name>` command line option when running the generator to
+ensure that source files are generated correctly.
+
+Here is an example of how to generate the Java code for an API definition.
+Suppose your API definition file is named `my-service.json` and contains the definition of the "My Service"
+service.
+To generate the code into your project, run these commands:
+```sh
+cd <project-root>
+
+openapi-sdkgen.sh generate -g ibm-java -i my-service.json -o . --api-package <base-package-name>
+
+```
+
+The generated service and unit test code will be written to a **module** directory
+underneath `./modules`.
+The name of the module directory will reflect the service name.
+For the example above, the module directory would be named `my-service`.
+You will have one module directory underneath `./modules` for each service contained in your
+project (plus the `common` and `coverage-reports` modules).
+
+4. Copy the `service-pom.xml` file to `modules/<module-name>/pom.xml`, where `<module-name>` is
+the name of the new module directory.
+Edit this file and make these changes:
+  - Replace `MODULE-ARTIFACTID` with the new module's artifactId (e.g. my-service)
+  - Replace `MODULE-DESCRIPTION` with a suitable description for the module (e.g. "My Service").
+
+5. Update the service table in the `README.md` file to add an entry for the new service.
+
+6. Next, modify the parent `pom.xml` file to add an entry for the new service to the
+`<modules>` element.
+
+7. Repeat the steps in this section for each service to be included in your project.
+
 ## Running Tests
-By default, when you run `mvn test` only unit tests are run.   Integration tests are skipped
-because they require credentials.
+By default, when you run `mvn verify` (or `mvn package`), both unit and integration tests are run.
 
-To run the integration tests, you need to provide credentials to the integration test framework, then
-run `mvn test -DskipITs=false`.
+To run only the unit tests, run `mvn test -DskipITs=true`
 
-To run the tests in a specific test class, use the `-Dtest` flag when invoking `mvn test`, e.g.:
+To run the tests in a specific test class, use the `-Dtest` flag when invoking `mvn test`,
+for example:  
 
 ```
 mvn test -Dtest=SdkCommonTest
 ```
 
-You can run a specific test by adding the name of the test method, e.g.:
+To run a specific test, add the name of the test method, for example:
 
 ```
 mvn test -Dtest=SdkCommonTest#testGetSdkHeaders

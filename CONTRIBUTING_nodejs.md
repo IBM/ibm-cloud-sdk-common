@@ -20,6 +20,7 @@ by the IBM OpenAPI SDK Generator.
   * [Coding Style](#coding-style)
   * [Commit Messages](#commit-messages)
   * [Pull Requests](#pull-requests)
+  * [Adding a new service](#adding-a-new-service)
   * [Running Tests](#running-tests)
     + [Unit Tests](#unit-tests)
     + [Integration Tests](#integration-tests)
@@ -69,6 +70,64 @@ If you want to contribute to the repository, follow these steps:
 6. Commit your changes. Remember to follow the correct commit message guidelines.
 7. Push to your fork and submit a pull request.
 8. Be sure to sign the CLA.
+
+## Adding a new service
+
+This section will guide you through the steps to generate the Node.js code for a service
+and add the generated code to your SDK project.
+
+1. Validate the API definition - before trying to process the API definition with the SDK generator, we strongly
+recommend that you validate the API definition with the
+[IBM OpenAPI Validator ](https://github.com/IBM/openapi-validator).
+Example:
+```
+lint-openapi -s example-service.yaml
+```
+This command will display a list of errors and warnings found in the API definition
+as well as a summary at the end.
+It's not required that you fix all errors and warnings before trying to use the SDK generator, but
+this step should identify any critical errors that will need to be fixed prior to the generation step.
+
+2. Next, run the SDK generator to process your API definition and generate the service and unit test
+code for the service.
+
+You'll find instructions on how to install and run the SDK generator on the
+[generator repository wiki](https://github.ibm.com/CloudEngineering/openapi-sdkgen/wiki/Usage-Instructions).
+
+Set the output location for the generated files to be the `./modules` directory of the project.
+
+Here is an example of how to generate the Node.js code for an API definition.
+Suppose your API definition file is named `my-service.json` and contains the definition of the "My Service"
+service.
+To generate the code into your project, run these commands:
+```sh
+cd <project-root>
+
+openapi-sdkgen.sh generate -g ibm-node -i my-service.json -o .
+
+```
+
+The generated service code is placed in a source directory named after the service
+(`my-service` for this example) under the project root.
+You should have one source directory per service.
+
+The unit test code is placed in `test/unit` with a filename that reflects the service
+(`my-service.v1.test.js` for this example).
+
+3. Update the service table in the `README.md` file to add an entry for the new service.
+
+4. Update `scripts/typedoc/generate_typedoc.sh` to add the new service to the `typedoc` command.
+
+5. Update `.gitignore` to add an entry for your service to the `service-specific tsc outputs`, like this:  
+```
+# service-specific tsc outputs (js files)
+my-service/*.js
+```
+This will ensure that the typescript build outputs are not inadvertently committed to the
+git repository.
+
+6. Repeat the steps in this section for each service to be included in your project.
+
 
 ## Running Tests
 Out of the box, `npm run test` runs linting, unit tests, and integration tests (which require credentials).
