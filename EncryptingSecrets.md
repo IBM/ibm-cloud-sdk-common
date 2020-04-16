@@ -183,7 +183,7 @@ corresponding "push" builds that are triggered before the "PR" build.
 In this case, our `before_install` section might look like this:
 ```
 before_install:
-- '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && openssl aes-256-cbc -K $encrypted_c782ea63ec52_key -iv $encrypted_c782ea63ec52_iv -in example-service.env.enc -out example-service.env -d || true'
+- '[ "${TRAVIS_PULL_REQUEST}" == "false" ] && openssl aes-256-cbc -K $encrypted_c782ea63ec52_key -iv $encrypted_c782ea63ec52_iv -in example-service.env.enc -out example-service.env -d || true'
 ```
 
 If you choose this approach, make sure that your integration tests are implemented such that if the
