@@ -20,6 +20,7 @@ by the IBM OpenAPI SDK Generator.
 - [Coding Style](#coding-style)
 - [Commit Messages](#commit-messages)
 - [Pull Requests](#pull-requests)
+- [Adding a new service](#adding-a-new-service)
 - [Running the Tests](#running-the-tests)
   * [Unit tests](#unit-tests)
   * [Integration tests](#integration-tests)
@@ -82,6 +83,76 @@ If you want to contribute to the repository, here's a quick guide:
   8. Commit your changes  
      * Make sure your commit messages follow the Angular Commit Message Guidelines (see below).
   9. Push to your fork and submit a pull request to the **master** branch
+
+
+## Adding a new service
+
+This section will guide you through the steps to generate the Python code for a service
+and add the generated code to your SDK project.
+
+1. Validate the API definition - before trying to process the API definition with the SDK generator, we strongly
+recommend that you validate the API definition with the
+[IBM OpenAPI Validator ](https://github.com/IBM/openapi-validator).
+Example:
+```
+lint-openapi -s example-service.yaml
+```
+This command will display a list of errors and warnings found in the API definition
+as well as a summary at the end.
+It's not required that you fix all errors and warnings before trying to use the SDK generator, but
+this step should identify any critical errors that will need to be fixed prior to the generation step.
+
+2. **Recommended**: Modify your API definition to configure the `apiPackage` property.
+The value of this property should be the project's python package name (e.g. `ibm_platform_services`).
+Here's an example:
+```yaml
+  info:
+    x-codegen-config:
+      python:
+        apiPackage: 'ibm_platform_services'
+```
+
+By adding this configuration property to your API definition, you can avoid using the `--api-package`
+command line option when running the SDK generator.
+
+More details about SDK generator configuration properties can be found
+[here](https://github.ibm.com/CloudEngineering/openapi-sdkgen/wiki/Config-Options).
+
+3. Next, run the SDK generator to process your API definition and generate the service and unit test
+code for the service.
+
+You'll find instructions on how to install and run the SDK generator on the
+[generator repository wiki](https://github.ibm.com/CloudEngineering/openapi-sdkgen/wiki/Usage-Instructions).
+
+Set the output location for the generated files to be the root directory of the project.
+
+If you did not configure the `apiPackage` configuration property in your API definition file(s), then
+be sure to use the `--api-package <package>` command line option when running the SDK generator to
+ensure that source files are generated correctly for your project.
+
+Here is an example of how to generate the Python code for an API definition.
+Suppose your API definition file is named `my-service.json` and contains the definition of the "My Service"
+service.
+To generate the code into your project, run these commands:
+```sh
+cd <project-root>
+
+openapi-sdkgen.sh generate -g ibm-python -i my-service.json -o . --api-package <package>
+
+```
+The generated service code is written to the `<package>` directory, and the unit test code is
+written to `test/unit`.
+
+4. Update `<package>/__init__.py` to add
+an import statement for the newly-generated service, like this:  
+
+```python
+from .my_service_v1 import MyServiceV1
+```
+
+5. Update the service table in the `README.md` file to add an entry for the new service.
+
+6. Repeat the steps in this section for each service to be included in your project.
 
 
 ## Running the Tests
