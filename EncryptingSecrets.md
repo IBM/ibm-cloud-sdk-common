@@ -223,7 +223,7 @@ Note: These `git add` commands are listed individually to emphasize the point th
 un-encrypted file should not be committed.  Alternative: `git add .`
 
 3. Commit the changes
-- `git commit -m "chore(build): add encrypted credentials file for example service"
+- `git commit -m "chore(build): add encrypted credentials file for example service"`
 
 4. Push changes to remote
 - `git push`
