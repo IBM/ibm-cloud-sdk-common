@@ -11,7 +11,7 @@ by the IBM OpenAPI SDK Generator.
 
   You should regenerate the TOC after making changes to this file.
 
-      npx markdown-toc -i README.md
+      markdown-toc -i --maxdepth 4 CONTRIBUTING_nodejs.md
   -->
 
 <!-- toc -->
