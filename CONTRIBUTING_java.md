@@ -149,7 +149,10 @@ Edit this file and make these changes:
 6. Next, modify the parent `pom.xml` file to add an entry for the new service to the
 `<modules>` element.
 
-7. Repeat the steps in this section for each service to be included in your project.
+7. Next, modify the `coverage-reports` module's pom.xml to add a dependency entry for the new module so that its
+test coverage information will be accounted for in the aggregated coverage reports.
+
+8. Repeat the steps in this section for each service to be included in your project.
 
 ## Running Tests
 By default, when you run `mvn verify` (or `mvn package`), both unit and integration tests are run.
