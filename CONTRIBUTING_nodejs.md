@@ -94,7 +94,7 @@ code for the service.
 You'll find instructions on how to install and run the SDK generator on the
 [generator repository wiki](https://github.ibm.com/CloudEngineering/openapi-sdkgen/wiki/Usage-Instructions).
 
-Set the output location for the generated files to be the `./modules` directory of the project.
+Set the output location for the generated files to be the root directory of the project.
 
 Here is an example of how to generate the Node.js code for an API definition.
 Suppose your API definition file is named `my-service.json` and contains the definition of the "My Service"
