@@ -25,6 +25,7 @@ by the IBM OpenAPI SDK Generator.
 - [Encrypting secrets](#encrypting-secrets)
 - [Code Coverage](#code-coverage)
 - [Generating Javadocs](#generating-javadocs)
+- [Publishing build artifacts](#publishing-build-artifacts)
 - [Developer's Certificate of Origin 1.1](#developers-certificate-of-origin-11)
 - [Additional Resources](#additional-resources)
 
@@ -191,6 +192,13 @@ To generate the Javadocs for the project, run `mvn site` and then view the docs 
 ```
 open target/site/apidocs/index.html
 ```
+
+## Publishing build artifacts
+It is recommended that each Java SDK project publish its build artifacts (jars, pom.xml files, etc.) on
+[JCenter](https://bintray.com/bintray/jcenter) and [Maven Central](https://central.sonatype.org/),
+which are both public maven artifact repositories.
+
+For details on how to accomplish this within your Java SDK project's build, look [here](JavaDeploy.md).
 
 ## Developer's Certificate of Origin 1.1
 
