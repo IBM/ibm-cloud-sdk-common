@@ -23,7 +23,7 @@ In the case of a credentials file, it might look like this:
 ```sh
 EXAMPLE_SERVICE_URL=https://example-service-test.cloud.ibm.com
 EXAMPLE_SERVICE_AUTHTYPE=iam
-EXAMPLE_SERVICE_AUTH_APIKEY=iam-api-key
+EXAMPLE_SERVICE_APIKEY=iam-api-key
 ```
 
 Whereas, an equivalent file containing exported environment variables would look like this:
@@ -31,7 +31,7 @@ Whereas, an equivalent file containing exported environment variables would look
 ```sh
 export EXAMPLE_SERVICE_URL=https://example-service-test.cloud.ibm.com
 export EXAMPLE_SERVICE_AUTHTYPE=iam
-export EXAMPLE_SERVICE_AUTH_APIKEY=iam-api-key
+export EXAMPLE_SERVICE_APIKEY=iam-api-key
 ```
 
 ## Prerequisites
