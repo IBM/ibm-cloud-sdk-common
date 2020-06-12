@@ -21,6 +21,7 @@ by the IBM OpenAPI SDK Generator.
 - [Commit Messages](#commit-messages)
 - [Pull Requests](#pull-requests)
 - [Adding a new service](#adding-a-new-service)
+- [Writing Tests](#writing-tests)
 - [Running Tests](#running-tests)
 - [Encrypting secrets](#encrypting-secrets)
 - [Code Coverage](#code-coverage)
@@ -153,6 +154,13 @@ Edit this file and make these changes:
 test coverage information will be accounted for in the aggregated coverage reports.
 
 8. Repeat the steps in this section for each service to be included in your project.
+
+## Writing Tests
+The Java integration tests use the TestNG testing framework.
+With TestNG, you write methods containing your test code and annotate these methods with @Test.
+You can create methods for setup and teardown of test infrastructure and annotate these
+with a variety of `@Before` or `@After` annotations.
+See the [TestNG Docs](https://testng.org/doc/) for full details.
 
 ## Running Tests
 By default, when you run `mvn verify` (or `mvn package`), both unit and integration tests are run.
