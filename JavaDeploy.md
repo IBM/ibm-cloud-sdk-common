@@ -23,7 +23,7 @@ customers on the [JCenter](https://bintray.com/bintray/jcenter) and
   * [2. Update your SDK project's maven build](#2-update-your-sdk-projects-maven-build)
     + [2.1: Update your SDK project's parent pom.xml](#21-update-your-sdk-projects-parent-pomxml)
     + [2.2: Update `build/.travis.settings.xml`](#22-update-buildtravissettingsxml)
-    + [2.3: Update `module/coverage-reports/pom.xml`](#23-update-modulecoverage-reportspomxml)
+    + [2.3: Update `modules/coverage-reports/pom.xml`](#23-update-modulescoverage-reportspomxml)
   * [3. Request that your Bintray packages be linked to JCenter.](#3-request-that-your-bintray-packages-be-linked-to-jcenter)
   * [4. Synchronize your JCenter artifacts to Maven Central.](#4-synchronize-your-jcenter-artifacts-to-maven-central)
 
@@ -204,7 +204,7 @@ contain these two environment variables:
 Bintray repository used by your project's build.
 - `BINTRAY_APIKEY`: the API key associated with the bintray username
 
-#### 2.3: Update `module/coverage-reports/pom.xml`
+#### 2.3: Update `modules/coverage-reports/pom.xml`
 You should update the `coverage-reports` module's pom.xml to disable the maven `deploy` goal.  This is recommended
 because there's no need to deploy the build outputs for this module on JCenter/Maven Central
 because the project's test code coverage info should be stored on `codecov.io`.
