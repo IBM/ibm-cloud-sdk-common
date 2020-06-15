@@ -207,7 +207,7 @@ Bintray repository used by your project's build.
 #### 2.3: Update `module/coverage-reports/pom.xml`
 You should update the `coverage-reports` module's pom.xml to disable the maven `deploy` goal.  This is recommended
 because there's no need to deploy the build outputs for this module on JCenter/Maven Central
-because the project's test code coverage info should be stored on `codecov.io`).
+because the project's test code coverage info should be stored on `codecov.io`.
 To disable the `deploy` goal for this module, add this to the pom.xml in the `<build>/<plugins>` element:  
 ```
 <!-- No need to deploy this artifact since it contains only coverage info -->
