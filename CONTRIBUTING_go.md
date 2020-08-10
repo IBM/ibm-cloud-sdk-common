@@ -126,6 +126,11 @@ For the example above, the package directory would be named `myservicev1`.  You 
 package directory for each of the services contained in your project, plus the `common` directory for
 the "common" package.
 
+Hint: you can generate an initial integration test for your service by including the `--genITs` option
+when running the SDK generator.   This will generate an integration test along with the service and
+unit test code within the package directory for the service.  It is expected that the generated integration
+test is a starting point which will need manual editting to form an effective integration test for the service.
+
 4. Update the service table in the `README.md` file to add an entry for the new service.
 
 5. Repeat the steps in this section for each service to be included in your project.
