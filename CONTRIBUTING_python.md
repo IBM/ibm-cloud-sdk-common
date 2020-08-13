@@ -143,6 +143,11 @@ openapi-sdkgen.sh generate -g ibm-python -i my-service.json -o . --api-package <
 The generated service code is written to the `<package>` directory, and the unit test code is
 written to `test/unit`.
 
+Hint: you can generate an initial integration test for your service by including the `--genITs` option
+when running the SDK generator.   This will generate an integration test in the `test/integration` directory.
+It is expected that the generated integration test is a starting point which will need manual editing to form 
+an effective integration test for the service.
+
 4. Update `<package>/__init__.py` to add
 an import statement for the newly-generated service, like this:  
 
