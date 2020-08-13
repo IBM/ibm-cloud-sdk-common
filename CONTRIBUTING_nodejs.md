@@ -114,6 +114,11 @@ You should have one source directory per service.
 The unit test code is placed in `test/unit` with a filename that reflects the service
 (`my-service.v1.test.js` for this example).
 
+Hint: you can generate an initial integration test for your service by including the `--genITs` option
+when running the SDK generator.   This will generate an integration test in the `test/integration` directory.
+It is expected that the generated integration test is a starting point which will need manual editing to form 
+an effective integration test for the service.
+
 3. Update the service table in the `README.md` file to add an entry for the new service.
 
 4. Update `scripts/typedoc/generate_typedoc.sh` to add the new service to the `typedoc` command.
