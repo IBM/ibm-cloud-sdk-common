@@ -143,7 +143,7 @@ project (plus the `common` and `coverage-reports` modules).
 Hint: you can generate an initial integration test for your service by including the `--genITs` option 
 when running the SDK generator. This will generate an integration test along with the service and 
 unit test code within the module directory for the service. 
-It is expected that the generated integration test is a starting point which will need manual editting 
+It is expected that the generated integration test is a starting point which will need manual editing 
 to form an effective integration test for the service.
 
 4. Copy the `service-pom.xml` file to `modules/<module-name>/pom.xml`, where `<module-name>` is
