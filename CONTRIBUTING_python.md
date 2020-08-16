@@ -70,13 +70,13 @@ If you want to contribute to the repository, here's a quick guide:
      * `python -m venv <venv-dir>`, where `<venv-dir>` indicates where to install the virtual environment
      * `. <venv-dir>/bin/activate`
   3. Install the project as an editable package using the current source:  
-     * `pip install -e .`
+     * `python -m pip install -e .`
   4. Install dependencies:  
-      * `pip install -r requirements.txt`
-      * `pip install -r requirements-dev.txt`
+      * `python -m pip install -r requirements.txt`
+      * `python -m pip install -r requirements-dev.txt`
   5. Develop and test your code changes:  
       * Please add one or more tests to validate your changes.
-      * To run all the tests: `pytest`
+      * To run all the tests: `python -m pytest`
       * You can find more details about running the tests below.
   6. Check and fix code style: `./pylint.sh`
   7. Make sure everything builds/tests cleanly
@@ -163,18 +163,18 @@ from .my_service_v1 import MyServiceV1
 ## Running the Tests
 
 To run all of the tests (both unit and integration tests):  
-* `pytest`
+* `python -m pytest`
 
 Note that integration tests require credentials - see below.
 
 You can run a specific test like this:
-* `pytest <path-to-test>/mytest.py`
+* `python -m pytest <path-to-test>/mytest.py`
 
 ### Unit tests
 
 Unit tests use a mock service endpoint, so they do not need any credentials.
 To run the unit tests:  
-* `pytest test/unit`
+* `python -m pytest test/unit`
 
 ### Integration tests
 Integration tests use an actual service endpoint, so you need to provide credentials to the integration test framework.
@@ -184,7 +184,7 @@ The integration test framework will skip integration tests for any service that 
 To provide credentials for the integration tests, export your credentials as environment variables.
 
 To run only the integration tests:
-* `pytest test/integration`
+* `python -m pytest test/integration`
 
 ## Encrypting secrets
 To run integration tests within a Travis build, you'll need to encrypt the file containing the
