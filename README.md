@@ -1347,7 +1347,11 @@ result, detailedResponse, err := myservice.GetResource(options)
 if err != nil {
     fmt.Println("Error retrieving the resource: ", err.Error())
     fmt.Println("   status code: ", detailedResponse.StatusCode)
-    fmt.Println("   full error response: ", detailedResponse.Result)
+    if (detaliedResponse.Result != nil) {
+        fmt.Println("   full error response: ", detailedResponse.Result)
+    } else {
+        fmt.Println("   raw error response: ", detailedResponse.RawResult)
+    }
 }
 ```
 </details>
