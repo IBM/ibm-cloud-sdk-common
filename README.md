@@ -95,7 +95,7 @@ while specifying various client options (authenticator, service endpoint URL, et
 
 ```go
 import {
-    "github.com/IBM/go-sdk-core/v3/core"
+    "github.com/IBM/go-sdk-core/v4/core"
     "github.com/IBM/mysdk/exampleservicev1"
 }
 
@@ -325,7 +325,7 @@ The SDK's IAM authenticator will:
 
 ```go
 import {
-    "github.com/IBM/go-sdk-core/v3/core"
+    "github.com/IBM/go-sdk-core/v4/core"
     "github.com/IBM/mysdk/exampleservicev1"
 }
 
@@ -408,7 +408,7 @@ export EXAMPLE_SERVICE_APIKEY=<iam-api-key>
 
 ```go
 import {
-    "github.com/IBM/go-sdk-core/v3/core"
+    "github.com/IBM/go-sdk-core/v4/core"
     "github.com/IBM/mysdk/exampleservicev1"
 }
 
@@ -481,7 +481,7 @@ Bearer Token authenticator because you must manage the access token yourself.
 
 ```go
 import {
-    "github.com/IBM/go-sdk-core/v3/core"
+    "github.com/IBM/go-sdk-core/v4/core"
     "github.com/IBM/mysdk/exampleservicev1"
 }
 
@@ -1529,7 +1529,7 @@ The Go SDK supports only synchronous execution of service methods.
 
 For Java, all service methods implement the [`ServiceCall`][service-call] interface.
 
-[service-call]: https://ibm.github.io/java-sdk-core/docs/8.1.3/com/ibm/cloud/sdk/core/http/ServiceCall.html
+[service-call]: https://ibm.github.io/java-sdk-core/docs/9.1.0/com/ibm/cloud/sdk/core/http/ServiceCall.html
 
 To call a method synchronously, use the `execute()` method of the `ServiceCall<T>` interface,
 like this:  
