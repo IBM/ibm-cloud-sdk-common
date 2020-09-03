@@ -1576,8 +1576,7 @@ The Python SDK supports only synchronous execution of service methods.
 ## Questions
 
 If you are having difficulties using an SDK or have a question about the IBM Cloud Services,
-please ask a question at [dW Answers](https://developer.ibm.com/answers/questions/ask/?topics=ibm-cloud) or
-[Stack Overflow](http://stackoverflow.com/questions/ask?tags=ibm-cloud).
+please ask a question at [Stack Overflow](http://stackoverflow.com/questions/ask?tags=ibm-cloud).
 
 ## Open source @ IBM
 Find more open source projects on the [IBM Github Page](http://ibm.github.io/)
