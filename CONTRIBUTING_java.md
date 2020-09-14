@@ -160,7 +160,10 @@ Edit this file and make these changes:
 7. Next, modify the `coverage-reports` module's pom.xml to add a dependency entry for the new module so that its
 test coverage information will be accounted for in the aggregated coverage reports.
 
-8. Repeat the steps in this section for each service to be included in your project.
+8. Next, if you will be adding a generated "examples" class for the new service, then modify the `examples` module's 
+pom.xml to add a dependency entry for the new module.
+
+9. Repeat the steps in this section for each service to be included in your project.
 
 ## Writing Tests
 The Java integration tests use the TestNG testing framework.
