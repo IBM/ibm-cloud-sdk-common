@@ -57,15 +57,21 @@ SDKs are provided for the following languages:
 - Node.js
 - Python
 
-<!-- Update this when first set of SDKs are published
 ## SDK Project Catalog
 The following table provides links to the various SDK projects associated with IBM Cloud Service
 categories:
 
 Service Category | Go | Java | Node.js | Python
 --- | --- | --- | --- | ---
-Example Service  | [Go SDK](https://github.com/IBM/example-services-go-sdk) | [Java SDK](https://github.com/IBM/example-services-java-sdk) | [Node.js SDK](https://github.com/IBM/example-services-node-sdk) | [Python SDK](https://github.com/IBM/example-services-python-sdk)
--->
+Platform Services  | [Go SDK](https://github.com/IBM/platform-services-go-sdk) | [Java SDK](https://github.com/IBM/platform-services-java-sdk) | [Node.js SDK](https://github.com/IBM/platform-services-node-sdk) | [Python SDK](https://github.com/IBM/platform-services-python-sdk)
+Watson | [Go SDK](https://github.com/watson-developer-cloud/go-sdk) | [Java SDK](https://github.com/watson-developer-cloud/java-sdk) | [Node.js SDK](https://github.com/watson-developer-cloud/node-sdk) | [Python SDK](https://github.com/watson-developer-cloud/python-sdk)
+Cloudant | [Go SDK](https://github.com/IBM/cloudant-go-sdk) | [Java SDK](https://github.com/IBM/cloudant-java-sdk) | [Node.js SDK](https://github.com/IBM/cloudant-node-sdk) | [Python SDK](https://github.com/IBM/cloudant-python-sdk)
+Security Advisor | [Go SDK](https://github.com/ibm-cloud-security/security-advisor-sdk-go) | [Java SDK](https://github.com/ibm-cloud-security/security-advisor-sdk-java) | [Node.js SDK](https://github.com/ibm-cloud-security/security-advisor-sdk-node) | [Python SDK](https://github.com/ibm-cloud-security/security-advisor-sdk-python)
+Networking Services | [Go SDK](https://github.com/IBM/networking-go-sdk) | [Java SDK](https://github.com/IBM/networking-java-sdk) | [Node.js SDK](https://github.com/IBM/networking-node-sdk) | [Python SDK](https://github.com/IBM/networking-python-sdk)
+Analytics Engine | [Go SDK](https://github.com/IBM/ibm-iae-go-sdk) | [Java SDK](https://github.com/IBM/ibm-iae-java-sdk) | [Node.js SDK](https://github.com/IBM/ibm-iae-node-sdk) | [Python SDK](https://github.com/IBM/ibm-iae-python-sdk)
+Key Protect | [Go SDK](https://github.com/IBM/keyprotect-go-client) | [Java SDK](https://github.com/IBM/keyprotect-java-client) | | [Python SDK](https://github.com/IBM/keyprotect-python-client)
+VPC | [Go SDK](https://github.com/IBM/vpc-go-sdk) | [Java SDK](https://github.com/IBM/vpc-java-sdk) | | [Python SDK](https://github.com/IBM/vpc-python-sdk)
+Cloud Object Storage Configuration | [Go SDK](https://github.com/IBM/ibm-cos-sdk-go-config) | [Java SDK](https://github.com/IBM/ibm-cos-sdk-java-config) | [Node.js SDK](https://github.com/IBM/ibm-cos-sdk-js-config) | [Python SDK](https://github.com/IBM/ibm-cos-sdk-python-config)
 
 
 ## Using the SDK
