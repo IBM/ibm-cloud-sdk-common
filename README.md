@@ -723,7 +723,8 @@ Each operation will return the following values:
 1. `result` - An operation-specific response object (if the operation is defined as returning a response object).  
 2. `detailedResponse` - An instance of the `core.DetailedResponse` struct. This will contain the following fields:  
   * `StatusCode` - the HTTP status code returned in the response message  
-  * `Headers` - the HTTP headers returned in the response message  
+  * `Headers` - the HTTP headers returned in the response message. Keys in the map are canonicalized
+    (see [CanonicalHeaderKey](https://golang.org/pkg/net/http/#CanonicalHeaderKey))
   * `Result` - the operation result (if available). This is the same value returned in the `result` return value mentioned above.  
 3. `err` - An error object.  This will be nil if the operation was successful, or non-nil  
 if an error occurred.
@@ -735,7 +736,7 @@ beyond the response object:
 result, detailedResponse, err := myService.GetResource(options)
 
 responseHeaders := detailedResponse.GetHeaders()
-responseId := responseHeaders.Get("response-id")
+responseId := responseHeaders.Get("Response-Id")
 ```
 
 </details>
