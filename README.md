@@ -901,7 +901,7 @@ like this:
 ```go
 options := myService.NewGetResourceOptions("resource-id-1")
 
-customHeaders := make(map[string]interface{})
+customHeaders := make(map[string]string)
 customHeaders["Custom-Header"] = "custom_value"
 
 options.SetHeaders(customHeaders)
