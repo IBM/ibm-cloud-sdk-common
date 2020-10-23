@@ -21,10 +21,18 @@ This project contains documentation and other resources related to IBM Cloud SDK
   * [Constructing service clients](#constructing-service-clients)
     + [Setting client options programmatically](#setting-client-options-programmatically)
     + [Using external configuration](#using-external-configuration)
+      - [Define configuration properties](#define-configuration-properties)
+      - [Construct service client](#construct-service-client)
+      - [Storing configuration properties in a file](#storing-configuration-properties-in-a-file)
+      - [Complete configuration-loading process](#complete-configuration-loading-process)
+    + [Service URLs](#service-urls)
   * [Authentication](#authentication)
     + [1. Create an IAM authenticator programmatically](#1-create-an-iam-authenticator-programmatically)
+      - [Examples](#examples)
     + [2. Create an IAM authenticator from configuration](#2-create-an-iam-authenticator-from-configuration)
+      - [Examples](#examples-1)
     + [3. Create a Bearer Token authenticator programmatically](#3-create-a-bearer-token-authenticator-programmatically)
+      - [Examples](#examples-2)
     + [Additional Information](#additional-information)
   * [Passing parameters to operations](#passing-parameters-to-operations)
   * [Receiving operation responses](#receiving-operation-responses)
@@ -33,9 +41,11 @@ This project contains documentation and other resources related to IBM Cloud SDK
     + [Sending request HTTP headers](#sending-request-http-headers)
   * [Transaction IDs](#transaction-ids)
   * [Configuring the HTTP Client](#configuring-the-http-client)
+      - [Proxy](#proxy)
+      - [Sending custom certificates](#sending-custom-certificates)
   * [Disabling SSL Verification - Discouraged](#disabling-ssl-verification---discouraged)
     + [With external configuration](#with-external-configuration)
-    + [Programmatically](#programmatically)
+    + [programmatically](#programmatically)
   * [Error Handling](#error-handling)
   * [Logging](#logging)
   * [Synchronous and asynchronous requests](#synchronous-and-asynchronous-requests)
@@ -306,6 +316,14 @@ The complete configuration-loading process supported by the SDK is as follows:
 At each of the above steps, if one or more configuration properties are found for the specified service,
 those properties are then returned to the SDK and any subsequent steps are bypassed.
 
+#### Service URLs
+
+The URLs used to constuct service clients either programmatically or via external configuration are not
+validated. Take care that your URL is valid, ensuring at least the presence of a valid protocol and host.
+
+Note that a [user information](https://tools.ietf.org/html/rfc3986#section-3.2.1) component should not be
+present as it may interfere with the correct operation of the configured authenticators, for example by
+forcing the SDK's underlying HTTP client to add an additional authentication scheme.
 
 ### Authentication
 IBM Cloud Services use token-based Identity and Access Management (IAM) authentication.
