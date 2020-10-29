@@ -65,7 +65,14 @@ Service Category | Go | Java | Node.js | Python
 --- | --- | --- | --- | ---
 Platform Services  | [Go SDK](https://github.com/IBM/platform-services-go-sdk) | [Java SDK](https://github.com/IBM/platform-services-java-sdk) | [Node.js SDK](https://github.com/IBM/platform-services-node-sdk) | [Python SDK](https://github.com/IBM/platform-services-python-sdk)
 Watson | [Go SDK](https://github.com/watson-developer-cloud/go-sdk) | [Java SDK](https://github.com/watson-developer-cloud/java-sdk) | [Node.js SDK](https://github.com/watson-developer-cloud/node-sdk) | [Python SDK](https://github.com/watson-developer-cloud/python-sdk)
+Watson Health Cognitive Services | [Go SDK](https://github.com/IBM/whcs-go-sdk) | [Java SDK](https://github.com/IBM/whcs-java-sdk) | [Node.js SDK](https://github.com/IBM/whcs-node-sdk) | [Python SDK](https://github.com/IBM/whcs-python-sdk)
+DB2 On Cloud v4 | [Go SDK](https://github.com/ibmdb/go_ibm_db) | [Java SDK](https://github.com/ibmdb/java-db2) | [Node.js SDK](https://github.com/ibmdb/node-ibm_db) | [Python SDK](https://github.com/ibmdb/python-ibmdb)
+Cloud Pak For Data | [Go SDK](https://github.com/ibm/cloudpakfordata-go-sdk) | [Java SDK](https://github.com/IBM/cloudpakfordata-java-sdk) | [Node.js SDK](https://github.com/IBM/cloudpakfordata-node-sdk) | [Python SDK](https://github.com/IBM/cloudpakfordata-python-sdk)
+API Gateway | [Go SDK](https://github.com/IBM/apigateway-go-sdk) | | |
+App ID | | | [Node.js SDK](https://github.com/ibm-cloud-security/appid-serversdk-nodejs) |
 Cloudant | [Go SDK](https://github.com/IBM/cloudant-go-sdk) | [Java SDK](https://github.com/IBM/cloudant-java-sdk) | [Node.js SDK](https://github.com/IBM/cloudant-node-sdk) | [Python SDK](https://github.com/IBM/cloudant-python-sdk)
+Code Engine | [Go SDK](https://github.com/IBM/code-engine-go-sdk) | [Java SDK](https://github.com/IBM/code-engine-java-sdk) | [Node.js SDK](https://github.com/IBM/code-engine-node-sdk) | [Python SDK](https://github.com/IBM/code-engine-python-sdk)
+DNS Services | [Go SDK](https://github.com/IBM/dns-svcs-go-sdk) | | |
 Security Advisor | [Go SDK](https://github.com/ibm-cloud-security/security-advisor-sdk-go) | [Java SDK](https://github.com/ibm-cloud-security/security-advisor-sdk-java) | [Node.js SDK](https://github.com/ibm-cloud-security/security-advisor-sdk-node) | [Python SDK](https://github.com/ibm-cloud-security/security-advisor-sdk-python)
 Networking Services | [Go SDK](https://github.com/IBM/networking-go-sdk) | [Java SDK](https://github.com/IBM/networking-java-sdk) | [Node.js SDK](https://github.com/IBM/networking-node-sdk) | [Python SDK](https://github.com/IBM/networking-python-sdk)
 Analytics Engine | [Go SDK](https://github.com/IBM/ibm-iae-go-sdk) | [Java SDK](https://github.com/IBM/ibm-iae-java-sdk) | [Node.js SDK](https://github.com/IBM/ibm-iae-node-sdk) | [Python SDK](https://github.com/IBM/ibm-iae-python-sdk)
