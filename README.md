@@ -10,7 +10,7 @@ This project contains documentation and other resources related to IBM Cloud SDK
 
   You should regenerate the TOC after making changes to this file.
 
-      npx markdown-toc -i README.md
+      npx markdown-toc -i README.md --maxdepth 4
   -->
 
 <!-- toc -->
@@ -21,6 +21,8 @@ This project contains documentation and other resources related to IBM Cloud SDK
   * [Constructing service clients](#constructing-service-clients)
     + [Setting client options programmatically](#setting-client-options-programmatically)
     + [Using external configuration](#using-external-configuration)
+    + [Service URLs](#service-urls)
+    + [Complete configuration-loading process](#complete-configuration-loading-process)
   * [Authentication](#authentication)
     + [1. Create an IAM authenticator programmatically](#1-create-an-iam-authenticator-programmatically)
     + [2. Create an IAM authenticator from configuration](#2-create-an-iam-authenticator-from-configuration)
@@ -33,9 +35,13 @@ This project contains documentation and other resources related to IBM Cloud SDK
     + [Sending request HTTP headers](#sending-request-http-headers)
   * [Transaction IDs](#transaction-ids)
   * [Configuring the HTTP Client](#configuring-the-http-client)
-  * [Disabling SSL Verification - Discouraged](#disabling-ssl-verification---discouraged)
+  * [Configuring Request Timeouts](#configuring-request-timeouts)
+  * [Automatic retries](#automatic-retries)
     + [With external configuration](#with-external-configuration)
     + [Programmatically](#programmatically)
+  * [Disabling SSL Verification - Discouraged](#disabling-ssl-verification---discouraged)
+    + [With external configuration](#with-external-configuration-1)
+    + [Programmatically](#programmatically-1)
   * [Error Handling](#error-handling)
   * [Logging](#logging)
   * [Synchronous and asynchronous requests](#synchronous-and-asynchronous-requests)
@@ -210,7 +216,7 @@ In the examples that follow, we'll use environment variables to implement our co
 Each property name is of the form: `<service-name>_<property-key>`.
 Here is an example of some configuration properties for the "Example Service" service:
 
-```
+```sh
 export EXAMPLE_SERVICE_URL=https://example-service.cloud.ibm.com/v1
 export EXAMPLE_SERVICE_AUTH_TYPE=iam
 export EXAMPLE_SERVICE_APIKEY=<iam-api-key>
@@ -283,24 +289,34 @@ The `ExampleServiceV1.new_instance()` method will:
 Instead of exporting your configuration properties as environment variables, you can store the properties
 in a *credentials* file.   Here is an example of a credentials file that contains the properties from the examples above:
 
-```
+```sh
 # Contents of "mycredentials.env"
 EXAMPLE_SERVICE_URL=https://example-service.cloud.ibm.com/v1
 EXAMPLE_SERVICE_AUTH_TYPE=iam
 EXAMPLE_SERVICE_APIKEY=iam-api-key
-
 ```
 
 You would then provide the name of the credentials file via the `IBM_CREDENTIALS_FILE` environment variable:
 
-```
+```sh
 export IBM_CREDENTIALS_FILE=/myfolder/mycredentials.env
 ```
 
 When the SDK needs to look for configuration properties, it will detect the `IBM_CREDENTIALS_FILE` environment
 variable, then load the properties from the specified file.
 
-##### Complete configuration-loading process
+
+#### Service URLs
+
+The URLs used to construct service clients - either programmatically, or via external configuration -
+are not validated. Take care that your URL is valid, ensuring at least the presence of a valid protocol and host.
+
+Note that a [user information](https://tools.ietf.org/html/rfc3986#section-3.2.1) component should not be
+present as it may interfere with the correct operation of the configured authenticators, for example by
+forcing the SDK's underlying HTTP client to add an additional authentication scheme.
+
+#### Complete configuration-loading process
+
 The above examples provide a glimpse of two specific ways to provide external configuration to the SDK
 (environment variables and credentials file specified via the `IBM_CREDENTIALS_FILE` environment variable).
 
@@ -412,7 +428,7 @@ The SDK's authenticator factory will:
 The programming examples in this section assume that external configuration properties like the following have been
 configured:
 
-```
+```sh
 export EXAMPLE_SERVICE_AUTH_TYPE=iam
 export EXAMPLE_SERVICE_APIKEY=<iam-api-key>
 ```
@@ -517,6 +533,7 @@ myservice, err := exampleservicev1.NewExampleServiceV1(options)
 // Subsequent request invocations will include the new access token.
 authenticator.BearerToken = "<new-access-token>"
 ```
+
 </details>
 <details><summary>Java</summary>
 
@@ -671,7 +688,6 @@ GetResourceOptions options = new GetResourceOptions.Builder()
 
 Response<Resource> response = myService.getResource(options).execute();
 Resource result = response.getResult();
-
 ```
 
 </details>
@@ -719,6 +735,7 @@ Here's an example of how the `ExampleServiceV1.get_resource()` operation would b
 ```python
 detailedResponse = my_service.get_resource(resource_id='resource-id-1')
 ```
+
 </details>
 
 ### Receiving operation responses
@@ -799,6 +816,7 @@ myService.getResource({
     console.log("Error message:     " + err.message);
   });
 ```
+
 </details>
 <details><summary>Python</summary>
 
@@ -816,14 +834,17 @@ responseHeaders = detailedResponse.get_headers()
 
 responseId = responseHeaders.get('response-id')
 ```
+
 This would display a `DetailedResponse` instance having the structure:
-```
+
+```python
 {
     'result': <response object returned by operation>,
     'headers': { <http response headers> },
     'status_code': <http status code>
 }
 ```
+
 </details>
 
 
@@ -840,7 +861,7 @@ For Go, the custom headers are set on the service client instance by using the
 ```go
 customHeaders := http.Header{}
 customHeaders.Add("Custom-Header", "custom_value")
-myService.Service.SetDefaultHeaders(customHeaders)
+myService.SetDefaultHeaders(customHeaders)
 
 // "Custom-Header" will now be included with all requests invoked from "myservice".
 ```
@@ -917,6 +938,7 @@ result, detailedResponse, err := myservice.GetResource(options)
 
 // "Custom-Header" will be sent along with the "GetResource" request.
 ```
+
 </details>
 <details><summary>Java</summary>
 
@@ -947,6 +969,7 @@ myService.getResource(getResourceParams).then(res => {
   // Custom-Header will have been sent with this request
 });
 ```
+
 </details>
 <details><summary>Python</summary>
 
@@ -958,6 +981,7 @@ resourceInstance = my_service.get_resource(
     resource_id='resource-id-1',
     headers={'Custom-Header': 'custom_value'}).get_result()
 ```
+
 </details>
 
 
@@ -970,12 +994,11 @@ Here are examples of how to retrieve the response header:
 <details><summary>Go</summary>
 
 ```go
-
 result, detailedResponse, err := myService.GetResource(options)
 
 transactionId := detailedResponse.GetHeaders().Get("transaction-id-field-name")
-
 ```
+
 </details>
 <details><summary>Java</summary>
 
@@ -1026,6 +1049,7 @@ except ApiException as e:
 
 
 ### Configuring the HTTP Client
+
 You have the ability to configure the underlying HTTP client that is used by the SDK to interact
 with the service endpoint.  The sections below describe how this is done for each language.
 <details><summary>Go</summary>
@@ -1039,39 +1063,16 @@ import {
     "time"
 }
 
-// Construct a new http.Client instance with a 1-minute request timeout.
-myHTTPClient := &http.Client{
-    Timeout: time.Minute,
-}
+// Construct a new http.Client instance with a user-supplied proxy function.
+myHTTPClient := core.DefaultHTTPClient()
+myHTTPClient.Transport.Proxy = myProxyFunc
 
-// Set the service's Client field directly.
-myService.Service.Client = myHTTPClient
-
-// Alternatively, you can set the service's Client field with the SetHTTPClient() method.
+// Set the service's Client field with the SetHTTPClient() method.
 myService.Service.SetHTTPClient(myHttpClient)
 
-// After using ONE of the methods above, this request will use a 1-minute timeout.
+// This request will use the user-supplied proxy function.
 result, detailedResponse, err := myService.GetResource(options)
 ```
-
-You can also directly modify the `http.Client` instance being used by the service client,
-like this:
-
-```go
-import {
-    "net/http"
-    "time"
-}
-
-// Modify the service's http.Client to set a 1-minute timeout.
-myService.Service.Client.Timeout = 1 * time.Minute
-
-// This request will use a 1-minute timeout.
-result, detailedResponse, err := myService.GetResource(options)
-```
-
-Note that the default `Timeout` associated with the `http.Client` struct is `0` (no timeout),
-so it may be important for you to set the `Timeout` field for your application.
 
 For more details on configuring the `http.Client` instance,
 see [this link](https://golang.org/pkg/net/http/#Client).
@@ -1182,6 +1183,7 @@ const myService = new ExampleServiceV1({
   }),
 });
 ```
+
 </details>
 <details><summary>Python</summary>
 
@@ -1206,7 +1208,179 @@ please see [this link](https://requests.readthedocs.io/en/master/)
 </details>
 
 
+### Configuring Request Timeouts
+
+This section describes how to configure request timeouts in the various SDKs.
+
+<details><summary>Go</summary>
+
+The recommended way to configure request timeouts in a Go SDK is to use an instance of
+[`context.Context`](https://golang.org/pkg/context#Context).
+
+Starting with version 3.15.0 of the SDK generator, the Go generator now generates
+two methods for each operation, one which accepts a `context.Context` instance
+as the first parameter and one with only the single "options model" parameter.
+
+Here is an example of how to use the `context.Context` to invoke an operation with a
+10-second timeout:
+
+```go
+// Create a context with a 10-second timeout.
+ctx, cancelFunc := context.WithTimeout(context.Background(), 10 * time.Second)
+defer cancelFunc()
+
+// Create the resource.
+result, detailedResponse, err := myService.CreateResourceWithContext(ctx, createResourceOptionsModel)
+```
+
+When constructing a Context, you receive two values - the context itself, along with the "cancel function".
+The returned cancel function can also be invoked in order to cancel an in-flight request.
+Note also that by using the `context.Context` instance with the `<operation-name>WithContext` method,
+the timeout applies only to a single operation invocation.
+</details>
+<details><summary>Java</summary>
+Here is an example of how to set a request timeout in Java:  
+
+```java
+// Retrieve the current HTTP client instance.
+OkHttpClient client = myService.getClient();
+
+// Modify the call timeout to be 10 seconds.
+client = client.newBuilder().callTimeout(10, TimeUnit.SECONDS).build();
+
+// Set the new HTTP client on the service.
+myService.setClient(client);
+```
+
+The request timeout of 10 seconds will be used in each operation invoked using `myService1`.
+</details>
+<details><summary>Node</summary>
+Here is an example of how to set a request timeout in Node:  
+
+```js
+import ExampleServiceV1 from 'ibm-mysdk/example-service/v1';
+import { IamAuthenticator } from 'ibm-mysdk/auth';
+
+// Construct an instance of the service with a 10-second timeout (expressed in ms).
+const myService = new ExampleServiceV1({
+  authenticator: new IamAuthenticator({ apikey: '{apikey}' }),
+  timeout: 10000,
+});
+```
+
+The request timeout of 10 seconds will be used in each operation invoked using `myService`.
+</details>
+<details><summary>Python</summary>
+As mentioned in the "Configuring the HTTP Client" section above, you can configure the options
+in the http client as in this example:  
+
+```python
+# Configure a 10-second request timeout.
+my_service.set_http_config({'timeout': 10})
+```
+
+The request timeout of 10 seconds will be used in each operation invoked using `my_service`.
+</details>
+
+
+### Automatic retries
+Applications that invoke REST APIs sometimes encounter errors such as
+`429 - Too Many Requests`, `503 - Service Unavailable`, etc.
+It can be inconvenient and time-consuming to code around these types of errors in your application.
+This section provides information about how to enable automatic retries.
+
+<details><summary>Go</summary>
+
+The Go SDK supports a generalized retry feature that can automatically retry common
+errors.  The default configuration (up to 4 retries with max retry interval of 30 seconds,
+along with exponential backoff if no `Retry-After` response header is present)
+should suffice for most applications, but the retry feature
+is customizable to support unique requirements.
+
+</details>
+<details><summary>Java</summary>
+
+The Java SDK supports a limited retry feature that will retry `429 - Too Many Requests` errors
+with exponential backoff if no `Retry-After` response header is present.
+
+</details>
+<details><summary>Node</summary>
+
+The Node SDK does not currently support automatic retries.
+
+</details>
+<details><summary>Python</summary>
+
+The Python SDK does not currently support automatic retries.
+
+</details>
+
+#### With external configuration
+Note: the configuration of automatic retries via external configuration
+is currently supported only in the Go SDK.
+
+If you are constructing your service client with external configuration properties, you can
+enable automatic retries (currently supported only in Go SDKs) in the service client by setting
+properties as in the example below for the "Example Service" service:  
+
+```sh
+export EXAMPLE_SERVICE_URL=https://example-service.cloud.ibm.com/v1
+export EXAMPLE_SERVICE_AUTH_TYPE=iam
+export EXAMPLE_SERVICE_APIKEY=<iam-api-key>
+
+export EXAMPLE_SERVICE_ENABLE_RETRIES=true
+export EXAMPLE_SERVICE_MAX_RETRIES=3
+export EXAMPLE_SERVICE_RETRY_INTERVAL=20
+```
+
+If the `<service-name>_ENABLE_RETRIES` property is defined as `true`, then retries will be enabled.
+You can optionally define the `<service-name>_MAX_RETRIES` and `<service-name>_RETRY_INTERVAL`
+properties to configure values for the maximum number of retries (default is 4) and maximum retry
+interval (default is 30 seconds).
+
+After setting these properties, be sure to construct your service client similar to the
+examples in the [Construct service client](#construct-service-client) section above.
+
+#### Programmatically
+
+<details><summary>Go</summary>
+
+To enable automatic retries programmatically in the Go SDK, use the service client's
+`EnableRetries()` method, as in this example:  
+
+```go
+// Construct the service client.
+myService, err := exampleservicev1.NewExampleServiceV1(options)
+
+// Enable automatic retries (with max retries 3, max interval 20 secs).
+myService.EnableRetries(3, 20 * time.Second)
+
+// Create the resource.
+result, detailedResponse, err := myService.CreateResource(createResourceOptionsModel)
+```
+
+In this example, the `CreateResource()` operation will be retried up to 3 times
+with a maximum retry interval of 20 seconds.
+
+If a "retryable" error response (e.g. 429, 503, etc.) contains
+the `Retry-After` header, the value of that response header will be used
+as the retry interval, subject to a maximum of 20 seconds.  If no `Retry-After` header
+is found in the response, then an exponential backoff policy will be used such
+that successive retries use a progressively longer wait time.
+</details>
+<details><summary>Java</summary>
+Details about this feature in the Java SDK will be added in the future.
+</details>
+<details><summary>Node.js</summary>
+The Node.js SDK currently does not support automatic retries.
+</details>
+<details><summary>Python</summary>
+The Python SDK currently does not support automatic retries.
+</details>
+
+
 ### Disabling SSL Verification - Discouraged
+
 The SDK allows you to configure the HTTP client to disable SSL verification.
 **Note that this has serious security implications - only do this if you really mean to!** ⚠️
 
@@ -1225,16 +1399,17 @@ export EXAMPLE_SERVICE_APIKEY=<iam-api-key>
 export EXAMPLE_SERVICE_DISABLE_SSL=true
 export EXAMPLE_SERVICE_AUTH_DISABLE_SSL=true
 ```
+
 After setting these properties, be sure to construct your service client similar to the
 examples in the [Construct service client](#construct-service-client) section above.
 
-#### programmatically
+#### Programmatically
 Alternatively, you can disable SSL verification programmatically.
 See the expandable sections below to see how this is done in each language:
 <details><summary>Go</summary>
 
 For Go, you can disable SSL verification in both the service client and in the authenticator
-like this:
+like this:  
 
 ```go
 
@@ -1259,6 +1434,10 @@ myService.Service.DisableSSLVerification()
 
 ```
 
+**Note: for a given instance of a service client, the "disable SSL" and "automatic retries"
+features are mutually exclusive.**
+Each feature requires a specific configuration of the underlying HTTP client and are not
+currently supported simultaneously.
 </details>
 <details><summary>Java</summary>
 
@@ -1280,9 +1459,8 @@ myService.configureClient(options);
 
 </details>
 <details><summary>Node.js</summary>
-
 For Node.js, set `disableSslVerification` to `true` in the service constructor and/or
-authenticator constructor, like this:
+authenticator constructor, like this:  
 
 ```js
 import ExampleServiceV1 from 'ibm-mysdk/example-service/v1';
@@ -1299,7 +1477,6 @@ const myservice = new ExampleServiceV1({
 
 </details>
 <details><summary>Python</summary>
-
 For Python, use the `set_disable_ssl_verification()` method on the service client, like this:
 
 ```python
@@ -1316,6 +1493,7 @@ See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
 ```
 
 To suppress these warning messages, you can add this code to your application:
+
 ```python
 import urllib3
 
@@ -1325,7 +1503,6 @@ urllib3.disable_warnings()
 See [this link](https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings)
 for more details.
 </details>
-
 
 
 ### Error Handling
@@ -1368,6 +1545,7 @@ if err != nil {
     }
 }
 ```
+
 </details>
 <details><summary>Java</summary>
 
@@ -1464,19 +1642,65 @@ except ApiException as e:
   print("Method failed with status code " + str(e.code) + ": " + e.message)
   print("Detailed error information: " + e.info)
 ```
+
 </details>
 
 
 ### Logging
-This section describes how to enable logging within the SDK.
+This section describes how to enable logging within the various SDKs.
 
-<!--
 <details><summary>Go</summary>
-TBD
+
+Within Go SDKs, a basic logging facility is provided by the Go core library.
+The Go core's logger supports various logging levels: Error, Info, Warn, Debug.
+By default, the Go core uses a logger with log level "Error" configured.  This means
+that only error messages will be displayed.   A logger configured at log level "Warn" would
+display "Error" and "Warn" messages (but not "Info" or "Debug"), etc.
+
+To configure the logger to display "Info", "Warn" and "Error" messages, use the `core.SetLoggingLevel()`
+method, as in this example:
+
+```go
+// Enable Info logging.
+core.SetLoggingLevel(core.LevelInfo)
+```
+
+If you have enabled automatic retries and would like to see some brief messages related to each
+of the requests that are retried, you can configure a logger at log level "Debug", like this:
+
+```go
+// Enable Debug logging.
+core.SetLoggingLevel(core.LevelDebug)
+
+// Construct the service client.
+myService, err := exampleservicev1.NewExampleServiceV1(options)
+
+// Enable automatic retries.
+myService.EnableRetries(3, 20 * time.Second)
+
+// Create the resource.
+result, detailedResponse, err := myService.CreateResource(createResourceOptionsModel)
+```
+
+When the "CreateResource()" method is invoked, you should see a handful of debug messages
+displayed on the console reporting on progress of the request, including any retries that
+were performed.  Here is an example:
+
+```
+2020/10/29 10:34:57 [DEBUG] POST http://example-service.cloud.ibm.com/api/v1/resource
+2020/10/29 10:34:57 [DEBUG] POST http://example-service.cloud.ibm.com/api/v1/resource (status: 429): retrying in 1s (5 left)
+2020/10/29 10:34:58 [DEBUG] POST http://example-service.cloud.ibm.com/api/v1/resource (status: 429): retrying in 1s (4 left)
+```
+
+In addition to providing a basic logger implementation, the Go core library also defines
+a `Logger` interface and allows users to supply their own implementation to support unique
+logging requirements (perhaps you need messages logged to a file instead of the console).
+To use this advanced feature, simply implement the `Logger` interface and then call the
+`SetLogger(Logger)` function to set your implementation as the logger to be used by the
+Go core library.
 </details>
--->
 <details><summary>Java</summary>
-For Java, you can configure the logging detail level by using the `HttpConfigOptions` class.
+For Java, you can configure the HTTP client's logging detail level by using the `HttpConfigOptions` class.
 
 Here's an example:
 
@@ -1489,6 +1713,7 @@ HttpConfigOptions options =
 
 myService.configureClient(options);
 ```
+
 </details>
 <details><summary>Node.js</summary>
 
