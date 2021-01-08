@@ -597,12 +597,149 @@ authenticator.set_bearer_token('<new-access-token>')
 
 </details>
 
+#### 4. Authentication with IBM Cloud starter kit applications
+
+The management of service configuration and credentials (service bindings) varies between platforms.
+Cloud Foundry stores service binding details in a stringified JSON object that is passed to the application as
+a `VCAP_SERVICES` environment variable.
+Kubernetes stores service bindings as stringified JSON or flat `ConfigMaps` or `Secrets` attributes in,
+which can be passed to the containerized application as environment variables or mounted as a temporary
+volume. Local development often uses a simplified version of whatever is running in the cloud.
+Working across these variations in a portable way without having environment-specific code paths can be challenging.
+
+IBM® has several open source libraries that work with a `mappings.json` file to map the key that the
+application uses to retrieve credential information to an ordered list of possible sources.
+These libraries are available for [Go](https://github.com/ibm-developer/ibm-cloud-env-golang),
+[Java (Spring)](https://github.com/ibm-developer/ibm-cloud-spring-bind),
+[Node.js](https://github.com/ibm-developer/ibm-cloud-env), and
+[Python](https://pypi.org/project/ibmcloudenv/0.0.13/).
+
+The [Java EE IBM Cloud applications](https://github.com/IBM/cloud-native-starter)
+are exceptions here: those are using
+[plain environment variables](https://github.com/IBM/cloud-native-starter/blob/master/documentation/DemoCloudant.md).
+
+Example `mappings.json` file:
+```json
+{
+ "exampleservice_apikey": {
+     "searchPatterns": [
+         "cloudfoundry:$.service2[@.name=='exampleservice'].credentials.apikey",
+         "env:servoce_exampleservice:$.apikey", 
+         "file:/server/localdev-config.json:$.exampleservice_apikey"
+     ]
+ },
+ "exampleservice_url": {
+     "searchPatterns":[
+         "cloudfoundry:$.service2[@.name=='exampleservice'].credentials.username",
+         "env:servoce_exampleservice:$.username",
+         "file:/server/localdev-config.json:$.exampleservice_username"
+     ]
+ }
+}
+```
+
+##### Examples for authentication with IBM Cloud starter kit applications 
+
+<details><summary>Go</summary>
+
+```go
+import (
+	"github.com/IBM/go-sdk-core/v4/core"
+	"github.com/IBM/mysdk/exampleservicev1"
+	"github.com/ibm-developer/ibm-cloud-env-golang"
+)
+
+IBMCloudEnv.Initialize("/server/config/mappings.json")
+
+apikey, _ := IBMCloudEnv.GetString("exampleservice_apikey")
+
+authenticator := &core.IamAuthenticator{
+    ApiKey: apikey,
+}
+
+url, _ := IBMCloudEnv.GetString("exampleservice_url")
+
+myservice, err := exampleservicev1.NewExampleServiceV1(
+    &exampleservicev1.ExampleServiceV1Options{
+        URL:           url,
+        Authenticator: authenticator,
+    },
+)
+```
+
+</details>
+<details><summary>Java</summary>
+
+```java
+import com.ibm.cloud.mysdk.example_service.v1.ExampleService;
+import com.ibm.cloud.sdk.core.security.IamAuthenticator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+
+public class Example {
+
+    @Autowired
+    Environment env;
+
+    @Value("exampleservice_url")
+    String url;
+
+    public void example() {
+
+        String apikey = env.getProperty("exampleservice_apikey");
+        IamAuthenticator authenticator = new IamAuthenticator(apikey);
+        ExampleService service = new ExampleService(ExampleService.DEFAULT_SERVICE_NAME, authenticator);
+
+        service.setServiceUrl(url);
+}
+```
+
+</details>
+<details><summary>Node.js</summary>
+
+```js
+const IBMCloudEnv = require('ibm-cloud-env');
+const { ExampleServiceV1 } = require('mysdk/example-service/v1');
+const { IamAuthenticator } = require('ibm-cloud-sdk-core');
+
+IBMCloudEnv.init('/server/config/mappings.json');
+
+const authenticator = new IamAuthenticator({
+    apikey: IBMCloudEnv.getString('exampleservice_apikey')
+});
+
+const client = new ExampleServiceV1({
+    authenticator: authenticator
+});
+
+client.setServiceUrl(IBMCloudEnv.getString('exampleservice_url'));
+```
+
+</details>
+<details><summary>Python</summary>
+
+```python
+from ibmcloudenv import IBMCloudEnv
+from mysdk import ExampleServiceV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+
+IBMCloudEnv.init("/server/config/mappings.json")
+
+authenticator = IAMAuthenticator(IBMCloudEnv.getString('exampleservice_apikey'))
+service = ExampleServiceV1(authenticator=authenticator)
+service.set_service_url(IBMCloudEnv.getString('exampleservice_url'))
+```
+
+</details>
+
 #### Additional Information
+
 For more details about authentication, including the full set of authentication schemes supported by
 the SDK Core library for your language, see these links:
 - [Go](https://github.com/IBM/go-sdk-core/blob/master/Authentication.md)
 - [Java](https://github.com/IBM/java-sdk-core/blob/master/Authentication.md)
-- [Node.js](https://github.com/IBM/node-sdk-core/blob/master/AUTHENTICATION.md)
+- [Node.js](https://github.com/IBM/node-sdk-core/blob/master/Authentication.md)
 - [Python](https://github.com/IBM/python-sdk-core/blob/master/Authentication.md)
 
 ### Passing parameters to operations
