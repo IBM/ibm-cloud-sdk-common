@@ -345,7 +345,7 @@ To provide the proper authentication information to the SDK, you can use one of 
 #### 1. Create an IAM authenticator programmatically
 In this scenario, you construct an IAM authenticator instance, supplying your IAM api key programmatically.
 
-The SDK's IAM authenticator will:  
+The SDK's IAM authenticator will:
 - Use your API key to obtain an access token from the IAM token service
 - Ensure that the access token is valid
 - Include the access token in each outgoing request
@@ -597,141 +597,16 @@ authenticator.set_bearer_token('<new-access-token>')
 
 </details>
 
-#### 4. Authentication with IBM Cloud starter kit applications
+#### 4. Authentication with IBM Cloud applications
 
-The management of service configuration and credentials (service bindings) varies between platforms.
-Cloud Foundry stores service binding details in a stringified JSON object that is passed to the application as
-a `VCAP_SERVICES` environment variable.
-Kubernetes stores service bindings as stringified JSON or flat `ConfigMaps` or `Secrets` attributes in,
-which can be passed to the containerized application as environment variables or mounted as a temporary
-volume. Local development often uses a simplified version of whatever is running in the cloud.
-Working across these variations in a portable way without having environment-specific code paths can be challenging.
+If you are using the `IBM Cloud App Service`, `IBM DevOps` or
+IBM Cloud starter kits then you can programmatically configure your SDK using the
+`IBMCLoudEnv` tool to obtain the configuration information from bound services.
 
-IBM® has several open source libraries that work with a `mappings.json` file to map the key that the
-application uses to retrieve credential information to an ordered list of possible sources.
-These libraries are available for [Go](https://github.com/ibm-developer/ibm-cloud-env-golang),
+The `IBMCLoudEnv` tool is available for [Go](https://github.com/ibm-developer/ibm-cloud-env-golang),
 [Java (Spring)](https://github.com/ibm-developer/ibm-cloud-spring-bind),
 [Node.js](https://github.com/ibm-developer/ibm-cloud-env), and
 [Python](https://pypi.org/project/ibmcloudenv/0.0.13/).
-
-The [Java EE IBM Cloud applications](https://github.com/IBM/cloud-native-starter)
-are exceptions here: those are using
-[plain environment variables](https://github.com/IBM/cloud-native-starter/blob/master/documentation/DemoCloudant.md).
-
-Example `mappings.json` file:
-```json
-{
- "exampleservice_apikey": {
-     "searchPatterns": [
-         "cloudfoundry:$.service2[@.name=='exampleservice'].credentials.apikey",
-         "env:servoce_exampleservice:$.apikey", 
-         "file:/server/localdev-config.json:$.exampleservice_apikey"
-     ]
- },
- "exampleservice_url": {
-     "searchPatterns":[
-         "cloudfoundry:$.service2[@.name=='exampleservice'].credentials.username",
-         "env:servoce_exampleservice:$.username",
-         "file:/server/localdev-config.json:$.exampleservice_username"
-     ]
- }
-}
-```
-
-##### Examples for authentication with IBM Cloud starter kit applications 
-
-<details><summary>Go</summary>
-
-```go
-import (
-	"github.com/IBM/go-sdk-core/v4/core"
-	"github.com/IBM/mysdk/exampleservicev1"
-	"github.com/ibm-developer/ibm-cloud-env-golang"
-)
-
-IBMCloudEnv.Initialize("/server/config/mappings.json")
-
-apikey, _ := IBMCloudEnv.GetString("exampleservice_apikey")
-
-authenticator := &core.IamAuthenticator{
-    ApiKey: apikey,
-}
-
-url, _ := IBMCloudEnv.GetString("exampleservice_url")
-
-myservice, err := exampleservicev1.NewExampleServiceV1(
-    &exampleservicev1.ExampleServiceV1Options{
-        URL:           url,
-        Authenticator: authenticator,
-    },
-)
-```
-
-</details>
-<details><summary>Java</summary>
-
-```java
-import com.ibm.cloud.mysdk.example_service.v1.ExampleService;
-import com.ibm.cloud.sdk.core.security.IamAuthenticator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-
-public class Example {
-
-    @Autowired
-    Environment env;
-
-    @Value("exampleservice_url")
-    String url;
-
-    public void example() {
-
-        String apikey = env.getProperty("exampleservice_apikey");
-        IamAuthenticator authenticator = new IamAuthenticator(apikey);
-        ExampleService service = new ExampleService(ExampleService.DEFAULT_SERVICE_NAME, authenticator);
-
-        service.setServiceUrl(url);
-}
-```
-
-</details>
-<details><summary>Node.js</summary>
-
-```js
-const IBMCloudEnv = require('ibm-cloud-env');
-const { ExampleServiceV1 } = require('mysdk/example-service/v1');
-const { IamAuthenticator } = require('ibm-cloud-sdk-core');
-
-IBMCloudEnv.init('/server/config/mappings.json');
-
-const authenticator = new IamAuthenticator({
-    apikey: IBMCloudEnv.getString('exampleservice_apikey')
-});
-
-const client = new ExampleServiceV1({
-    authenticator: authenticator
-});
-
-client.setServiceUrl(IBMCloudEnv.getString('exampleservice_url'));
-```
-
-</details>
-<details><summary>Python</summary>
-
-```python
-from ibmcloudenv import IBMCloudEnv
-from mysdk import ExampleServiceV1
-from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-
-IBMCloudEnv.init("/server/config/mappings.json")
-
-authenticator = IAMAuthenticator(IBMCloudEnv.getString('exampleservice_apikey'))
-service = ExampleServiceV1(authenticator=authenticator)
-service.set_service_url(IBMCloudEnv.getString('exampleservice_url'))
-```
-
-</details>
 
 #### Additional Information
 
@@ -756,7 +631,7 @@ regarding these parameter container structures:
 <details><summary>Go</summary>
 
 For Go, a struct is defined for each operation, where the name of the struct will be
-`<operation-name>Options` and it will contain a field for each operation parameter.  
+`<operation-name>Options` and it will contain a field for each operation parameter.
 
 Here's an example of an options struct for the `GetResource` operation:
 
@@ -773,7 +648,7 @@ type GetResourceOptions struct {
 In this example, the `GetResource` operation has one parameter - `ResourceID`.
 When invoking this operation, the application first creates an instance of the `GetResourceOptions`
 struct, sets the parameter value within it, then passes the options struct instance to the operation.
-Along with the "options" struct, a constructor function is also provided.  
+Along with the "options" struct, a constructor function is also provided.
 
 Here's an example:
 
@@ -787,7 +662,7 @@ result, detailedResponse, err := myService.GetResource(options)
 <details><summary>Java</summary>
 
 For Java, a class is defined for each operation, where the name of the class will be
-`<operation-name>Options` and it will contain a field for each operation parameter.  
+`<operation-name>Options` and it will contain a field for each operation parameter.
 
 Here's an example of an options class for the `getResource` operation:
 
@@ -834,7 +709,7 @@ Resource result = response.getResult();
 <details><summary>Node.js</summary>
 
 For Node.js, an interface is defined for each operation, where the name of the interface will be
-`<operation-name>Params` and it will contain a field for each operation parameter.  
+`<operation-name>Params` and it will contain a field for each operation parameter.
 
 Here's an example of a params object for the `getResource` operation:
 
@@ -883,14 +758,14 @@ This section contains language-specific information about how an application rec
 
 <details><summary>Go</summary>
 
-Each operation will return the following values:  
-1. `result` - An operation-specific response object (if the operation is defined as returning a response object).  
-2. `detailedResponse` - An instance of the `core.DetailedResponse` struct. This will contain the following fields:  
-  * `StatusCode` - the HTTP status code returned in the response message  
+Each operation will return the following values:
+1. `result` - An operation-specific response object (if the operation is defined as returning a response object).
+2. `detailedResponse` - An instance of the `core.DetailedResponse` struct. This will contain the following fields:
+  * `StatusCode` - the HTTP status code returned in the response message
   * `Headers` - the HTTP headers returned in the response message. Keys in the map are canonicalized
     (see [CanonicalHeaderKey](https://golang.org/pkg/net/http/#CanonicalHeaderKey))
-  * `Result` - the operation result (if available). This is the same value returned in the `result` return value mentioned above.  
-3. `err` - An error object.  This will be nil if the operation was successful, or non-nil  
+  * `Result` - the operation result (if available). This is the same value returned in the `result` return value mentioned above.
+3. `err` - An error object.  This will be nil if the operation was successful, or non-nil
 if an error occurred.
 
 Here is an example of how to access the response and get additional Information
@@ -909,10 +784,10 @@ responseId := responseHeaders.Get("Response-Id")
 Each operation will return an instance of `com.ibm.sdk.cloud.sdk.core.http.Response<T>`
 where `T` is the class representing the specific
 response model associated with the operation (operations that return no response object
-will return an instance of `com.ibm.sdk.cloud.sdk.core.http.Response<Void>` instead).  
+will return an instance of `com.ibm.sdk.cloud.sdk.core.http.Response<Void>` instead).
 
 Here's an example of how to access that response and get additional information
-beyond the response object:  
+beyond the response object:
 
 ```java
 // Invoke the operation.
@@ -934,9 +809,9 @@ String responseId = responseHeaders.values("response-id").get(0);
 
 Each operation will return a response via a Promise.
 The response is an object containing the result of the operation, HTTP status code and text message,
-and the HTTP response headers.  
+and the HTTP response headers.
 
-Here is an example of how to access the various fields and headers from an operation response:  
+Here is an example of how to access the various fields and headers from an operation response:
 
 ```js
 myService.getResource({
@@ -961,10 +836,10 @@ myService.getResource({
 <details><summary>Python</summary>
 
 Each operation will return a DetailedResponse instance which encapsulates the operation response
-object (if applicable), the HTTP status code and response headers.  
+object (if applicable), the HTTP status code and response headers.
 
 Here's an example of how to access that response and get additional information
-beyond the response object:  
+beyond the response object:
 
 ```python
 detailedResponse = my_service.get_resource(resource_id='resource-id-1')
@@ -1379,7 +1254,7 @@ Note also that by using the `context.Context` instance with the `<operation-name
 the timeout applies only to a single operation invocation.
 </details>
 <details><summary>Java</summary>
-Here is an example of how to set a request timeout in Java:  
+Here is an example of how to set a request timeout in Java:
 
 ```java
 // Retrieve the current HTTP client instance.
@@ -1395,7 +1270,7 @@ myService.setClient(client);
 The request timeout of 10 seconds will be used in each operation invoked using `myService1`.
 </details>
 <details><summary>Node</summary>
-Here is an example of how to set a request timeout in Node:  
+Here is an example of how to set a request timeout in Node:
 
 ```js
 import ExampleServiceV1 from 'ibm-mysdk/example-service/v1';
@@ -1412,7 +1287,7 @@ The request timeout of 10 seconds will be used in each operation invoked using `
 </details>
 <details><summary>Python</summary>
 As mentioned in the "Configuring the HTTP Client" section above, you can configure the options
-in the http client as in this example:  
+in the http client as in this example:
 
 ```python
 # Configure a 10-second request timeout.
@@ -1461,7 +1336,7 @@ is currently supported only in the Go SDK.
 
 If you are constructing your service client with external configuration properties, you can
 enable automatic retries (currently supported only in Go SDKs) in the service client by setting
-properties as in the example below for the "Example Service" service:  
+properties as in the example below for the "Example Service" service:
 
 ```sh
 export EXAMPLE_SERVICE_URL=https://example-service.cloud.ibm.com/v1
@@ -1486,7 +1361,7 @@ examples in the [Construct service client](#construct-service-client) section ab
 <details><summary>Go</summary>
 
 To enable automatic retries programmatically in the Go SDK, use the service client's
-`EnableRetries()` method, as in this example:  
+`EnableRetries()` method, as in this example:
 
 ```go
 // Construct the service client.
@@ -1549,7 +1424,7 @@ See the expandable sections below to see how this is done in each language:
 <details><summary>Go</summary>
 
 For Go, you can disable SSL verification in both the service client and in the authenticator
-like this:  
+like this:
 
 ```go
 
@@ -1600,7 +1475,7 @@ myService.configureClient(options);
 </details>
 <details><summary>Node.js</summary>
 For Node.js, set `disableSslVerification` to `true` in the service constructor and/or
-authenticator constructor, like this:  
+authenticator constructor, like this:
 
 ```js
 import ExampleServiceV1 from 'ibm-mysdk/example-service/v1';
@@ -1655,7 +1530,7 @@ that cannot be resolved by the user.
 
 <details><summary>Go</summary>
 
-In the case of an error response from the server endpoint, the Go SDK will do the following:  
+In the case of an error response from the server endpoint, the Go SDK will do the following:
 1. The service method (operation) will return a non-nil `error` object.  This `error` object will
 contain the error message retrieved from the HTTP response if possible, or a generic error message
 otherwise.
@@ -1691,7 +1566,7 @@ if err != nil {
 
 In the case of an error response from the server endpoint, the Java SDK will throw an exception
 from the `com.ibm.cloud.sdk.core.service.exception` package.
-All service exceptions contain the following fields:  
+All service exceptions contain the following fields:
 - `statusCode`: the HTTP response code that was returned in the response
 - `message`: a message that describes the error
 - `headers`: the HTTP headers returned in the response
@@ -1742,7 +1617,7 @@ try {
 In the case of an error response from the server endpoint, the Node SDK will
 create an `Error` object with information that describes the error that occurred.
 This error object is passed as the first parameter to the callback function for the method,
-and will contain the following fields:  
+and will contain the following fields:
 - `status`: the HTTP status code that was returned in the response
 - `statusText`: a text description of the status code
 - `message`: the error message returned in the response
@@ -1768,7 +1643,7 @@ myService.getResource({
 <details><summary>Python</summary>
 
 In the case of an error response from the server endpoint, the Python SDK will throw an exception
-with the following fields:  
+with the following fields:
 - `code`: the HTTP status code that was returned in the response
 - `message`: a message that describes the error
 - `info`: a dictionary of additional information about the error
@@ -1911,7 +1786,7 @@ For Java, all service methods implement the [`ServiceCall`][service-call] interf
 [service-call]: https://ibm.github.io/java-sdk-core/docs/9.1.0/com/ibm/cloud/sdk/core/http/ServiceCall.html
 
 To call a method synchronously, use the `execute()` method of the `ServiceCall<T>` interface,
-like this:  
+like this:
 
 ```java
 // Invoke the operation.
