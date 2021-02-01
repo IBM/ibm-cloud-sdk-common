@@ -142,7 +142,7 @@ if err != nil {
 ```
 
 </details>
-<details><summary>Java</summary>
+<details><summary>Java - for Java core versions prior to 9.7.0 (deprecated)</summary>
 
 ```java
 import com.ibm.cloud.mysdk.example_service.v1.ExampleService;
@@ -151,6 +151,28 @@ import com.ibm.cloud.sdk.core.security.IamAuthenticator;
 
 // Create an IAM authenticator.
 Authenticator authenticator = new IamAuthenticator("<iam-api-key>");
+
+// Construct the service client.
+ExampleService myService = new ExampleService(ExampleService.DEFAULT_SERVICE_NAME, authenticator);
+
+// Set our custom service URL (optional).
+myService.setServiceUrl("https://example-service.cloud.ibm.com/v1");
+
+// Service operations can now be called using the "myService" variable.
+```
+
+</details>
+<details><summary>Java - for Java core version 9.7.0 and above</summary>
+
+```java
+import com.ibm.cloud.mysdk.example_service.v1.ExampleService;
+import com.ibm.cloud.sdk.core.security.Authenticator;
+import com.ibm.cloud.sdk.core.security.IamAuthenticator;
+
+// Create an IAM authenticator.
+Authenticator authenticator = new IamAuthenticator.Builder()
+    .apikey("<iam-api-key>")
+    .build();
 
 // Construct the service client.
 ExampleService myService = new ExampleService(ExampleService.DEFAULT_SERVICE_NAME, authenticator);
@@ -376,7 +398,7 @@ if err != nil {
 ```
 
 </details>
-<details><summary>Java</summary>
+<details><summary>Java - for Java core versions prior to 9.7.0 (deprecated)</summary>
 
 ```java
 import com.ibm.cloud.sdk.core.security.Authenticator;
@@ -384,6 +406,20 @@ import com.ibm.cloud.sdk.core.security.IamAuthenticator;
 import com.ibm.cloud.mysdk.example_service.v1.ExampleService;
 
 Authenticator authenticator = new IamAuthenticator("<iam-api-key>");
+ExampleService service = new ExampleService(ExampleService.DEFAULT_SERVICE_NAME, authenticator);
+```
+
+</details>
+<details><summary>Java - for Java core version 9.7.0 and above</summary>
+
+```java
+import com.ibm.cloud.sdk.core.security.Authenticator;
+import com.ibm.cloud.sdk.core.security.IamAuthenticator;
+import com.ibm.cloud.mysdk.example_service.v1.ExampleService;
+
+Authenticator authenticator = new IamAuthenticator.Builder()
+    .apikey("<iam-api-key>")
+    .build();
 ExampleService service = new ExampleService(ExampleService.DEFAULT_SERVICE_NAME, authenticator);
 ```
 
@@ -1442,7 +1478,7 @@ features are mutually exclusive.**
 Each feature requires a specific configuration of the underlying HTTP client and are not
 currently supported simultaneously.
 </details>
-<details><summary>Java</summary>
+<details><summary>Java - for Java core versions prior to 9.7.0 (deprecated)</summary>
 
 For Java, you can disable SSL verification in both the authenticator and service client,
 like this:
@@ -1452,6 +1488,26 @@ like this:
 Authenticator authenticator = new IamAuthenticator("<iam-api-key>");
 authenticator.setDisableSSLVerification(true);
 
+myService = new ExampleService(ExampleService.DEFAULT_SERVICE_NAME, authenticator);
+
+HttpConfigOptions options =
+    new HttpConfigOptions.Builder().disableSslVerification(true).build();
+
+myService.configureClient(options);
+```
+
+</details>
+<details><summary>Java - for Java core version 9.7.0 and above</summary>
+
+For Java, you can disable SSL verification in both the authenticator and service client,
+like this:
+
+```java
+
+Authenticator authenticator = new IamAuthenticator.Builder()
+    .apikey("<iam-api-key>")
+    .disableSSLVerification(true)
+    .build();
 myService = new ExampleService(ExampleService.DEFAULT_SERVICE_NAME, authenticator);
 
 HttpConfigOptions options =
