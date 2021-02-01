@@ -202,6 +202,8 @@ from the root of the project, and then view the coverage report in the `modules/
 open modules/coverage-reports/target/site/jacoco-aggregate/index.html
 ```
 
+To obtain an coverage report of only integration tests, run `mvn clean verify -Dskip.unit.tests`.
+
 [jacoco]: https://www.eclemma.org/jacoco/
 
 ## Generating Javadocs
