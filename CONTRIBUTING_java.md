@@ -202,7 +202,7 @@ from the root of the project, and then view the coverage report in the `modules/
 open modules/coverage-reports/target/site/jacoco-aggregate/index.html
 ```
 
-To obtain an coverage report of only integration tests, run `mvn clean verify -Dskip.unit.tests`.
+To obtain a coverage report of only integration tests, run `mvn clean verify -Dskip.unit.tests`.
 
 [jacoco]: https://www.eclemma.org/jacoco/
 
@@ -214,8 +214,8 @@ open target/site/apidocs/index.html
 
 ## Publishing build artifacts
 It is recommended that each Java SDK project publish its build artifacts (jars, pom.xml files, etc.) on
-[JCenter](https://bintray.com/bintray/jcenter) and [Maven Central](https://central.sonatype.org/),
-which are both public maven artifact repositories.
+the [Maven Central](https://central.sonatype.org/) repository,
+which is the default public repository for java artifacts.
 
 For details on how to accomplish this within your Java SDK project's build, look [here](JavaDeploy.md).
 
