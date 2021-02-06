@@ -1,8 +1,7 @@
-# Publishing build artifacts on JCenter and Maven Central
-This document provides information on how to successfully deploy
-maven build artifacts (jars, pom.xml files, etc.) to make them available for
-customers on the [JCenter](https://bintray.com/bintray/jcenter) and
-[Maven Central](https://central.sonatype.org/) public maven repositories.
+# Publishing build artifacts on Maven Central
+This document provides information on how to configure your Java SDK project
+to successfully publish build artifacts (jars, pom.xml files, etc.) on the
+[Maven Central](https://central.sonatype.org/) public maven artifact repository.
 
 ## Table of Contents
 <!--
@@ -18,351 +17,466 @@ customers on the [JCenter](https://bintray.com/bintray/jcenter) and
 <!-- toc -->
 
 - [Overview](#overview)
-- [Deployment details for IBM Cloud Java SDKs](#deployment-details-for-ibm-cloud-java-sdks)
-  * [1. Request a new Bintray repository](#1-request-a-new-bintray-repository)
-  * [2. Update your SDK project's maven build](#2-update-your-sdk-projects-maven-build)
-    + [2.1: Update your SDK project's parent pom.xml](#21-update-your-sdk-projects-parent-pomxml)
-    + [2.2: Update `build/.travis.settings.xml`](#22-update-buildtravissettingsxml)
-    + [2.3: Update `modules/coverage-reports/pom.xml`](#23-update-modulescoverage-reportspomxml)
-  * [3. Request that your Bintray packages be linked to JCenter.](#3-request-that-your-bintray-packages-be-linked-to-jcenter)
-  * [4. Synchronize your JCenter artifacts to Maven Central.](#4-synchronize-your-jcenter-artifacts-to-maven-central)
+- [1: Choose the maven group id for your project](#1-choose-the-maven-group-id-for-your-project)
+- [2: Create a JIRA ticket with Sonatype](#2-create-a-jira-ticket-with-sonatype)
+- [3: Create a public/private key pair for signing artifacts](#3-create-a-publicprivate-key-pair-for-signing-artifacts)
+  * [3.1: Generate a new public/private key pair](#31-generate-a-new-publicprivate-key-pair)
+  * [3.2: List keys](#32-list-keys)
+  * [3.3: Publish your public key](#33-publish-your-public-key)
+  * [3.4: Export your key](#34-export-your-key)
+- [4: Modify your Java SDK project to publish artifacts on Maven Central](#4-modify-your-java-sdk-project-to-publish-artifacts-on-maven-central)
+  * [4.1: Copy files from the Java SDK template repository](#41-copy-files-from-the-java-sdk-template-repository)
+  * [4.2: Update your .travis.xml file](#42-update-your-travisxml-file)
+  * [4.3: Add your signing key to your git repository.](#43-add-your-signing-key-to-your-git-repository)
+  * [4.4: Update the parent pom.xml](#44-update-the-parent-pomxml)
+  * [4.5: Update the coverage-reports module pom.xml](#45-update-the-coverage-reports-module-pomxml)
+  * [4.6: Update your Travis build settings](#46-update-your-travis-build-settings)
+  * [4.7: Commit your changes](#47-commit-your-changes)
+- [5: Java SDK Build lifecycle overview](#5-java-sdk-build-lifecycle-overview)
 - [References:](#references)
-  * [Java SDK Build lifecycle overview](#java-sdk-build-lifecycle-overview)
 
 <!-- tocstop -->
 
 ## Overview
-This section provides general information about Bintray, JCenter and Maven Central.
+This document will assist you in configurating your Java SDK project to publish artifacts on
+Maven Central.
 
-First let's define some terms:
-- Bintray: [Bintray](https://www.jfrog.com/confluence/display/BT/Welcome+to+JFrog+Bintray) is
-a platform that can be used to distribute software of various types.  Bintray allows you to
-organize your artifacts within organizations, repositories and packages.  Bintray
-provides a rudimentary [download site](https://dl.bintray.com) where projects deployed to bintray
-are available, although this download mechanism is not extremely usable for maven builds.
-It is simply a location from which build artifacts (including artifact types other than maven) can be downloaded.
+The [OSSRH Guide](https://central.sonatype.org/pages/ossrh-guide.html) should be considered
+to be the authoritative source of information regarding the proper steps to be followed
+for publishing artifacts on Maven Central. Please familiarize yourself
+with the steps documented in the OSSRH Guide before following the instructions in this document.
 
-- Bintray organization: the top-level grouping of artifacts; this is a collection of related repositories.
-For IBM Cloud Java SDK projects, we have a single Bintray organization named `ibm-cloud-sdks`.
+The intent of this document is to provide specific instructions to guide IBM Cloud Java SDK maintainers in
+performing the steps outlined in the OSSRH Guide.
 
-- Bintray repository: a grouping of related Bintray packages.  We'll standardize on one Bintray repository
-for each Java SDK project, and the repository will be named after the github repository for the project
-(e.g. `platform-services-java-sdk`).
+## 1: Choose the maven group id for your project
+It is recommended that all IBM Cloud Java SDK projects use a maven group id of `com.ibm.cloud`.
+This provides some consistency for IBM Cloud customers wishing to use the artifacts
+produced by various SDK projects (i.e. IBM Cloud services).   This is not an absolute requirement, but
+is a recommendation.  Whatever you decide to use for a group id within your SDK project, please
+make sure it is properly documented in your SDK project's `README.md` file.
 
-- Bintray package: a grouping of artifacts (files) associated with a single module within a maven project.
-A Bintray package is further sub-divided into versions, where each version represents a maven version.
+A Java SDK project's main artifact (the "parent" project) would have an artifact id that represents
+the service category (e.g. `platform-services`), and each module within the project would have an
+artifact id that reflects the name of the service contained in that module (e.g. `resource-controller`,
+`global-catalog`, `configuration-governance`, etc.).
 
-- JCenter: [JCenter](https://bintray.com/bintray/jcenter) is JFrog's public maven repository where
-maven artifacts can be made available to users.  
+An artifact's group id, artifact id, and version form the maven coordinates needed by users to
+define a dependency on the artifact (e.g. `com.ibm.cloud:global-catalog:1.3.1`).
 
-- Maven Central: [Maven Central](https://central.sonatype.org/) is Sonatype's public maven repository where
-maven artifacts can be made available to users, similar to JCenter.  This is the *legacy*
-public maven repository.
+Before moving to the next step, choose the group id that you will use within your SDK project.
 
-- "tagged-release" build: a Travis build that is triggered by the addition of a git tag to the repository.
-Tags are used to identify specific versions of a particular project.  For each distinct version (release)
-of your project, there should be an equivalent tag (e.g. 0.0.1, 0.0.2, 0.1.0, 0.2.1, 1.0.3, etc.)
+## 2: Create a JIRA ticket with Sonatype
+In this step, you'll create a JIRA ticket with Sonatype to obtain the proper access to allow
+you to publish artifacts using your chosen group id.
+Note: If your Java SDK project has previously been configured to publish artifacts on bintray/jcenter
+and then synchronize them to maven central, then you likely already have a Sonatype account and
+the necessary access to publish artifacts on maven central.
 
-It is recommended that each IBM Cloud Java SDK project publish its build artifacts (jars) on both JCenter and Maven Central
-to allow customers to choose which repository to use for obtaining those artifacts.
-To accomplish this, follow these high-level steps:
-1. Set up your project's build to deploy your build outputs to bintray packages.
-2. Request that your bintray packages are linked (mirrored) to JCenter.
-3. Synchronize your artifacts from JCenter to Maven Central.
+Follow the instructions in the "Create a ticket with Sonatype" section of
+the [OSSRH Guide](https://central.sonatype.org/pages/ossrh-guide.html).
 
-## Deployment details for IBM Cloud Java SDKs
-This section will outline the steps for setting up an IBM Cloud Java SDK project to deploy artifacts
-to both JCenter and Maven Central.
+When creating your Sonatype account, keep in mind that this account
+will also be used by your Java SDK project's Travis build
+to perform the publishing steps, so consider using a functional id rather than
+a personal id.
 
-Here is a brief overview of these steps:
-1. Request a Bintray repository for your Java SDK project.
-This repository will contain all of the Bintray packages associated with the SDK project.
-2. Update your SDK project's maven build to deploy artifacts into your project's Bintray repository.
-Each module within the project (including the parent) will be deployed to its own Bintray package within
-your project's Bintray repository.
-These Bintray packages will be created automatically as needed by your project's deploy step.
-3. Request that your Bintray packages be linked to JCenter.
-4. Synchronize your JCenter artifacts to Maven Central.
+When creating the "New Project" ticket, you will be requesting that Sonatype
+provides you with the necessary authority to publish artifacts using your
+chosen group id.
+If you will be using the `com.ibm.cloud` group id as recommended above, then
+mention in the JIRA ticket that the Sonatype person handling the ticket can contact
+Phil Adams (sonatype id "padamstx") for approval of your request.
 
-These steps are detailed below.
+## 3: Create a public/private key pair for signing artifacts
+One of the requirements for publishing artifacts on Maven Central is that
+each file (jar, pom.xml, etc.) must be signed, and this requires the use
+of a public/private key pair.
 
-### 1. Request a new Bintray repository
-Within Bintray, the [`ibm-cloud-sdks` organization](https://bintray.com/ibm-cloud-sdks) will serve
-as a container for all Bintray repositories associated with IBM Cloud Java SDK projects.
-Each Java SDK project should have a Bintray repository whose name reflects the github.com repository name
-(e.g. platform-services-java-sdk).
-To request that a repository be created for your project, perform these steps:
-1. If you do not yet have an id on bintray.com, then create one, along with an API key.
-You can login using your github.com id.
-2. Open an issue in the SDK squad's [issues repository](https://github.ibm.com/arf/planning-sdk-squad/issues)
-with summary "Request new bintray repository" and in
-the description, include the following:  
-    1. a link to your Java SDK project's github.com repository
-    2. your bintray.com id.
-A new repository will be created within the `ibm-cloud-sdks` org named after your github.com repository, and your
-bintray.com id will be configured as a member of the org.
+Detailed instructions on how to create a new signing key can be found
+[here](https://central.sonatype.org/pages/working-with-pgp-signatures.html).
 
-### 2. Update your SDK project's maven build
-Most of the build configuration required in this step is available via the Java SDK template repository.
-If you created your Java SDK project from a recent version of the template repo that contains these changes,
-then your project's pom.xml files should already have the required configuration.  If not, then this section
-should provide an overview of how to incorporate these changes into your Java SDK project.
+In order to automatically sign artifacts during your automated builds,
+you'll need to export your key, encrypt it, and then add the encrypted file
+to your SDK project's git repository so that it can be used during your automated builds.
+See the instructions below on how to do this.
 
-#### 2.1: Update your SDK project's parent pom.xml
-In this step, you'll modify the parent pom.xml file to configure the
-[`bintray-maven-plugin`](https://github.com/random-maven/bintray-maven-plugin) to be used **instead of**
-the default `maven-deploy-plugin`:  
+### 3.1: Generate a new public/private key pair
 
-  - Add the following settings to the `<properties>` element:  
-  ```
-  <bintray-plugin-version>1.5.20191113165555</bintray-plugin-version>
-  <maven-deploy-plugin-version>3.0.0-M1</maven-deploy-plugin-version>
+Use the [detailed instructions](https://central.sonatype.org/pages/working-with-pgp-signatures.html)
+to generate a new key pair:
+```
+gpg --gen-key
+```
+Use `RSA` for the kind and 2048-bit as the size of the key.
+Be sure to specify a non-trivial passphrase and save it somewhere secure
+(add it to your password manager, etc.).  Omitting the passphrase makes it easier to forge artifact
+signatures.
 
-  <bintray.org>ibm-cloud-sdks</bintray.org>
-  <bintray.repo>YOUR BINTRAY REPOSITORY NAME</bintray.repo>
-  <bintray.package.url>YOUR PROJECT'S GITHUB.COM URL</bintray.package.url>
-  ```
+This command creates the new key within your local keystore managed by the gpg command
+(called `$HOME/.gnupg/pubring.kbx` or something similar).
 
-  - Comment out (or remove) the `<distributionManagement>` element as it's not needed.
+### 3.2: List keys
+To list your keys:
+```
+gpg --list-keys
+```
+Example:
+```
+$ gpg --list-keys
+/home/padams/.gnupg/pubring.kbx
+-------------------------------
+pub   rsa2048 2020-11-22 [SC] [expires: 2022-11-22]
+      B265BB91D80124E463C63119EC4158B05D352E09
+uid           [ultimate] Phillip C. Adams <phil_adams@us.ibm.com>
+sub   rsa2048 2020-11-22 [E] [expires: 2022-11-22]
+```
 
-  - Add these two entries to the `<build>/<pluginManagement>/<plugins>` element:  
-  ```
-  <plugin>
-      <groupId>com.carrotgarden.maven</groupId>
-      <artifactId>bintray-maven-plugin</artifactId>
-      <version>${bintray-plugin-version}</version>
-  </plugin>
-  <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-deploy-plugin</artifactId>
-      <version>${maven-deploy-plugin-version}</version>
-  </plugin>
-  ```
+### 3.3: Publish your public key
+In order to publish artifacts on Maven Central, you will need to publish
+your public key on a key server so that Sonatype can verify your artifacts
+before releasing them to Maven Central.  Use this command to do this:
+```
+$ gpg --keyserver hkp://keys.gnupg.net --send-keys B265BB91D80124E463C63119EC4158B05D352E09
+gpg: sending key EC4158B05D352E09 to hkp://hkps.pool.sks-keyservers.net
 
-  - Add these two entries to the `<build>/<plugins>` element:
-  ```
-  <!-- Disable default maven-deploy-plugin -->
-  <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-deploy-plugin</artifactId>
-      <configuration>
-          <skip>true</skip>
-      </configuration>
-  </plugin>
+```
+Be sure to use your key's id in place of `B265BB91D80124E463C63119EC4158B05D352E09` :).
 
-  <!-- Enable alternate bintray-maven-plugin -->
-  <plugin>
-      <groupId>com.carrotgarden.maven</groupId>
-      <artifactId>bintray-maven-plugin</artifactId>
-      <configuration>
-          <skip>false</skip>
+Next, you can [verify that your key was published](http://keys.gnupg.net/).
+Open that page, enter the email address associated with your key,
+then click `Search Key`.
 
-          <!-- Bintray oranization name. -->
-          <subject>${bintray.org}</subject>
+Publishing your public key also allows users of your artifacts to verify them with the
+gpg command:
+```
+$ gpg --verify <jar_filename>.asc
+```
 
-          <!-- Bintray target repository. -->
-          <repository>${bintray.repo}</repository>
+### 3.4: Export your key
+After following the steps above, you should have a new signing key within your local keystore.
+This key will need to be exported and then added to your project's git repository
+so that your Travis build can import the key into the Travis build agent's local
+keystore to allow the maven build running on that agent to automatically sign your artifacts
+with your signing key.
 
-          <!-- Bintray credentials in settings.xml. -->
-          <serverId>bintray</serverId>
+So, while we're dealing with the gpg-related steps here, we might as well export it now:
+```
+gpg --export-secret-key -a B265BB91D80124E463C63119EC4158B05D352E09 > signing.key
+```
+Of course, replace `B265BB91D80124E463C63119EC4158B05D352E09` with your key's id
+(found in the output of the `gpg --list-keys` command above).
+You should now have a text file named `signing.key` that looks like this:
+```
+-----BEGIN PGP PRIVATE KEY BLOCK-----
 
-          <!--  We'll use the maven coordinates for the bintray package name -->
-          <bintrayPackage>${project.groupId}:${project.artifactId}</bintrayPackage>
-          
-          <!-- Use the project's github url when creating each module's package in the bintray repo -->
-          <packageVcsUrl>${bintray.package.url}</packageVcsUrl>
+<contents of private key>
 
-          <performDestroy>false</performDestroy>
-          <performCleanup>false</performCleanup>
-          <performDeploy>true</performDeploy>
-          <performEnsure>true</performEnsure>
-          <retryFailedDeploymentCount>2</retryFailedDeploymentCount>
-      </configuration>
-      <executions>
-          <!-- Activate "bintray:deploy" during "deploy" -->
-          <execution>
-              <goals>
-                  <goal>deploy</goal>
-              </goals>
-          </execution>
-      </executions>
-  </plugin>
+-----END PGP PRIVATE KEY BLOCK-----
+```
 
-  ```
+Next, we'll update your Java SDK project so that it can
+automatically sign and publish your build artifacts.
+
+
+## 4: Modify your Java SDK project to publish artifacts on Maven Central
+
+In this section, you will be making updates to your Java SDK project, so be sure to
+create a new feature branch from your current "master" (or "main") branch.
+
+Note: If you created a new Java SDK project from the
+[Java SDK Template repository](https://github.ibm.com/CloudEngineering/java-sdk-template)
+on or after 02/06/2021, then your project should already have the changes outlined in this
+section of the document.   This section is intended mainly for those that have created
+their project from an earlier version of the template repository and need to update their
+project to remove the bintray publishing step and replace it with a maven central publishing
+step.
+
+### 4.1: Copy files from the Java SDK template repository
+Copy the following files from the
+[Java SDK Template repository](https://github.ibm.com/CloudEngineering/java-sdk-template)
+into the `build` directory of your Java SDK project:
+- `build/generateJavadocIndex.sh`
+- `build/publishCodeCoverage.sh`
+- `build/publishJavadoc.sh`
+- `build/setMavenVersion.sh`
+- `build/setupSigning.sh`
+- `build/.travis.settings.xml`
+
+Next, within your Java SDK project, modify the `build/generateJavadocIndex.sh` file to reflect
+your Java SDK project (i.e. the `title`, `h1` heading, `<service-category>`, and `<github-repo-url>`).
+
+Next, if you will be building your project on the public travis-ci.com server, modify
+the `build/.travis.settings.xml` file to remove the `<server>` entry with id `na-artifactory-ibmcloud-sdks`.
+Leave the `<server>` entry with id `ossrh` there.
+
+
+### 4.2: Update your .travis.xml file
+Next, replace your project's `.travis.yml` file with the contents of
+`.travis.yml.sdk` from the [Java SDK Template repository](https://github.ibm.com/CloudEngineering/java-sdk-template).
+If you have project-specific settings in your `.travis.yml` file, be sure to back up the file first,
+then copy any project-specific settings to your new `.travis.yml` file.
+You should end up with a new `.travis.yml` file in the root directory of your project.
+Within the `.travis.yml` file, remove the comments from the `stages` and `jobs` sections
+(there are instructions inside the file).
+
+
+### 4.3: Add your signing key to your git repository.
+In this step, you'll encrypt the `signing.key` file that you previously
+exported and add it to your git repo within the `build` directory.
+
+Detailed instructions on how to encrypt a file and add it to your repository can be
+found [here](EncryptingSecrets.md), so the instructions below will be kept brief:
+
+```
+$ cd <project-root>
+
+# Copy your signing.key file to your project's "build" directory. 
+# Replace "<dir>" with the name of the directory containing the signing.key file
+# that you exported previously.
+$ cp <dir>/signing.key ./build
+
+$ travis login --github-token <your-public-github-token> --com
+
+$ travis encrypt-file build/signing.key build/signing.key.enc --com
+```
+
+The `travis encrypt-file` command will display an `openssl` command as part of its output.
+Here is an example:
+```
+openssl aes-256-cbc -K $encrypted_4b7d603e7466_key -iv $encrypted_4b7d603e7466_iv -in build/signing.key.enc -out build/signing.key -d
+```
+Next, modify the `openssl` command found inside the `build/setupSigning.sh` script to reflect the
+names of the environment variables from the `openssl` command displayed by the
+`travis encrypt-file` command.
+In the example above, the environment variable names are
+`$encrypted_4b7d603e7466_key` and `$encrypted_4b7d603e7466_iv`.
+The `travis encrypt-file` command added these environment variables to your project's Travis build settings.
+
+Finally, remove the `build/signing.key` file (remove only the plain-text file and
+keep the `build/signing.key.enc` file):
+```
+$ rm build/signing.key
+```
+
+### 4.4: Update the parent pom.xml
+
+In this step, you'll modify your Java SDK project's parent pom.xml file (in the project root directory)
+to add the necessary configuration to allow your project to sign and publish your build artifacts.
+As a reminder, if you created your project from a recent version of the template repository, you
+likely already have these changes reflected in your parent pom.xml.
+
+The most straightforward way to perform this step might be to "diff" your pom.xml file with the parent pom.xml
+in the [Java SDK Template repository](https://github.ibm.com/CloudEngineering/java-sdk-template)
+and apply the necessary changes, while retaining your project-specific settings.
+However, I'll attempt to summarize the changes here:
+
+- In the `<properties>` section, remove the `<bintray-plugin-version>` property, then add these properties:
+```
+<nexus-staging-plugin-version>1.6.8</nexus-staging-plugin-version>
+<maven-gpg-plugin-version>1.6</maven-gpg-plugin-version>
+```
+
+- Also in the `<properties>` section, remove these properties:  
+  * `<bintray.org>`
+  * `<bintray.repo>`
+  * `<bintray.package.url>`
   
-  - The [`bintray-maven-plugin` github.com repository](https://github.com/random-maven/bintray-maven-plugin) and
-  [its gh-pages documentation](https://random-maven.github.io/bintray-maven-plugin/plugin-info.html)
-  contain more details about the plugin.
+- Within the `<modules>` section, make sure that your `examples` module is listed last,
+after the `coverage-reports` module.
 
-#### 2.2: Update `build/.travis.settings.xml`
-Make sure the maven settings file used during your SDK project's Travis builds (i.e. `build/.travis.settings.xml`) contains this
-`<server>` entry:
+- In the `<repositories>` section, remove the `<repository>` entry with id `jcenter` (if present).
+
+- In the `<build>/<pluginManagement>/<plugins>` section, remove the `<plugin>` entry for "bintray-maven-plugin",
+and add the following:
 ```
-    <server>
-      <id>bintray</id>
-      <username>${env.BINTRAY_USER}</username>
-      <password>${env.BINTRAY_APIKEY}</password>
-    </server>
-```
-
-The `<id>` element's value must match the value of the `bintray-maven-plugin`'s `<serverId>`
-element within your SDK project's pom.xml file.
-
-Also, make sure that your Travis build settings (i.e. `travis-ci.com/IBM/<github-project-name>/settings`)
-contain these two environment variables:
-- `BINTRAY_USER`: the bintray username; this user MUST have `write` access to the
-Bintray repository used by your project's build.
-- `BINTRAY_APIKEY`: the API key associated with the bintray username
-
-#### 2.3: Update `modules/coverage-reports/pom.xml`
-You should update the `coverage-reports` module's pom.xml to disable the maven `deploy` goal.  This is recommended
-because there's no need to deploy the build outputs for this module on JCenter/Maven Central
-since the project's test code coverage info should be stored on `codecov.io`.
-To disable the `deploy` goal for this module, add this to the pom.xml in the `<build>/<plugins>` element:  
-```
-<!-- No need to deploy this artifact since it contains only coverage info -->
 <plugin>
-    <groupId>com.carrotgarden.maven</groupId>
-    <artifactId>bintray-maven-plugin</artifactId>
-    <configuration>
-        <skip>true</skip>
-    </configuration>
+    <groupId>org.sonatype.plugins</groupId>
+    <artifactId>nexus-staging-maven-plugin</artifactId>
+    <version>${nexus-staging-plugin-version}</version>
+</plugin>
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-gpg-plugin</artifactId>
+    <version>${maven-gpg-plugin-version}</version>
 </plugin>
 ```
+- In the `<build>/<plugins>` section, remove the `<plugin>` entry for "bintray-maven-plugin".
 
-After the changes in this step (along with step 1) have been completed, you can commit the changes and merge in
-the associated PR into your project's master branch.
-**Do not merge your PR until after the Bintray repository for your project has been created.**
+- After the `<developers>` section (i.e. immediately before the file's closing `</project>` line),
+add the following `<profiles>` section:
+```
+    <profiles>
+
+        <!-- "central" is used to deploy artifacts on maven central -->
+        <profile>
+            <id>central</id>
+
+            <!-- For this profile, we'll get dependencies from maven central -->
+            <repositories></repositories>
+
+            <distributionManagement>
+                <snapshotRepository>
+                    <!-- We don't deploy snapshot releases -->
+                </snapshotRepository>
+                <repository>
+                    <!-- This is where the nexus staging plugin will publish artifacts -->
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <gpgArguments>
+                                <gpgArgument>--batch</gpgArgument>
+                                <gpgArgument>--yes</gpgArgument>
+                                <gpgArgument>--no-tty</gpgArgument>
+                            </gpgArguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <properties>
+                <!-- Configure the gpg plugin to use the env vars defined in the Travis build settings -->
+                <gpg.keyname>${env.GPG_KEYNAME}</gpg.keyname>
+                <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
+            </properties>
+        </profile>
+    </profiles>
+```
+Note: if you already have a `<profiles>` section, then simply add the `<profile>` entry with id "central" to it.
+
+
+### 4.5: Update the coverage-reports module pom.xml
+
+In this step, you'll modify the `modules/coverage-reports/pom.xml` file to prevent the coverage-reports
+module from being published on maven central.
+
+- Add this `<properties>` section immediately before the `<dependencies>` section:
+```
+    <properties>
+	<!-- There is no need to publish this module's artifacts on maven central -->
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+    </properties>
+```
+
+- In the `<build>/<plugins>` section, remove the `<plugin>` entry with id "bintray-maven-plugin".
+
+### 4.6: Update your Travis build settings
+
+Open the Travis build settings page for your SDK project
+(i.e. `https://travis-ci.com/github/IBM/<repo-name>`),
+and add the following environment variables to your build configuration:
+
+- `OSSRH_USERNAME`: the Sonatype username (account) that you created in step 2 and used
+to create the "New Project" ticket with Sonatype.
+
+- `OSSRH_PASSWORD`: the password associated with your Sonatype account.
+
+- `GPG_KEYNAME`: this is the name/id of the signing key that will be used by the maven gpg plugin
+to sign your artifacts.  The value used here should be the last 8 characters of the key name.
+For example, when I run `gpg --list-keys`, I see this output:  
+
+```
+$ gpg --list-keys
+/home/padams/.gnupg/pubring.kbx
+-------------------------------
+pub   rsa2048 2020-11-22 [SC] [expires: 2022-11-22]
+      B265BB91D80124E463C63119EC4158B05D352E09
+uid           [ultimate] Phillip C. Adams <phil_adams@us.ibm.com>
+sub   rsa2048 2020-11-22 [E] [expires: 2022-11-22]
+```
+In this case, I would set the `GPG_KEYNAME` variable to `5D352E09`.
+
+- `GPG_PASSPHRASE`: this is the passphrase associated with your signing key.
+
+Note: when entering the values of environment variables, be sure to escape any special characters
+as instructed by the Travis build settings UI.
+
+
+### 4.7: Commit your changes
+After you have completed the above changes to your Java SDK project, you can commit the changes
+and push your feature branch, then open a pull request, etc.  Feel free to tag Phil Adams as
+a reviewer on your pull request.
 
 When committing your changes, be sure to use a commit message that will trigger a new
-release when semantic-release is unleashed on your PR's commits
-(e.g. `git commit -m "feat(build): add bintray deployment config to build"` or something similar).
+release when your pull request is merged and semantic-release processes your PR's commits
+(e.g. `git commit -m "feat(build): deploy artifacts to maven central"` or something similar).
 
-### 3. Request that your Bintray packages be linked to JCenter.
-The next step is a one-time action that is required for each package within your project.
+Do not merge your PR until the JIRA ticket you opened in step 2 is resolved
+(i.e. the Sonatype personnel have
+given your Sonatype account the necessary permission to publish artifacts).
 
-However, before you can request that your packages are linked to JCenter, you must have deployed at least one
-version within each of your Bintray packages.
-This means that this step cannot be performed until you have completed at least one successful tagged-release
-build of your project in which the `deploy` goal is built.
+## 5: Java SDK Build lifecycle overview
 
-The maven `deploy` goal is built during the `deploy` stage of a tagged-release build in Travis.
-The recommendation here is to complete steps 1 and 2 above, then after merging
-in the associated PR containing the changes for step 2, your project should trigger a Travis tagged-release build
-which should result in the successful deployment of an initial version (reflecting the maven version #)
-of each of your project's modules within the corresponding Bintray packages.
+This section describes the various types of builds and build stages associated with
+the travis build configuration that you copied from the Java SDK Template repository.
 
-To verify this, you should log into bintray.com and view your repository to ensure that each of the expected
-Bintray packages exist, and that there is at least one version within each package (the version should reflect
-the maven version # and should be the same across all the packages within your Bintray repository).
-
-After you have **visually inspected** your various Bintray packages to ensure that the build artifacts have been
-successfully deployed to each package, you can then request that your packages are linked to JCenter.
-Within the Bintray UI dialog for each package, click on `Actions` then `Add to JCenter`.  For your project's main
-package (the parent) be sure to check the "Pom project" checkbox, but leave it empty for all other packages.  Also,
-leave the snapshot-related option empty as well, since we will not be deploying snapshot releases to Bintray.
-The time for JFrog to complete each request varies, but is usually within a few hours.
-If you encounter any problems with this step, you can email `support@jfrog.com` to request help.
-
-If you later add a new service (module) to your SDK project, you will need to perform this step for the new module's
-artifact after you have completed the first tagged-release build that includes the new module.  In other words,
-whenever your project starts to publish a new artifact as part of the "mvn deploy" step, that should result in a
-new package within your bintray repository and you'll need to request that the new package be included in JCenter.
-
-
-### 4. Synchronize your JCenter artifacts to Maven Central.
-After you have completed steps 1 thru 3 and your Bintray packages are available on JCenter,
-you can then add a "sync" step to the "deploy" stage within your Travis build in order to
-synchronize your packages (artifacts) from JCenter to Maven Central.
-
-To do this, follow these steps:
-- The [Java SDK Template repository](https://github.ibm.com/CloudEngineering/java-sdk-template)
-includes files `build/bintraySync.sh` and `build/sync2MC.sh`.  If your Java SDK project does not already
-contain these files, then add (copy) them to your project.
-
-- Modify the `build/bintraySync.sh` file so that the "package_names" variable is set to the list of
-bintray packages that should be sync'd from JCenter to Maven Central.  In general, this list should include
-the main (parent) artifact for your SDK project, the artifact associated with the SDK project's "common" module,
-plus the artifact associated with each service contained in your SDK project.   If you later add a new service
-to your SDK project, be sure to update this script to include the package name associated with the new service.
-
-- Make sure that the "mvn deploy" deployment step within your `.travis.yml` file
-invokes the `build/bintraySync.sh` script, as in this example:
+Within the `.travis.yml` file, there are three main stages defined:
 ```
-deploy:
-...
-
-  # Publish jars on bintray for a tagged release.
-  - provider: script
-    script:
-    - >-
-          mvn deploy $MVN_ARGS -DskipTests 
-          && build/bintraySync.sh $BINTRAY_USER $BINTRAY_APIKEY $BINTRAY_ORG $BINTRAY_REPO $TRAVIS_TAG
-    skip_cleanup: true
-    on:
-      tags: true
-      jdk: openjdk8
+stages:
+  - name: Build-Test
+  - name: Semantic-Release
+    if: branch = master AND type = push AND fork = false
+  - name: Publish-Release
+    if: tag IS present
 ```
+When you push a feature branch or open a pull request, the resulting travis build will run
+only the `Build-Test` stage, which builds and unit tests the project.
 
-- If not already present, update the `.travis.yml` file's "env" section to add
-settings for the `BINTRAY_ORG` and `BINTRAY_REPO` environment variables, as in this example:
-```
-env:
-  global:
-    - BINTRAY_ORG=ibm-cloud-sdks
-    - BINTRAY_REPO=<your project's bintray repository name>   (e.g. platform-services-java-sdk)
-```
+When a pull request is merged into the master branch, the `Build-Test` stage is run,
+and (assuming that was successful), the `Semantic-Release` stage is then run.
+The `Semantic-Release` stage will run the semantic-release tool which will:
+- Analyze the commit messages associated with the commits that were merged into the master branch
+since the most recent tagged-release of the project to determine if a new version (tagged-release)
+of the project is warranted.
+- If a new version is needed, semantic-release will compile a changelog entry for the new version, perform some
+additional release management steps and will then push one or more commits back to the github repository along
+with a tag to represent the new version of the project.
 
-- Your SDK project's Travis build settings should already include the following environment variables
-(see section 2.2 above):
-  - `BINTRAY_USER`
-  - `BINTRAY_APIKEY`
-
-
-With these changes in place, when a tagged-release build of your SDK project is performed, the "deploy" stage
-should do the following:
-1. execute the `mvn deploy` command which builds the new version of each artifact and publishes
-them to your project's bintray repository
-2. invokes the `build/bintraySync.sh` script that syncs those newly-published artifacts from JCenter to Maven Central
+The tag pushed by the semantic-release tool will trigger a "tagged-release"
+Travis build.   This build will run the `Build-Test` stage, then the `Publish-Release` stage.
+The `Publish-Release` stage will then run two jobs in parallel:
+- the `Publish-Javadoc` job will produce javadocs from the project source, and then
+publish them on the git repository's `gh-pages` branch.
+- the `Publish-To-Maven-Central` job will publish the project's artifacts on Maven Central
+through the use of the nexus-staging-maven-plugin.
 
 
 ## References:
-- [Enjoy Bintray and use it as pain-free gateway to Maven Central](https://jfrog.com/blog/bintray-as-pain-free-gateway-to-maven-central/)
-- [Syncing with Third-Party Platforms](https://www.jfrog.com/confluence/display/BT/Syncing+with+Third-Party+Platforms)
 - [OSSRH Guide](https://central.sonatype.org/pages/ossrh-guide.html)
+- [Deploying to OSSRH with Apache Maven](https://central.sonatype.org/pages/apache-maven.html)
+- [Requirements (related to artifact publishing)](https://central.sonatype.org/pages/requirements.html)
+- [Working with PGP Signatures](https://central.sonatype.org/pages/working-with-pgp-signatures.html)
+- [Nexus Staging Maven Plugin for Deployment and Release](https://central.sonatype.org/pages/apache-maven.html#nexus-staging-maven-plugin-for-deployment-and-release)
 - [Manual Staging Bundle Creation and Deployment](https://central.sonatype.org/pages/manual-staging-bundle-creation-and-deployment.html)
-
-### Java SDK Build lifecycle overview
-
-While performing release management of a Java SDK project, there are several different types of builds that are
-typically performed with different types of deployment steps included in each one.   This section attempts to provide
-an overview by describing a typical workflow.
-
-1. A developer creates one or more commits in his/her local copy of the SDK project's git repository, then pushes those commits to
-a feature branch and submits a pull request (PR).   The submission of the PR triggers a "PR build".
-
-2. Assuming the PR build triggered in step 1 is clean and the PR is approved, it is then
-merged into the SDK project's master branch.   The merge into the master branch triggers a
-"branch build" of the master branch.
-
-3. The "branch build" of the master branch will build and test the project, then the "semantic-release" deploy stage
-is triggered.   The semantic-release deployment tool will do the following:
-    - Analyze the commit messages associated with the commits that were merged into the master branch
-      since the most recent tagged-release of the project to determine if a new version (tagged-release)
-      of the project is warranted.  If a new version is needed, semantic-release determines what the next version
-      should be.
-    - If a new version is needed, semantic-release will compile a changelog entry for the new version, perform some
-      additional release management steps and will eventually push one or more commits back to the github repository along
-      with a tag to represent the new version (tagged-release) of the project.
-
-4. Once the new tag is pushed back to the github repository in step 3 above, a new tagged-release build is triggered
-in Travis.  You can think of a tagged-release build as a special branch build where the name
-of the branch is the tag (e.g. 0.5.3).
-The tagged-release build will perform the following steps:
-    - [before_script]: The maven "versions" plugin is used to change the maven version # of the project to match
-      the tag value (e.g. 0.5.3).
-    - [script]: The project is built and tested.
-    - [deploy]: The `mvn deploy` command is invoked which will publish the artifacts for each module on bintray/JCenter
-    - [deploy]: The `build/bintraySync.sh` script is invoked which will sync the freshly-published artifacts to Maven Central.
-    - [deploy]: The `build/publish-javadoc.sh` script is invoked which will build the javadocs for the new version of the project,
-      then publish them on the "gh-pages" branch of the SDK project's git repo.
+- [General GitHub documentation](https://help.github.com/)
+- [Travis CI Documentation](https://docs.travis-ci.com/)
+- [Travis CI Encrypting Files](https://docs.travis-ci.com/user/encrypting-files/)
+- [Travis CI Command Line Interface (CLI) Documentation](https://github.com/travis-ci/travis.rb#readme)
