@@ -62,7 +62,7 @@ If you want to contribute to the repository, follow these steps:
   3. Please add one or more tests to validate your changes.
   4. Make sure everything builds/tests cleanly
   5. Commit your changes  
-  6. Push to your fork and submit a pull request to the **master** branch
+  6. Push to your fork and submit a pull request to the **main** branch
 
 ## Adding a new service
 

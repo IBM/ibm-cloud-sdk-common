@@ -72,7 +72,7 @@ If you want to contribute to the repository, here's a quick guide:
   3. Make sure everything builds/tests cleanly.
       * The build will run the code style checker and flag any issues.
   4. Commit your changes  
-  5. Push to your fork and submit a pull request to the **master** branch.
+  5. Push to your fork and submit a pull request to the **main** branch.
   6. Be sure to sign the CLA.
 
 ## Adding a new service

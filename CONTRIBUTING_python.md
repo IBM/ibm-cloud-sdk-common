@@ -82,7 +82,7 @@ If you want to contribute to the repository, here's a quick guide:
   7. Make sure everything builds/tests cleanly
   8. Commit your changes  
      * Make sure your commit messages follow the Angular Commit Message Guidelines (see below).
-  9. Push to your fork and submit a pull request to the **master** branch
+  9. Push to your fork and submit a pull request to the **main** branch
 
 
 ## Adding a new service

@@ -68,7 +68,7 @@ If you want to contribute to the repository, follow these steps:
 4. Verify the build before beginning your changes: `npm run test-unit`
 5. Develop and test your code changes.
 6. Commit your changes. Remember to follow the correct commit message guidelines.
-7. Push to your fork and submit a pull request.
+7. Push to your fork and submit a pull request to the **main** branch.
 8. Be sure to sign the CLA.
 
 ## Adding a new service

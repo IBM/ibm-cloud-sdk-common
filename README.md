@@ -636,10 +636,10 @@ authenticator.set_bearer_token('<new-access-token>')
 #### Additional Information
 For more details about authentication, including the full set of authentication schemes supported by
 the SDK Core library for your language, see these links:
-- [Go](https://github.com/IBM/go-sdk-core/blob/master/Authentication.md)
-- [Java](https://github.com/IBM/java-sdk-core/blob/master/Authentication.md)
-- [Node.js](https://github.com/IBM/node-sdk-core/blob/master/AUTHENTICATION.md)
-- [Python](https://github.com/IBM/python-sdk-core/blob/master/Authentication.md)
+- [Go](https://github.com/IBM/go-sdk-core/blob/main/Authentication.md)
+- [Java](https://github.com/IBM/java-sdk-core/blob/main/Authentication.md)
+- [Node.js](https://github.com/IBM/node-sdk-core/blob/main/AUTHENTICATION.md)
+- [Python](https://github.com/IBM/python-sdk-core/blob/main/Authentication.md)
 
 ### Passing parameters to operations
 For certain languages (namely Go, Java and Node.js) a structure is defined for each operation
@@ -1883,4 +1883,4 @@ Find more open source projects on the [IBM Github Page](http://ibm.github.io/)
 
 This project is released under the Apache 2.0 license.
 The license's full text can be found in
-[LICENSE](https://github.ibm.com/CloudEngineering/node-sdk-template/blob/master/LICENSE).
+[LICENSE](https://github.com/IBM/ibm-cloud-sdk-common/blob/main/LICENSE).

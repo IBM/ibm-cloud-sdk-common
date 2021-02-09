@@ -47,14 +47,14 @@ If you want to contribute to the repository, follow these steps:
   3. Please add one or more tests to validate your changes.
   4. Make sure everything builds/tests cleanly
   5. Commit your changes  
-  6. Push to your fork and submit a pull request to the **master** branch
+  6. Push to your fork and submit a pull request to the **main** branch
 
 ## Adding a new service
 
 This section will guide you through the steps to generate the Go code for a service
 and add the generated code to your CLI plugin project.
 
-**Important** In order to create a CLI plugin for a service, there must already be a _generated_ Go SDK for the same service. If there is not, [add one](https://github.com/IBM/ibm-cloud-sdk-common/blob/master/CONTRIBUTING_go.md#adding-a-new-service) before moving forward with these steps.
+**Important** In order to create a CLI plugin for a service, there must already be a _generated_ Go SDK for the same service. If there is not, [add one](https://github.com/IBM/ibm-cloud-sdk-common/blob/main/CONTRIBUTING_go.md#adding-a-new-service) before moving forward with these steps.
 
 1. Validate the API definition - before trying to process the API definition with the SDK generator, we strongly
 recommend that you validate the API definition with the

@@ -170,7 +170,13 @@ You should now have a text file named `signing.key` that looks like this:
 ```
 -----BEGIN PGP PRIVATE KEY BLOCK-----
 
+<<<<<<< Updated upstream
 <contents of private key>
+=======
+After the changes in this step (along with step 1) have been completed, you can commit the changes and merge in
+the associated PR into your project's main branch.
+**Do not merge your PR until after the Bintray repository for your project has been created.**
+>>>>>>> Stashed changes
 
 -----END PGP PRIVATE KEY BLOCK-----
 ```
