@@ -85,7 +85,7 @@ When creating the "New Project" ticket, you will be requesting that Sonatype
 provides you with the necessary authority to publish artifacts using your
 chosen group id.
 If you will be using the `com.ibm.cloud` group id as recommended above, then
-add a mention for `@padamstx` (Phil Adams) in the JIRA ticket and request approval for your request.
+request approval for your request from Phil Adams by adding a mention to `[~padamstx]` to the ticket).
 
 ## 3: Create a public/private key pair for signing artifacts
 One of the requirements for publishing artifacts on Maven Central is that
