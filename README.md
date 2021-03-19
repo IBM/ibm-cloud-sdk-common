@@ -788,7 +788,9 @@ Each operation will return the following values:
   * `StatusCode` - the HTTP status code returned in the response message  
   * `Headers` - the HTTP headers returned in the response message. Keys in the map are canonicalized
     (see [CanonicalHeaderKey](https://golang.org/pkg/net/http/#CanonicalHeaderKey))
-  * `Result` - the operation result (if available). This is the same value returned in the `result` return value mentioned above.  
+  * `Result` - the operation result (if available). This is the same value returned in the `result` return value mentioned above.
+  * `RawResult` - the raw response body as a byte array if there was a problem un-marshalling a JSON response body
+    or if the operation was unsuccessful and the response body content is not JSON.
 3. `err` - An error object.  This will be nil if the operation was successful, or non-nil  
 if an error occurred.
 
