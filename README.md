@@ -1,3 +1,5 @@
+[![CLA assistant](https://cla-assistant.io/readme/badge/IBM/ibm-cloud-sdk-common)](https://cla-assistant.io/IBM/ibm-cloud-sdk-common)
+
 # IBM Cloud SDK Common
 This project contains documentation and other resources related to IBM Cloud SDKs
 
