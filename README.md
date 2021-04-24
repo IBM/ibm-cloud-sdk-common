@@ -20,6 +20,8 @@ This project contains documentation and other resources related to IBM Cloud SDK
 - [Overview](#overview)
 - [SDK Project Catalog](#sdk-project-catalog)
 - [Using the SDK](#using-the-sdk)
+  * [SDK Structure](#sdk-structure)
+  * [Importing a service in your application](#importing-a-service-in-your-application)
   * [Constructing service clients](#constructing-service-clients)
     + [Setting client options programmatically](#setting-client-options-programmatically)
     + [Using external configuration](#using-external-configuration)
@@ -58,7 +60,7 @@ This project contains documentation and other resources related to IBM Cloud SDK
 <!-- --------------------------------------------------------------- -->
 ## Overview
 
-IBM Cloud SDKs allow developers to programmatically interact with various IBM Cloud Services.
+IBM Cloud SDK client libraries allow developers to programmatically interact with various IBM Cloud services.
 SDKs are provided for the following languages:
 - Go
 - Java
@@ -66,7 +68,7 @@ SDKs are provided for the following languages:
 - Python
 
 ## SDK Project Catalog
-The following table provides links to the various SDK projects associated with IBM Cloud Service
+The following table provides links to the various IBM Cloud SDK projects associated with IBM Cloud service
 categories:
 
 Service Category | Go | Java | Node.js | Python | Mobile
@@ -93,19 +95,169 @@ Watson Health Cognitive Services | [Go SDK](https://github.com/IBM/whcs-go-sdk) 
 
 
 ## Using the SDK
-This section provides general information on how to use the services contained in an SDK project.
+This section provides general information on how to use the services contained in an
+IBM Cloud SDK client library.
 The programming examples below will illustrate how the various activities can be performed for
 each of the programming languages mentioned above using a mythical service named "Example Service"
 that is defined in [example-service.yaml](example-service.yaml).
 
-### Constructing service clients
-Each service client - the client-side view of a service - is implemented in its own
-class (Java, Node.js, Python) or struct (Go) within the corresponding SDK project.
-For example, the "Example Service" client is implemented as:
+### SDK Structure
+When you use an IBM Cloud SDK client library within your application to interact with a
+particular IBM Cloud service, your application code will appear to be invoking local functions
+rather than invoking REST operations over the network.
+
+In fact, your application _is_ invoking local functions that are provided by the SDK client library.
+Each SDK client library contains a collection of one or more related IBM Cloud services, where
+each service "client"  - the client-side view of a particular IBM Cloud service -
+is implemented in its own class (Java, Node.js, Python) or struct (Go).
+Within this class or struct, there will be methods that represent
+the various operations that are defined in the API for that service.
+The function contained within each of these methods handles the various steps of
+invoking a REST operation over the network:
+1. constructing an HTTP request message
+2. sending the request message to the server via the network
+3. receiving the HTTP response message from the server
+4. consuming the response message and returning the results back to your application code
+
+The mythical "Example Service" service client mentioned above is implemented as:
 - Go: the `ExampleServiceV1` struct within the `exampleservicev1` package
 - Java: the `ExampleService` class within the `com.ibm.cloud.mysdk.example_service.v1` package
-- Node.js: the `ExampleServiceV1` class in the `example-service/v1` module
-- Python: the `ExampleServiceV1` class within the `mysdk` module
+- Node.js: the `ExampleServiceV1` class within the `example-service/v1` module 
+- Python: the `ExampleServiceV1` class within the `example_service_v1` module
+
+### Importing a service in your application
+Each IBM Cloud SDK project includes a README.md file which contains a table of the services
+included in that SDK project, along with language-specific information needed for you
+to use these services within your application code.
+
+Before you can use a particular service within your application, you first need to import
+the correct language-specific programming constructs (package, class, struct, etc.)
+from the SDK client library that contains that service.
+
+<details><summary>Go</summary>
+For Go SDK client libraries, each IBM Cloud service will exist within its own package in
+the Go module that represents the SDK project as a whole.
+To use the mythical "Example Service" service client in your Go application, you would add
+an import to your application code like this:
+
+```go
+import {
+    "github.com/IBM/mysdk/exampleservicev1"
+}
+```
+Note: this example assumes that the "Example Service" service client exists in
+the `exampleservicev1` package within the `github.com/IBM/mysdk` module.
+Be sure to consult the service table for the Go SDK client library you are using
+to obtain the correct module import path and service package name for the service(s) that
+you will use in your application.
+
+After you add this import to your application, you can run the command `go mod tidy`
+to automatically add the necessary module import to your application's `go.mod` file.
+Alternatively, you can manually add `github.com/IBM/mysdk <version>` to your `go.mod` file's
+`require` section, where `<version>` represents the version of the SDK project that you
+would like to use.  For more details about the `go.mod` file, please see this
+[reference](https://golang.org/doc/modules/gomod-ref).
+
+</details>
+<details><summary>Java</summary>
+For Java SDK client libraries, each IBM Cloud service is packaged within its own jar containing
+the classes associated with that service.  Each jar is identified by its artifact coordinates,
+which consist of the jar's group id, artifact id and version in the form:  
+
+```xml
+<group-id>:<artifact-id>:<version>
+```
+For example, the mythical "Example Service" service client might be contained within the
+jar with artifact coordinates: `com.ibm.cloud:example-service:1.0.0`.
+The service table within each Java SDK project's README.md file will include the
+artifact coordinates for each service contained in the project.
+
+Before you can use a service in your application, you first need to define a dependency within
+your project's maven pom.xml file or gradle build script.
+
+For maven, a dependency defined for the "Example Service" would look like this:
+
+```xml
+<dependency>
+    <groupId>com.ibm.cloud</groupId>
+    <artifactId>example-service</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+For gradle, the dependency would look like this:
+
+```
+compile 'com.ibm.cloud:example-service:1.0.0'
+```
+
+Be sure to consult the service table for the Java SDK client library you are using
+to obtain the correct artifact coordinates for the service(s) you will use in your application.
+
+After defining an appropriate dependency within your build script, you would then import the
+classes needed by your application.   For example, in order to construct an instance of the
+"Example Service" service client in your application, you would need to import the
+java class that implements that service, like this:
+
+```java
+import com.ibm.cloud.mysdk.example_service.v1.ExampleService;
+```
+
+Your application will likely use a collection of various classes provided by the
+service's jar in addition to the primary class for that service.   Be sure to include
+import statements in your application for each class that you need to use from the
+service's jar.
+
+Note that some Java SDK client libraries provide a collection of javadocs for the various
+classes provided by that client library (look for a link on the Java SDK project's main
+github.com page).  If present, these javadocs can be consulted to explore the
+set of available classes and determine which classes might be needed by your application.
+</details>
+<details><summary>Node.js</summary>
+For Node.js SDK client libraries, each IBM Cloud service exists within its own folder inside the
+package that represents the SDK project as a whole.
+To use the mythical "Example Service" service client in your Node.js application, add an import
+to your application like this:
+
+```js
+const ExampleServiceV1 = require('mysdk/example-service/v1');
+```
+
+You would also need to add a dependency for the `mysdk` package within your application project's
+`package.json` file as well.
+
+Note: this example assumes that the "Example Service" service client exists in the
+`example-service` folder contained within the `mysdk` package.
+
+Be sure to consult the service table for the Node.js SDK client library you are using
+to obtain the correct import path for the service(s) you will use in your application.
+</details>
+<details><summary>Python</summary>
+For Python SDK client libraries, each IBM Cloud service exists in its own module inside the
+package that represents the SDK project as a whole.
+To use the mythical "Example Service" service client in your Python application,
+add an import like this:
+
+```python
+from mysdk import ExampleServiceV1
+```
+
+This imports the `ExampleServiceV1` class, which is the primary class associated with
+the "Example Service" service client.
+If your application needs to use additional service-related definitions (such as classes
+which model the schemas in the service's API definition), use an import like this:
+
+```python
+from mysdk.example_service_v1 import Resource, Resources
+```
+Note: in this example, `Resource` and `Resources` are classes that are defined
+in the service's module (in addition to the ExampleServiceV1 service class).
+
+Be sure to consult the service table for the Python SDK client library you are using
+to obtain the correct module name and service class name for the service(s) you will use in your application.
+</details>
+
+### Constructing service clients
 
 The SDK allows you to construct the service client in one of two ways:
 1. Setting client options programmatically
@@ -119,7 +271,7 @@ while specifying various client options (authenticator, service endpoint URL, et
 
 ```go
 import {
-    "github.com/IBM/go-sdk-core/v4/core"
+    "github.com/IBM/go-sdk-core/v5/core"
     "github.com/IBM/mysdk/exampleservicev1"
 }
 
@@ -381,7 +533,7 @@ The SDK's IAM authenticator will:
 
 ```go
 import {
-    "github.com/IBM/go-sdk-core/v4/core"
+    "github.com/IBM/go-sdk-core/v5/core"
     "github.com/IBM/mysdk/exampleservicev1"
 }
 
@@ -478,7 +630,7 @@ export EXAMPLE_SERVICE_APIKEY=<iam-api-key>
 
 ```go
 import {
-    "github.com/IBM/go-sdk-core/v4/core"
+    "github.com/IBM/go-sdk-core/v5/core"
     "github.com/IBM/mysdk/exampleservicev1"
 }
 
@@ -551,7 +703,7 @@ Bearer Token authenticator because you must manage the access token yourself.
 
 ```go
 import {
-    "github.com/IBM/go-sdk-core/v4/core"
+    "github.com/IBM/go-sdk-core/v5/core"
     "github.com/IBM/mysdk/exampleservicev1"
 }
 
@@ -640,7 +792,7 @@ For more details about authentication, including the full set of authentication 
 the SDK Core library for your language, see these links:
 - [Go](https://github.com/IBM/go-sdk-core/blob/main/Authentication.md)
 - [Java](https://github.com/IBM/java-sdk-core/blob/main/Authentication.md)
-- [Node.js](https://github.com/IBM/node-sdk-core/blob/main/AUTHENTICATION.md)
+- [Node.js](https://github.com/IBM/node-sdk-core/blob/main/Authentication.md)
 - [Python](https://github.com/IBM/python-sdk-core/blob/main/Authentication.md)
 
 ### Passing parameters to operations
