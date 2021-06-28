@@ -137,15 +137,16 @@ In order to publish artifacts on Maven Central, you will need to publish
 your public key on a key server so that Sonatype can verify your artifacts
 before releasing them to Maven Central.  Use this command to do this:
 ```
-$ gpg --keyserver hkp://keys.gnupg.net --send-keys B265BB91D80124E463C63119EC4158B05D352E09
-gpg: sending key EC4158B05D352E09 to hkp://hkps.pool.sks-keyservers.net
+$ gpg --keyserver keys.openpgp.org --send-keys B265BB91D80124E463C63119EC4158B05D352E09
+gpg: sending key EC4158B05D352E09 to hkp://keys.openpgp.org
 
 ```
 Be sure to use your key's id in place of `B265BB91D80124E463C63119EC4158B05D352E09` :).
 
-Next, you can [verify that your key was published](http://keys.gnupg.net/).
-Open that page, enter the email address associated with your key,
-then click `Search Key`.
+Next, you can [verify that your key was published](https://keys.openpgp.org/).
+Open that page and enter the keyid mentioned in the output from the `gpg` command above
+(e.g. `EC4158B05D352E09` in this example, but use your own keyid value), 
+then click `Search`.   Your public key should be returned as a result of the search.
 
 Publishing your public key also allows users of your artifacts to verify them with the
 gpg command:
