@@ -2021,7 +2021,7 @@ myservice.getResource(options).enqueue(new ServiceCallback<ResourceInstance>() {
 
 </details>
 <details><summary>Node.js</summary>
-The Node.js SDK executes each request asynchronously and returns the response as a `Promise`. The Node SDK also supports `async/await` which processes `Promise` without neededing to formally chain the functions to provide synchrous-like behavior.
+The Node.js SDK executes each request asynchronously and returns the response as a `Promise`. The Node SDK also supports `async/await`, which processes the `Promise` without needing to formally chain the functions, to provide synchronous-like behavior.
 
 ```node
 // Without async/await
