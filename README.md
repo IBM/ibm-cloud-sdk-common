@@ -2021,7 +2021,22 @@ myservice.getResource(options).enqueue(new ServiceCallback<ResourceInstance>() {
 
 </details>
 <details><summary>Node.js</summary>
-The Node.js SDK executes each request asynchronously and returns the response as a Promise.
+The Node.js SDK executes each request asynchronously and returns the response as a `Promise`. The Node SDK also supports `async/await` which processes `Promise` without neededing to formally chain the functions to provide synchrous-like behavior.
+
+```node
+// Without async/await
+const resourceMetadata = () => {
+  return getResource('my-resource')
+    .then(res => getResourceMetadata(res))
+}
+
+// With async/await
+const resourceMetadata = async () => {
+  const res = await getResource('/users.json') 
+  const data = await getResourceMetadata(res) 
+  return data
+}
+```
 </details>
 <details><summary>Python</summary>
 The Python SDK supports only synchronous execution of service methods.
