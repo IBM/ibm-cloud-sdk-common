@@ -41,8 +41,8 @@ This project contains documentation and other resources related to IBM Cloud SDK
   * [Configuring the HTTP Client](#configuring-the-http-client)
   * [Configuring Request Timeouts](#configuring-request-timeouts)
   * [Automatic retries](#automatic-retries)
-    + [With external configuration](#with-external-configuration)
     + [Programmatically](#programmatically)
+    + [With external configuration](#with-external-configuration)
   * [Disabling SSL Verification - Discouraged](#disabling-ssl-verification---discouraged)
     + [With external configuration](#with-external-configuration-1)
     + [Programmatically](#programmatically-1)
@@ -1486,7 +1486,7 @@ This section provides information about how to enable automatic retries.
 
 <details><summary>Go</summary>
 
-The Go SDK supports a generalized retry feature that can automatically retry common
+The Go SDK supports a generalized retry feature that can automatically retry on common
 errors.  The default configuration (up to 4 retries with max retry interval of 30 seconds,
 along with exponential backoff if no `Retry-After` response header is present)
 should suffice for most applications, but the retry feature
@@ -1506,35 +1506,13 @@ The Node SDK does not currently support automatic retries.
 </details>
 <details><summary>Python</summary>
 
-The Python SDK does not currently support automatic retries.
+The Python SDK supports a generalized retry feature that can automatically retry on common
+errors.  The default configuration (up to 4 retries with initial retry interval 1 second,
+along with exponential backoff if no `Retry-After` response header is present)
+should suffice for most applications, but the retry feature
+is customizable to support unique requirements.
 
 </details>
-
-#### With external configuration
-Note: the configuration of automatic retries via external configuration
-is currently supported only in the Go SDK.
-
-If you are constructing your service client with external configuration properties, you can
-enable automatic retries (currently supported only in Go SDKs) in the service client by setting
-properties as in the example below for the "Example Service" service:  
-
-```sh
-export EXAMPLE_SERVICE_URL=https://example-service.cloud.ibm.com/v1
-export EXAMPLE_SERVICE_AUTH_TYPE=iam
-export EXAMPLE_SERVICE_APIKEY=<iam-api-key>
-
-export EXAMPLE_SERVICE_ENABLE_RETRIES=true
-export EXAMPLE_SERVICE_MAX_RETRIES=3
-export EXAMPLE_SERVICE_RETRY_INTERVAL=20
-```
-
-If the `<service-name>_ENABLE_RETRIES` property is defined as `true`, then retries will be enabled.
-You can optionally define the `<service-name>_MAX_RETRIES` and `<service-name>_RETRY_INTERVAL`
-properties to configure values for the maximum number of retries (default is 4) and maximum retry
-interval (default is 30 seconds).
-
-After setting these properties, be sure to construct your service client similar to the
-examples in the [Construct service client](#construct-service-client) section above.
 
 #### Programmatically
 
@@ -1561,7 +1539,7 @@ If a "retryable" error response (e.g. 429, 503, etc.) contains
 the `Retry-After` header, the value of that response header will be used
 as the retry interval, subject to a maximum of 20 seconds.  If no `Retry-After` header
 is found in the response, then an exponential backoff policy will be used such
-that successive retries use a progressively longer wait time.
+that successive retries would use wait times of 1, 2, and 4 seconds.
 </details>
 <details><summary>Java</summary>
 Details about this feature in the Java SDK will be added in the future.
@@ -1570,8 +1548,56 @@ Details about this feature in the Java SDK will be added in the future.
 The Node.js SDK currently does not support automatic retries.
 </details>
 <details><summary>Python</summary>
-The Python SDK currently does not support automatic retries.
+To enable automatic retries programmatically in the Python SDK, use the service client's
+`enable_retries()` method, as in this example:
+
+```python
+// Construct the service client.
+my_service = ExampleServiceV1(authenticator=my_authenticator)
+
+// Enable automatic retries (with max retries 5, initial retry interval 1.0).
+my_service.enable_retries(max_retries=5, retry_interval=1.0)
+
+// Create the resource.
+response = my_service.create_resource(resource_id="3", name="Sample Book Title")
+```
+
+In this example, the `create_resource()` operation will be retried up to 5 times
+with an initial retry interval of 1 second.
+
+If a "retryable" error response (e.g. 429, 503, etc.) contains
+the `Retry-After` header, the value of that response header will be used
+as the retry interval.  If no `Retry-After` header
+is found in the response, then an exponential backoff policy will be used such
+that successive retries would use wait times of 1, 2, 4, 8, and 16 seconds.
 </details>
+
+
+#### With external configuration
+Note: the configuration of automatic retries via external configuration
+is currently supported only in the Go and Python SDKs.
+
+If you are constructing your service client with external configuration properties, you can
+enable automatic retries in the service client by setting
+properties as in the example below for the "Example Service" service:  
+
+```sh
+export EXAMPLE_SERVICE_URL=https://example-service.cloud.ibm.com/v1
+export EXAMPLE_SERVICE_AUTH_TYPE=iam
+export EXAMPLE_SERVICE_APIKEY=<iam-api-key>
+
+export EXAMPLE_SERVICE_ENABLE_RETRIES=true
+export EXAMPLE_SERVICE_MAX_RETRIES=3
+export EXAMPLE_SERVICE_RETRY_INTERVAL=20
+```
+
+If the `<service-name>_ENABLE_RETRIES` property is defined as `true`, then retries will be enabled.
+You can optionally define the `<service-name>_MAX_RETRIES` and `<service-name>_RETRY_INTERVAL`
+properties to configure values for the maximum number of retries (default is 4) and maximum retry
+interval (default is 30 seconds).
+
+After setting these properties, be sure to construct your service client similar to the
+examples in the [Construct service client](#construct-service-client) section above.
 
 
 ### Disabling SSL Verification - Discouraged
