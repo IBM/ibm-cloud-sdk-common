@@ -1321,7 +1321,7 @@ This is available for both the service client and the authenticators that make n
 (e.g. `IamAuthenticator`). The package [`axios`](https://github.com/axios/axios) is used to make requests.
 All [`axios` configuration parameters](https://github.com/axios/axios#request-config) are supported by the
 constructors of both service clients and authenticators.
-Described below are scenarios where this capability configure  is needed.
+Described below are scenarios where this configuration capability is needed.
 Note that this functionality is applicable only for Node.js environments - these configurations will have
 no effect in the browser.
 
