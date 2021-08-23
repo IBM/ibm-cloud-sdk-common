@@ -1318,10 +1318,28 @@ For more information about the `OkHttpClient` class, please see
 
 For Node.js, you have full control over the HTTPS Agent used to make requests.
 This is available for both the service client and the authenticators that make network requests
-(e.g. `IamAuthenticator`).
-Described below are scenarios where this capability is needed.
+(e.g. `IamAuthenticator`). The package [`axios`](https://github.com/axios/axios) is used to make requests.
+All [`axios` configuration parameters](https://github.com/axios/axios#request-config) are supported by the
+constructors of both service clients and authenticators.
+Described below are scenarios where this configuration capability is needed.
 Note that this functionality is applicable only for Node.js environments - these configurations will have
 no effect in the browser.
+
+##### Accessing the HTTP Client
+In most scenarios, passing HTTP configuration parameters to the SDK client constructor is sufficient.
+However, there may be cases in which access to the actual instance of `axios` is necessary, such as setting interceptors.
+
+For this purpose, use the method `getHttpClient` on the service client instance.
+```js
+import ExampleServiceV1 from 'ibm-mysdk/example-service/v1';
+import { IamAuthenticator } from 'mysdk/auth';
+
+const myService = new ExampleServiceV1({
+  authenticator: new IamAuthenticator({ apikey: '{apikey}' }),
+});
+
+const axiosInstance = myService.getHttpClient();
+```
 
 ##### Proxy
 To invoke requests behind an HTTP proxy (e.g. firewall), a special tunneling agent
@@ -1396,6 +1414,20 @@ Here is a list of some of the configuration properties that can be set with the 
 - [proxies](https://requests.readthedocs.io/en/master/user/advanced/#proxies)
 - [verify](https://requests.readthedocs.io/en/master/user/advanced/#ssl-cert-verification)
 - [cert](https://requests.readthedocs.io/en/master/user/advanced/#client-side-certificates)
+
+To access the existing client, use the `get_http_client` method. This returns the ["Session" from the `requests` package](https://docs.python-requests.org/en/master/user/advanced/#session-objects).
+
+```python
+mySession = my_service.get_http_client()
+mySession.headers.update({'x-my-header': 'true'})
+```
+
+The client can also be overriden or reset with the `set_http_client` method.
+
+```python
+newSession = requests.Session()
+my_service.set_http_client(newSession)
+```
 
 For more information regarding http client configuration,
 please see [this link](https://requests.readthedocs.io/en/master/)
