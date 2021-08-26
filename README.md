@@ -1534,10 +1534,10 @@ with exponential backoff if no `Retry-After` response header is present.
 <details><summary>Node</summary>
 
 The Node SDK supports a generalized retry feature that can automatically retry on common
-errors. The default configuration (up to 4 retries with initial retry interval 1 second,
-along with exponential backoff if no `Retry-After` response header is present)
-should suffice for most applications, but the retry feature is customizable to
-support unique requirements.
+errors. The default configuration (up to 4 retries, initial retry interval of 1 second,
+max retry interval of 30 seconds, and exponential backoff if no `Retry-After` response
+header is present) should suffice for most applications, but the retry feature is
+customizable to support unique requirements.
 
 </details>
 <details><summary>Python</summary>
@@ -1589,7 +1589,7 @@ To enable automatic retries programmatically in the Node SDK, use the service cl
 const myService = new ExampleServiceV1({ authenticator: myAuthenticator })
 
 // Enable automatic retries (with max retries 5, max retry interval 3 seconds).
-myService.enableRetries({ maxRetries: 5, maxRetryInterval: 3 });
+myService.enableRetries({ maxRetries: 5, maxRetryInterval: 20 });
 
 // Create the resource.
 const response = myService.createResource({ resourceId: "3", name: "Sample Book Title" });
