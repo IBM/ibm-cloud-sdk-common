@@ -1596,7 +1596,7 @@ const response = myService.createResource({ resourceId: "3", name: "Sample Book 
 ```
 
 In this example, the `createResource()` operation will be retried up to 5 times
-with an maximum retry interval of 3 seconds.
+with a maximum retry interval of 3 seconds.
 
 If a "retryable" error response (e.g. 429, 503, etc.) contains
 the `Retry-After` header, the value of that response header will be used
@@ -1632,8 +1632,8 @@ that successive retries would use wait times of 1, 2, 4, 8, and 16 seconds.
 
 
 #### With external configuration
-Note: the configuration of automatic retries via external configuration
-is currently supported only in the Go and Python SDKs.
+Note: The configuration of automatic retries via external configuration
+is currently supported only in the Go, Node, and Python SDKs.
 
 If you are constructing your service client with external configuration properties, you can
 enable automatic retries in the service client by setting
