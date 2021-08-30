@@ -1527,8 +1527,11 @@ is customizable to support unique requirements.
 </details>
 <details><summary>Java</summary>
 
-The Java SDK supports a limited retry feature that will retry `429 - Too Many Requests` errors
-with exponential backoff if no `Retry-After` response header is present.
+The Java SDK supports a generalized retry feature that can automatically retry on common
+errors.  The default configuration (up to 4 retries with max retry interval of 30 seconds,
+along with exponential backoff if no `Retry-After` response header is present)
+should suffice for most applications, but the retry feature
+is customizable to support unique requirements.
 
 </details>
 <details><summary>Node</summary>
@@ -1578,7 +1581,29 @@ is found in the response, then an exponential backoff policy will be used such
 that successive retries would use wait times of 1, 2, and 4 seconds.
 </details>
 <details><summary>Java</summary>
-Details about this feature in the Java SDK will be added in the future.
+To enable automatic retries programmatically in the Java SDK, use the service client's
+`enableRetries()` method, as in this example:  
+
+```java
+// Construct the service client.
+myService = new ExampleServiceV1(serviceName, authenticator);
+
+// Enable automatic retries (with max retries 3, max interval 20 secs).
+myService.enableRetries(3, 20);
+
+// Create the resource.
+CreateResourceOptions options = /* construct options model */
+Response<Resource> response = myService.createResource(options).execute();
+```
+
+In this example, the `createResource()` operation will be retried up to 3 times
+with a maximum retry interval of 20 seconds.
+
+If a "retryable" error response (e.g. 429, 503, etc.) contains
+the `Retry-After` header, the value of that response header will be used
+as the retry interval, subject to a maximum of 20 seconds.  If no `Retry-After` header
+is found in the response, then an exponential backoff policy will be used such
+that successive retries would use wait times of 1, 2, and 4 seconds..
 </details>
 <details><summary>Node.js</summary>
 To enable automatic retries programmatically in the Node SDK, use the service client's
@@ -1632,9 +1657,6 @@ that successive retries would use wait times of 1, 2, 4, 8, and 16 seconds.
 
 
 #### With external configuration
-Note: The configuration of automatic retries via external configuration
-is currently supported only in the Go, Node, and Python SDKs.
-
 If you are constructing your service client with external configuration properties, you can
 enable automatic retries in the service client by setting
 properties as in the example below for the "Example Service" service:  
