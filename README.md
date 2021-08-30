@@ -1519,7 +1519,7 @@ This section provides information about how to enable automatic retries.
 <details><summary>Go</summary>
 
 The Go SDK supports a generalized retry feature that can automatically retry on common
-errors.  The default configuration (up to 4 retries with max retry interval of 30 seconds,
+errors. The default configuration (up to 4 retries with max retry interval of 30 seconds,
 along with exponential backoff if no `Retry-After` response header is present)
 should suffice for most applications, but the retry feature
 is customizable to support unique requirements.
@@ -1536,13 +1536,17 @@ is customizable to support unique requirements.
 </details>
 <details><summary>Node</summary>
 
-The Node SDK does not currently support automatic retries.
+The Node SDK supports a generalized retry feature that can automatically retry on common
+errors. The default configuration (up to 4 retries, initial retry interval of 1 second,
+max retry interval of 30 seconds, and exponential backoff if no `Retry-After` response
+header is present) should suffice for most applications, but the retry feature is
+customizable to support unique requirements.
 
 </details>
 <details><summary>Python</summary>
 
 The Python SDK supports a generalized retry feature that can automatically retry on common
-errors.  The default configuration (up to 4 retries with initial retry interval 1 second,
+errors. The default configuration (up to 4 retries with initial retry interval 1 second,
 along with exponential backoff if no `Retry-After` response header is present)
 should suffice for most applications, but the retry feature
 is customizable to support unique requirements.
@@ -1602,7 +1606,29 @@ is found in the response, then an exponential backoff policy will be used such
 that successive retries would use wait times of 1, 2, and 4 seconds..
 </details>
 <details><summary>Node.js</summary>
-The Node.js SDK currently does not support automatic retries.
+To enable automatic retries programmatically in the Node SDK, use the service client's
+`enableRetries()` method, as in this example:
+
+```node
+// Construct the service client.
+const myService = new ExampleServiceV1({ authenticator: myAuthenticator })
+
+// Enable automatic retries (with max retries 5, max retry interval 3 seconds).
+myService.enableRetries({ maxRetries: 5, maxRetryInterval: 20 });
+
+// Create the resource.
+const response = myService.createResource({ resourceId: "3", name: "Sample Book Title" });
+```
+
+In this example, the `createResource()` operation will be retried up to 5 times
+with a maximum retry interval of 3 seconds.
+
+If a "retryable" error response (e.g. 429, 503, etc.) contains
+the `Retry-After` header, the value of that response header will be used
+as the retry interval.  If no `Retry-After` header
+is found in the response, then an exponential backoff policy will be used such
+that successive retries would use wait times of 1, 2, 4, 8, and 16 seconds
+up to the `maxRetryInterval`.
 </details>
 <details><summary>Python</summary>
 To enable automatic retries programmatically in the Python SDK, use the service client's
