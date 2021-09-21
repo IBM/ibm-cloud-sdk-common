@@ -135,7 +135,10 @@ sub   rsa2048 2020-11-22 [E] [expires: 2022-11-22]
 ### 3.3: Publish your public key
 In order to publish artifacts on Maven Central, you will need to publish
 your public key on a key server so that Sonatype can verify your artifacts
-before releasing them to Maven Central.  Use this command to do this:
+before releasing them to Maven Central.  
+
+#### 3.3.1 Via gpg command line
+One way to publish your public key is to use the gpg command like this:
 ```
 $ gpg --keyserver keys.openpgp.org --send-keys B265BB91D80124E463C63119EC4158B05D352E09
 gpg: sending key EC4158B05D352E09 to hkp://keys.openpgp.org
@@ -143,10 +146,27 @@ gpg: sending key EC4158B05D352E09 to hkp://keys.openpgp.org
 ```
 Be sure to use your key's id in place of `B265BB91D80124E463C63119EC4158B05D352E09` :).
 
+#### 3.3.2 Via key server web interface
+
+Sometimes, the gpg command line method mentioned above will fail with a "connection timeout" or other networking-related error.
+Alternatively, you can publish your public key via the key server's web interface.
+To do this, you first need to export your public key like this:
+```
+$ gpg --armor --export B265BB91D80124E463C63119EC4158B05D352E09 > mykey.pub
+```
+Be sure to use your key's id in place of `B265BB91D80124E463C63119EC4158B05D352E09` :).
+
+Next, [open the keyserver web interface](https://keys.openpgp.org/) then click the "upload"
+link below the search entry field.
+Next, click "Browse" and select the file to which you exported your public key
+in the previous step (e.g. `mykey.pub`), then click the "Upload" button.
+
+#### 3.3.3 Verify your key was published
 Next, you can [verify that your key was published](https://keys.openpgp.org/).
-Open that page and enter the keyid mentioned in the output from the `gpg` command above
-(e.g. `EC4158B05D352E09` in this example, but use your own keyid value), 
-then click `Search`.   Your public key should be returned as a result of the search.
+Open that page and enter the key id (either the full key id or the last 16 characters... e.g. 
+`B265BB91D80124E463C63119EC4158B05D352E09` or `EC4158B05D352E09` from the example above, but be sure
+to use your own key id), then click `Search`.  
+Your public key should be returned as a result of the search.
 
 Publishing your public key also allows users of your artifacts to verify them with the
 gpg command:
@@ -155,8 +175,9 @@ $ gpg --verify <jar_filename>.asc
 ```
 
 ### 3.4: Export your key
-After following the steps above, you should have a new signing key within your local keystore.
-This key will need to be exported and then added to your project's git repository
+After following the steps above, you should have a new signing key (a public/private key pair)
+within your local keystore.
+This key will need to be exported, encrypted, and then added to your project's git repository
 so that your Travis build can import the key into the Travis build agent's local
 keystore to allow the maven build running on that agent to automatically sign your artifacts
 with your signing key.
@@ -249,7 +270,7 @@ openssl aes-256-cbc -K $encrypted_4b7d603e7466_key -iv $encrypted_4b7d603e7466_i
 ```
 Next, modify the `openssl` command found inside the `build/setupSigning.sh` script to reflect the
 names of the environment variables from the `openssl` command displayed by the
-`travis encrypt-file` command.
+`travis encrypt-file` command (or just copy the entire openssl command and replace the one in the script.
 In the example above, the environment variable names are
 `$encrypted_4b7d603e7466_key` and `$encrypted_4b7d603e7466_iv`.
 The `travis encrypt-file` command added these environment variables to your project's Travis build settings.
