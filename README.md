@@ -1952,16 +1952,16 @@ In the case of an error response from the server endpoint, the Python SDK will t
 with the following fields:  
 - `code`: the HTTP status code that was returned in the response
 - `message`: a message that describes the error
-- `info`: a dictionary of additional information about the error
 
 Here's an example:
 
 ```python
+from ibm_cloud_sdk_core import ApiException
+
 try:
   response = my_service.get_resource(resource_id='does not exist')
 except ApiException as e:
   print("Method failed with status code " + str(e.code) + ": " + e.message)
-  print("Detailed error information: " + e.info)
 ```
 
 </details>
