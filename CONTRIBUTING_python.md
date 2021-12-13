@@ -24,7 +24,6 @@ by the IBM OpenAPI SDK Generator.
 - [Running the Tests](#running-the-tests)
   * [Unit tests](#unit-tests)
   * [Integration tests](#integration-tests)
-- [Encrypting secrets](#encrypting-secrets)
 - [Code Coverage](#code-coverage)
 - [Developer's Certificate of Origin 1.1](#developers-certificate-of-origin-11)
 - [Additional Resources](#additional-resources)
@@ -181,15 +180,12 @@ Integration tests use an actual service endpoint, so you need to provide credent
 
 The integration test framework will skip integration tests for any service that does not have credentials.
 
-To provide credentials for the integration tests, export your credentials as environment variables.
+To provide credentials for the integration tests, store the credentials as properties within a .env file.
 
 To run only the integration tests:
 * `python -m pytest test/integration`
-
-## Encrypting secrets
-To run integration tests within a Travis build, you'll need to encrypt the file containing the
-required external configuration properties.
-For details on how to do this, please see [Encrypting Secrets](EncryptingSecrets.md).
+To run only a specific integration test:
+* `python -m pytest test/integration/test_example_service_v1.py`
 
 ## Code Coverage
 This project uses [coverage](https://pypi.org/project/coverage/) to measure code coverage.

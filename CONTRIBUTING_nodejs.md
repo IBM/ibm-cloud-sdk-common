@@ -24,8 +24,8 @@ by the IBM OpenAPI SDK Generator.
   * [Running Tests](#running-tests)
     + [Unit Tests](#unit-tests)
     + [Integration Tests](#integration-tests)
-    + [Running a Single Test](#running-a-single-test)
-  * [Encrypting secrets](#encrypting-secrets)
+      - [Running all Integration Tests](#running-all-integration-tests)
+      - [Running a Single Integration Test](#running-a-single-integration-test)
 - [Developer's Certificate of Origin 1.1](#developers-certificate-of-origin-11)
 - [Additional Resources](#additional-resources)
 
@@ -121,9 +121,7 @@ an effective integration test for the service.
 
 3. Update the service table in the `README.md` file to add an entry for the new service.
 
-4. Update `scripts/typedoc/generate_typedoc.sh` to add the new service to the `typedoc` command.
-
-5. Update `.gitignore` to add an entry for your service to the `service-specific tsc outputs`, like this:  
+4. Update `.gitignore` to add an entry for your service to the `service-specific tsc outputs`, like this:  
 ```
 # service-specific tsc outputs (js files)
 my-service/*.js
@@ -131,7 +129,7 @@ my-service/*.js
 This will ensure that the typescript build outputs are not inadvertently committed to the
 git repository.
 
-6. Repeat the steps in this section for each service to be included in your project.
+5. Repeat the steps in this section for each service to be included in your project.
 
 
 ## Running Tests
@@ -141,26 +139,22 @@ Out of the box, `npm run test` runs linting, unit tests, and integration tests (
 To run only the unit tests (sufficient for most cases), use `npm run test-unit`.
 
 ### Integration Tests
-To run integration tests, copy `test/resources/auth.example.js` to `test/resources/auth.js` and fill in
-credentials for the service(s) you wish to test.
 
-Currently this enables integration tests for all services so, unless all credentials are supplied, some tests will fail.
-(This will be improved eventually.)
+#### Running all Integration Tests
+To run all of the project's integration tests, you can run `npm run test-integration`.
+Note that in order to run all of an SDK project's integration tests, you'll need to first make sure
+that the required credentials files (one per service) are present and located in the project's root directory. 
 
-### Running a Single Test
-To run only a specific test, pass the file name to `jest`. For example:
+#### Running a Single Integration Test
+To run only a specific test, pass the file name to `jest`, like this example:
 
 ```
-npm i -g jest
 jest test/integration/example-service.v1.test.js
 ```
 
-See [the jest documentation](https://jestjs.io/docs/en/cli) for all the options you can use to further configure `jest`.
+Note: if you do not yet have jest installed locally, you can run `npm i -g jest` to install it.
 
-## Encrypting secrets
-To run integration tests within a Travis build, you'll need to encrypt the file containing the
-required external configuration properties.
-For details on how to do this, please see [Encrypting Secrets](EncryptingSecrets.md).
+See [the jest documentation](https://jestjs.io/docs/en/cli) for all the options you can use to further configure `jest`.
 
 # Developer's Certificate of Origin 1.1
 By making a contribution to this project, I certify that:

@@ -24,7 +24,6 @@ by the IBM OpenAPI SDK Generator.
 - [Running tests](#running-tests)
   * [Unit tests](#unit-tests)
   * [Integration tests](#integration-tests)
-- [Encrypting secrets](#encrypting-secrets)
 - [Developer's Certificate of Origin 1.1](#developers-certificate-of-origin-11)
 - [Additional Resources](#additional-resources)
 
@@ -160,11 +159,6 @@ To run the integration test for a single service:
 - Make sure you have provided the appropriate credentials for the service being tested
 - `cd <package-dir>` (e.g. `cd globalsearchv2`)
 - `go test -tags=integration`
-
-## Encrypting secrets
-To run integration tests within a Travis build, you'll need to encrypt the file containing the
-required external configuration properties.
-For details on how to do this, please see [Encrypting Secrets](EncryptingSecrets.md).
 
 ## Developer's Certificate of Origin 1.1
 By making a contribution to this project, I certify that:  
