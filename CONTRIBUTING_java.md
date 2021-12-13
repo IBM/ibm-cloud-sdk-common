@@ -23,7 +23,6 @@ by the IBM OpenAPI SDK Generator.
 - [Adding a new service](#adding-a-new-service)
 - [Writing Tests](#writing-tests)
 - [Running Tests](#running-tests)
-- [Encrypting secrets](#encrypting-secrets)
 - [Code Coverage](#code-coverage)
 - [Generating Javadocs](#generating-javadocs)
 - [Publishing build artifacts](#publishing-build-artifacts)
@@ -189,11 +188,6 @@ To run a specific test, add the name of the test method, for example:
 ```
 mvn test -Dtest=SdkCommonTest#testGetSdkHeaders
 ```
-
-## Encrypting secrets
-To run integration tests within a Travis build, you'll need to encrypt the file containing the
-required external configuration properties.
-For details on how to do this, please see [Encrypting Secrets](EncryptingSecrets.md).
 
 ## Code Coverage
 This repo uses [Jacoco][jacoco] to measure code coverage. To obtain a code coverage report, run `mvn clean verify`
