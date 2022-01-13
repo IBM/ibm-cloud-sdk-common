@@ -31,7 +31,6 @@ This project contains documentation and other resources related to IBM Cloud SDK
     + [1. Create an IAM authenticator programmatically](#1-create-an-iam-authenticator-programmatically)
     + [2. Create an IAM authenticator from configuration](#2-create-an-iam-authenticator-from-configuration)
     + [3. Create a Bearer Token authenticator programmatically](#3-create-a-bearer-token-authenticator-programmatically)
-    + [Additional Information](#additional-information)
   * [Passing parameters to operations](#passing-parameters-to-operations)
   * [Receiving operation responses](#receiving-operation-responses)
   * [Sending HTTP headers](#sending-http-headers)
@@ -511,22 +510,61 @@ those properties are then returned to the SDK and any subsequent steps are bypas
 
 
 ### Authentication
-IBM Cloud Services use token-based Identity and Access Management (IAM) authentication.
+IBM Cloud SDKs support a variety of authentication schemes through the use of authenticators.
 
-With IAM authentication, you supply an API key to obtain an access token, and this access token is
-then included with each API request to provide the required authentication information.
-Access tokens are valid only for a limited amount of time and must be refreshed or reacquired.
+An authenticator is a component that supports a specific type of authentication and is associated
+with a service client.   When an operation is invoked on a service client, the service client
+uses the associated authenticator instance to "authenticate" the outbound request, which typically
+involves adding an Authorization header containing an appropriate security token.
 
-To provide the proper authentication information to the SDK, you can use one of the following scenarios:
+Examples of authenticators include: 
+- Basic Authentication: supports a basic auth username and password
+- Bearer Token Authentication: supports a user-supplied bearer token
+- Identity and Access Management (IAM) Authentication: supports a user-supplied API key that is automatically
+exchanged for an IAM access token by interacting with the IAM token service.
+- Container Authentication: supports IAM-based authentication within a Kubernetes-managed compute resource in which
+the Compute Resource Identity feature is configured
+- VPC Instance Authentication: supports IAM-based authentication within a VPC-managed compute resource
+in which the Compute Resource Identity feature is configured
+- Cloud Pack for Data Authentication: supports authentication flows implemented specifically as part of
+the Cloud Pack for Data offering
+
+Detailed information about these authenticators can be found in the various language-specific
+core libraries:
+- [Go](https://github.com/IBM/go-sdk-core/blob/main/Authentication.md)
+- [Java](https://github.com/IBM/java-sdk-core/blob/main/Authentication.md)
+- [Node.js](https://github.com/IBM/node-sdk-core/blob/main/Authentication.md)
+- [Python](https://github.com/IBM/python-sdk-core/blob/main/Authentication.md)
+
+IBM Cloud services support token-based Identity and Access Management (IAM) authentication.
+The information within the rest of this section will focus on the use of Identity and Access Management
+(IAM) authentication and will demonstrate how you can construct and use an IAM Authenticator instance.
+For other types of authenticators, you can see similar usage details within the language-specific
+documentation linked above.
+
+With IAM authentication, you supply an API key and the authenticator will exchange that API key
+for an access token (a bearer token) by interacting with the IAM token service.
+The access token is then added (via the Authorization header) to each outbound request
+to provide the required authentication information.
+
+Access tokens are valid only for a limited amount of time and must be
+periodically refreshed. The IAM authenticator will automatically detect the need
+to refresh the access token and will interact with the IAM token service as needed to obtain
+a fresh access token, relieving the SDK user from that burden.
+
+There are two ways to construct and use an IAM authenticator:
+- programmatically
+- from configuration
 
 #### 1. Create an IAM authenticator programmatically
-In this scenario, you construct an IAM authenticator instance, supplying your IAM api key programmatically.
+In this scenario, you construct an IAM authenticator instance,
+supplying your IAM API key programmatically.
 
-The SDK's IAM authenticator will:  
+The IAM authenticator will:  
 - Use your API key to obtain an access token from the IAM token service
 - Ensure that the access token is valid
-- Include the access token in each outgoing request
-- Refresh or reacquire the access token when it expires
+- Include the access token in each outbound request within an Authorization header
+- Refresh the access token when it expires
 
 ##### Examples
 
@@ -535,21 +573,29 @@ The SDK's IAM authenticator will:
 ```go
 import {
     "github.com/IBM/go-sdk-core/v5/core"
-    "github.com/IBM/mysdk/exampleservicev1"
+    "<appropriate-git-repo-url>/exampleservicev1"
+}
+...
+// Create the authenticator.
+authenticator, err := core.NewIamAuthenticatorBuilder().
+    SetApiKey("myapikey").
+    Build()
+if err != nil {
+    panic(err)
 }
 
-authenticator := &core.IamAuthenticator{
-    ApiKey: "<iam-api-key>",
-}
-
+// Create the service options struct.
 options := &exampleservicev1.ExampleServiceV1Options{
     Authenticator: authenticator,
 }
 
-myService, err := exampleservicev1.NewExampleServiceV1(options)
+// Construct the service instance.
+service, err := exampleservicev1.NewExampleServiceV1(options)
 if err != nil {
     panic(err)
 }
+
+// 'service' can now be used to invoke operations.
 ```
 
 </details>
@@ -568,55 +614,63 @@ ExampleService service = new ExampleService(ExampleService.DEFAULT_SERVICE_NAME,
 <details><summary>Java - for Java core version 9.7.0 and above</summary>
 
 ```java
-import com.ibm.cloud.sdk.core.security.Authenticator;
 import com.ibm.cloud.sdk.core.security.IamAuthenticator;
-import com.ibm.cloud.mysdk.example_service.v1.ExampleService;
-
-Authenticator authenticator = new IamAuthenticator.Builder()
-    .apikey("<iam-api-key>")
+import <sdk_base_package>.ExampleService.v1.ExampleService;
+...
+// Create the authenticator.
+IamAuthenticator authenticator = new IamAuthenticator.Builder()
+    .apikey("myapikey")
     .build();
+
+// Create the service instance.
 ExampleService service = new ExampleService(ExampleService.DEFAULT_SERVICE_NAME, authenticator);
+
+// 'service' can now be used to invoke operations.
 ```
 
 </details>
 <details><summary>Node.js</summary>
 
 ```js
-const ExampleServiceV1 = require('mysdk/example-service/v1');
-const { IamAuthenticator } = require('mysdk/auth');
+const { IamAuthenticator } = require('ibm-cloud-sdk-core');
+const ExampleServiceV1 = require('<sdk-package-name>/example-service/v1');
 
 const authenticator = new IamAuthenticator({
-  apikey: '<iam-api-key>',
+  apikey: 'myapikey',
 });
 
-const myService = new ExampleServiceV1({
+const options = {
   authenticator,
-});
+};
+
+const service = new ExampleServiceV1(options);
+
+// 'service' can now be used to invoke operations.
 ```
 
 </details>
 <details><summary>Python</summary>
 
 ```python
-from mysdk import ExampleServiceV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from <sdk-package-name>.example_service_v1 import *
 
-authenticator = IAMAuthenticator('<iam-api-key>')
-my_service = ExampleServiceV1(authenticator=authenticator)
+# Create the authenticator.
+authenticator = IAMAuthenticator('myapikey')
+
+# Construct the service instance.
+service = ExampleServiceV1(authenticator=authenticator)
+
+# 'service' can now be used to invoke operations.
 ```
 
 </details>
 
 #### 2. Create an IAM authenticator from configuration
-In this scenario, you define the IAM api key in external configuration properties, and then use the
-SDK's authenticator factory to construct an IAM authenticator using the configured IAM api key.
-This allows you to avoid hard-coding your api key within
+In this scenario, you define the IAM API key in external configuration properties, and then
+construct the service client using the SDK's configuration-based interface.
+This allows you to avoid hard-coding your API key within
 your application code or having to concern yourself with loading it from configuration properties.
-
-The SDK's authenticator factory will:
-- Retrieve your external configuration to obtain your IAM api key
-- Construct an IAM authenticator using the configured IAM api key
-- The IAM authenticator will then behave exactly the same as the authenticator constructed in Scenario 1 above.
 
 ##### Examples
 The programming examples in this section assume that external configuration properties like the following have been
@@ -624,67 +678,69 @@ configured:
 
 ```sh
 export EXAMPLE_SERVICE_AUTH_TYPE=iam
-export EXAMPLE_SERVICE_APIKEY=<iam-api-key>
+export EXAMPLE_SERVICE_APIKEY=myapikey
 ```
 
 <details><summary>Go</summary>
 
 ```go
 import {
-    "github.com/IBM/go-sdk-core/v5/core"
-    "github.com/IBM/mysdk/exampleservicev1"
+    "<appropriate-git-repo-url>/exampleservicev1"
 }
+...
 
-authenticator, err := core.GetAuthenticatorFromEnvironment(exampleservicev1.DefaultServiceName)
-if err != nil {
-   panic(err)
-}
-
+// Create the service options struct.
 options := &exampleservicev1.ExampleServiceV1Options{
-    Authenticator: authenticator,
+    ServiceName:   "example_service",
 }
 
-myService, err := exampleservicev1.NewExampleServiceV1(options)
+// Construct the service instance.
+service, err := exampleservicev1.NewExampleServiceV1UsingExternalConfig(options)
 if err != nil {
     panic(err)
 }
+
+// 'service' can now be used to invoke operations.
 ```
 
 </details>
 <details><summary>Java</summary>
 
 ```java
-import com.ibm.cloud.sdk.core.security.Authenticator;
-import com.ibm.cloud.sdk.core.security.ConfigBasedAuthenticatorFactory;
-import com.ibm.cloud.mysdk.example_service.v1.ExampleService;
+import <sdk_base_package>.ExampleService.v1.ExampleService;
+...
 
-Authenticator authenticator = ConfigBasedAuthenticatorFactory.getAuthenticator(ExampleService.DEFAULT_SERVICE_NAME);
-ExampleService service = new ExampleService(ExampleService.DEFAULT_SERVICE_NAME, authenticator);
+// Create the service instance.
+ExampleService service = ExampleService.newInstance("example_service");
+
+// 'service' can now be used to invoke operations.
 ```
 
 </details>
 <details><summary>Node.js</summary>
 
 ```js
-const ExampleServiceV1 = require('mysdk/example-service/v1');
-const { IamAuthenticator, getAuthenticatorFromEnvironment } = require('mysdk/auth');
+const ExampleServiceV1 = require('<sdk-package-name>/example-service/v1');
 
-const authenticator = getAuthenticatorFromEnvironment(ExampleServiceV1.DEFAULT_SERVICE_NAME);
+const options = {
+  serviceName: 'example_service',
+};
 
-const myService = new ExampleServiceV1({
-  authenticator,
-});
+const service = ExampleServiceV1.newInstance(options);
+
+// 'service' can now be used to invoke operations.
 ```
 
 </details>
 <details><summary>Python</summary>
 
 ```python
-from mysdk import ExampleServiceV1
-from ibm_cloud_sdk_core import get_authenticator_from_environment
+from <sdk-package-name>.example_service_v1 import *
 
-authenticator = get_authenticator_from_environment(ExampleServiceV1.DEFAULT_SERVICE_NAME)
-my_service = ExampleServiceV1(authenticator=authenticator)
+# Construct the service instance.
+service = ExampleServiceV1.new_instance(service_name='example_service')
+
+# 'service' can now be used to invoke operations.
 ```
 
 </details>
@@ -705,12 +761,16 @@ Bearer Token authenticator because you must manage the access token yourself.
 ```go
 import {
     "github.com/IBM/go-sdk-core/v5/core"
-    "github.com/IBM/mysdk/exampleservicev1"
+    "<appropriate-git-repo-url>/exampleservicev1"
+}
+...
+// Create the authenticator.
+bearerToken := // ... obtain bearer token value ...
+authenticator := core.NewBearerTokenAuthenticator(bearerToken)
+if err != nil {
+    panic(err)
 }
 
-authenticator := &core.BearerTokenAuthenticator{
-    BearerToken: "<access-token>",
-}
 
 // Create the service options struct.
 options := &exampleservicev1.ExampleServiceV1Options{
@@ -718,14 +778,16 @@ options := &exampleservicev1.ExampleServiceV1Options{
 }
 
 // Construct the service instance.
-myservice, err := exampleservicev1.NewExampleServiceV1(options)
+service, err := exampleservicev1.NewExampleServiceV1(options)
+if err != nil {
+    panic(err)
+}
 
+// 'service' can now be used to invoke operations.
 ...
-
-// Later when the access token expires, the application must acquire
-// a new access token, then set it on the authenticator.
-// Subsequent request invocations will include the new access token.
-authenticator.BearerToken = "<new-access-token>"
+// Later, if your bearer token value expires, you can set a new one like this:
+newToken := // ... obtain new bearer token value
+authenticator.BearerToken = newToken
 ```
 
 </details>
@@ -733,68 +795,69 @@ authenticator.BearerToken = "<new-access-token>"
 
 ```java
 import com.ibm.cloud.sdk.core.security.BearerTokenAuthenticator;
-import com.ibm.cloud.mysdk.example_service.v1.ExampleService;
+import <sdk_base_package>.ExampleService.v1.ExampleService;
+...
+String bearerToken = // ... obtain bearer token value ...
 
-Authenticator authenticator = new BearerTokenAuthenticator("<access-token>");
+// Create the authenticator.
+BearerTokenAuthenticator authenticator = new BearerTokenAuthenticator(bearerToken);
+
+// Create the service instance.
 ExampleService service = new ExampleService(ExampleService.DEFAULT_SERVICE_NAME, authenticator);
 
+// 'service' can now be used to invoke operations.
 ...
-
-// Later when the access token expires, the application must acquire
-// a new access token, then set it on the authenticator.
-// Subsequent request invocations will include the new access token.
-authenticator.setBearerToken("<new-access-token>")
+// Later, if your bearer token value expires, you can set a new one like this:
+newToken = // ... obtain new bearer token value
+authenticator.setBearerToken(newToken);
 ```
 
 </details>
 <details><summary>Node.js</summary>
 
 ```js
-const ExampleServiceV1 = require('mysdk/example-service/v1');
-const { BearerTokenAuthenticator } = require('mysdk/auth');
+const { BearerTokenAuthenticator } = require('ibm-cloud-sdk-core');
+const ExampleServiceV1 = require('<sdk-package-name>/example-service/v1');
 
+const bearerToken = // ... obtain bearer token value ...
 const authenticator = new BearerTokenAuthenticator({
-  bearerToken: '<access-token>',
+  bearerToken: bearerToken,
 });
 
-const myService = new ExampleServiceV1({
+const options = {
   authenticator,
-});
-...
+};
 
-// Later when the access token expires, the application must acquire
-// a new access token, then set it on the authenticator.
-// Subsequent request invocations will include the new access token.
-authenticator.setBearerToken('<new-access-token>')
+const service = new ExampleServiceV1(options);
+
+// 'service' can now be used to invoke operations.
+...
+// Later, if your bearer token value expires, you can set a new one like this:
+newToken = // ... obtain new bearer token value
+authenticator.bearerToken = newToken;
 ```
 
 </details>
 <details><summary>Python</summary>
 
 ```python
-from mysdk import ExampleServiceV1
 from ibm_cloud_sdk_core.authenticators import BearerTokenAuthenticator
+from <sdk-package-name>.example_service_v1 import *
 
-authenticator = BearerTokenAuthenticator('<access-token>')
-my_service = ExampleServiceV1(authenticator=authenticator)
+# Create the authenticator.
+authenticator = BearerTokenAuthenticator(<your_bearer_token>)
 
+# Construct the service instance.
+service = ExampleServiceV1(authenticator=authenticator)
+
+# 'service' can now be used to invoke operations.
 ...
-
-// Later when the access token expires, the application must acquire
-// a new access token, then set it on the authenticator.
-// Subsequent request invocations will include the new access token.
-authenticator.set_bearer_token('<new-access-token>')
+# Later, if your bearer token value expires, you can set a new one like this:
+new_token = '<new token>'
+authenticator.set_bearer_token(new_token);
 ```
 
 </details>
-
-#### Additional Information
-For more details about authentication, including the full set of authentication schemes supported by
-the SDK Core library for your language, see these links:
-- [Go](https://github.com/IBM/go-sdk-core/blob/main/Authentication.md)
-- [Java](https://github.com/IBM/java-sdk-core/blob/main/Authentication.md)
-- [Node.js](https://github.com/IBM/node-sdk-core/blob/main/Authentication.md)
-- [Python](https://github.com/IBM/python-sdk-core/blob/main/Authentication.md)
 
 ### Passing parameters to operations
 For certain languages (namely Go, Java and Node.js) a structure is defined for each operation
