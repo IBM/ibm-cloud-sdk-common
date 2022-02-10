@@ -2103,7 +2103,8 @@ myService.configureClient(options);
 <details><summary>Node.js</summary>
 
 For Node.js, the SDK uses the [`debug`](https://github.com/visionmedia/debug) package for logging.
-Specify the desired environment variable to enable logging debug messages.
+Specify the desired environment variable to enable logging debug messages.  
+For more details, see [this section of the Node SDK Core library's README.md](https://github.com/IBM/node-sdk-core#logging).
 
 </details>
 <details><summary>Python</summary>
