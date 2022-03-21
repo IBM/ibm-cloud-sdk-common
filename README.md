@@ -2213,6 +2213,32 @@ const resourceMetadata = async () => {
 The Python SDK supports only synchronous execution of service methods.
 </details>
 
+### Using Python Service Objects
+
+All properties and methods of the service can be accessed by importing the main service class from the service package.
+
+```
+from mysdk import ExampleServiceV1
+```
+
+All properties will be passed in and returned as python dictionaries.
+
+<details><summary>Python Example</summary>
+
+If you want to access the `Resource` object from `ExampleServiceV1`, it would be structed like the following:
+
+```
+from mysdk import ExampleServiceV1
+
+my_service = ExampleServiceV1()
+
+my_resource = my_service.get_resource(resource_id="my_id") // my_resource now represents a Resource object as a dictionary
+```
+
+</details>
+
+If you have a special case and require access to the underlying classes beyond the main service class, you can import these properties as classes from the service module. Ex: `from PACKAGE_NAME.MODULE_NAME import *`
+
 ## Questions
 
 If you are having difficulties using an SDK or have a question about the IBM Cloud Services,
