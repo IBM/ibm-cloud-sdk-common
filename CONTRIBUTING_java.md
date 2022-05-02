@@ -128,7 +128,7 @@ To generate the code into your project, run these commands:
 ```sh
 cd <project-root>
 
-openapi-sdkgen.sh generate -g ibm-java -i my-service.json -o . --api-package <base-package-name>
+openapi-sdkgen.sh generate -g ibm-java -i my-service.json -o ./modules --api-package <base-package-name>
 
 ```
 
