@@ -33,6 +33,7 @@ This project contains documentation and other resources related to IBM Cloud SDK
     + [3. Create a Bearer Token authenticator programmatically](#3-create-a-bearer-token-authenticator-programmatically)
   * [Passing parameters to operations](#passing-parameters-to-operations)
   * [Receiving operation responses](#receiving-operation-responses)
+  * [Pagination](#pagination)
   * [Sending HTTP headers](#sending-http-headers)
     + [Sending HTTP headers with all requests](#sending-http-headers-with-all-requests)
     + [Sending request HTTP headers](#sending-request-http-headers)
@@ -1102,6 +1103,247 @@ This would display a `DetailedResponse` instance having the structure:
     'headers': { <http response headers> },
     'status_code': <http status code>
 }
+```
+
+</details>
+
+
+### Pagination
+For list-type operations that comply with the
+[API Handbook's pagination requirements](https://cloud.ibm.com/docs/api-handbook?topic=api-handbook-pagination),
+SDKs may contain special "Pager" classes (Java, Node.js and Python) or structs (Go) that can be used 
+as a convenience wrapper around the list-type operation.
+
+This section provides language-specific examples of how to use these Pager classes and structs.
+Each Pager class or struct will contain the following methods (the actual language-specific names
+will be provided below in each language section):
+  - `has_next()`: returns true if there are potentially more items to be retrieved, or false otherwise.
+  - `get_next()`: returns the next page of items by invoking the list-type operation.  The number of items returned
+  depends on the selected page size (limit parameter) and the number of remaining items that are available to be returned.
+  - `get_all()`: returns all of the available items by repeatedly invoking the list-type operation.  **This operation should be
+  used with caution**.  The use of this method with certain resource types might result in an excessive amount of data being returned.
+  If in doubt, use the `has_next()` and `get_next()` methods to retrieve a single page at a time, and process each page before
+  retrieving the next page.
+
+One thing to note is that each Pager class or struct uses the corresponding list-type operation to
+retrieve the actual items, and simply provides a more convenient way to invoke the operation.
+Examples will be provided in each language section below.
+
+For the purposes of these examples, suppose that an API defines a `Cloud` resource, and includes a `list_clouds` operation that supports
+[`token-based pagination`](https://cloud.ibm.com/docs/api-handbook?topic=api-handbook-pagination#token-based-pagination).
+The operation returns an instance of the `CloudCollection` schema, which contains a property named `clouds` which is
+an array of `Cloud` instances. In this example, the Pager class or struct would be named `CloudsPager`.
+
+<details><summary>Go</summary>
+
+For Go, the names of the methods provided in each Pager struct are:
+  - `HasNext()`
+  - `GetNext()`
+  - `GetAll()`
+
+This example shows how to use the `HasNext()` and `GetNext()` methods to
+retrieve results one page at a time:
+
+```go
+// Assume that 'myService' has already been initialized as in other code examples.
+
+// Construct the 'ListClouds' options model and set page size to 10.
+listCloudsOptions := myService.NewListCloudsOptions()
+listCloudsOptions.SetLimit(int64(10))
+
+// Construct the Pager.
+pager, err := myService.NewCloudsPager(listCloudsOptions)
+
+// Define a slice of Cloud instances to hold all of the results.
+var allResults []exampleservicev1.Cloud
+
+// Retrieve each page of results and add to "allResults".
+for pager.HasNext() {
+  nextPage, err := pager.GetNext()
+  allResults = append(allResults, nextPage...)
+}
+
+// "allResults" will now contain all the Cloud instances that were
+// returned by the successive invocations of the ListClouds() operation.
+```
+
+This example shows how to use the `GetAll()` method to retrieve all the available results:
+
+```go
+// Assume that 'myService' has already been initialized as in other code examples.
+
+// Construct the 'ListClouds' options model and set page size to 10.
+listCloudsOptions := myService.NewListCloudsOptions()
+listCloudsOptions.SetLimit(int64(10))
+
+// Construct the Pager.
+pager, err := myService.NewCloudsPager(listCloudsOptions)
+
+// Retrieve all of the results.
+allResults, err := pager.GetAll()
+
+// "allResults" will now contain all the Cloud instances that were
+// returned by the successive invocations of the ListClouds() operation.
+```
+
+</details>
+<details><summary>Java</summary>
+
+For Java, the names of the methods provided in each Pager class are:
+  - `hasNext()`
+  - `getNext()`
+  - `getAll()`
+
+This example shows how to use the `hasNext()` and `getNext()` methods to
+retrieve results one page at a time:
+
+```java
+// Assume that 'myService' has already been initialized as in other code examples.
+
+// Construct the 'listClouds' options model and set page size to 10.
+ListCloudsOptions listCloudsOptions = new ListCloudsOptions.Builder()
+  .limit(10)
+  .build();
+
+// Define a list of Cloud instances to hold all of the results.
+List<Cloud> allResults = new ArrayList<>();
+
+// Construct the Pager.
+CloudsPager pager = new CloudsPager(myService, listCloudsOptions);
+
+// Retrieve each page of results and add to "allResults".
+while (pager.hasNext()) {
+  List<Cloud> nextPage = pager.getNext();
+  allResults.addAll(nextPage);
+}
+
+// "allResults" will now contain all the Cloud instances that were
+// returned by the successive invocations of the listClouds() operation.
+```
+
+This example shows how to use the `getAll()` method to retrieve all the available results:
+
+```java
+// Assume that 'myService' has already been initialized as in other code examples.
+
+// Construct the 'listClouds' options model and set page size to 10.
+ListCloudsOptions listCloudsOptions = new ListCloudsOptions.Builder()
+  .limit(10)
+  .build();
+
+// Construct the Pager.
+CloudsPager pager = new CloudsPager(myService, listCloudsOptions);
+
+// Retrieve all of the results.
+List<Cloud> allResults = pager.getAll();
+
+// "allResults" will now contain all the Cloud instances that were
+// returned by the successive invocations of the listClouds() operation.
+```
+
+</details>
+<details><summary>Node.js</summary>
+
+For Node.js, the names of the methods provided in each Pager class are:
+  - `hasNext()`
+  - `getNext()`
+  - `getAll()`
+
+This example shows how to use the `hasNext()` and `getNext()` methods to
+retrieve results one page at a time:
+
+```js
+// Assume that 'myService' has already been initialized as in other code examples.
+
+// Construct the 'listClouds' params object and set page size to 10.
+const params = {
+  limit: 10,
+};
+
+// Define a list of Cloud instances to hold all of the results.
+const allResults = [];
+
+// Construct the Pager.
+const pager = new ExampleServiceV1.CloudsPager(myService, params);
+
+// Retrieve each page of results and add to "allResults".
+while (pager.hasNext()) {
+  const nextPage = await pager.getNext();
+  allResults.push(...nextPage);
+}
+
+// "allResults" will now contain all the Cloud instances that were
+// returned by the successive invocations of the listClouds() operation.
+```
+
+This example shows how to use the `getAll()` method to retrieve all the available results:
+
+```js
+// Assume that 'myService' has already been initialized as in other code examples.
+
+// Construct the 'listClouds' params object and set page size to 10.
+const params = {
+  limit: 10,
+};
+
+// Construct the Pager.
+const pager = new ExampleServiceV1.CloudsPager(myService, params);
+
+// Retrieve all of the results.
+const allResults = await pager.getAll();
+
+// "allResults" will now contain all the Cloud instances that were
+// returned by the successive invocations of the listClouds() operation.
+```
+
+</details>
+<details><summary>Python</summary>
+
+For Python, the names of the methods provided in each Pager class are:
+  - `has_next()`
+  - `get_next()`
+  - `get_all()`
+
+This example shows how to use the `has_next()` and `get_next()` methods to
+retrieve results one page at a time:
+
+```python
+# Assume that 'my_service' has already been initialized as in other code examples.
+
+# Define a list of Cloud instances to hold all of the results.
+all_results = []
+
+# Construct the Pager using 'my_service' as the client and a page size of 10.
+pager = CloudsPager(
+    client=my_service,
+    limit=10,
+)
+
+# Retrieve each page of results and add to "all_results".
+while pager.has_next():
+    next_page = pager.get_next()
+    all_results.extend(next_page)
+
+# "all_results" will now contain all the Cloud instances that were
+# returned by the successive invocations of the list_clouds() operation.
+```
+
+This example shows how to use the `get_all()` method to retrieve all the available results:
+
+```python
+# Assume that 'my_service' has already been initialized as in other code examples.
+
+# Construct the Pager using 'my_service' as the client and a page size of 10.
+pager = CloudsPager(
+    client=my_service,
+    limit=10,
+)
+
+# Retrieve all of the results.
+all_results = pager.get_all()
+
+# "all_results" will now contain all the Cloud instances that were
+# returned by the successive invocations of the list_clouds() operation.
 ```
 
 </details>
