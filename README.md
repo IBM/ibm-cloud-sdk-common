@@ -1808,11 +1808,11 @@ As mentioned in the "Configuring the HTTP Client" section above, you can configu
 in the http client as in this example:  
 
 ```python
-# Configure a 10-second request timeout.
+# Configure a 10-second read timeout.
 my_service.set_http_config({'timeout': 10})
 ```
 
-The request timeout of 10 seconds will be used in each operation invoked using `my_service`.
+The read timeout of 10 seconds that includes the connect time will be used in each operation invoked using `my_service`.
 </details>
 
 
