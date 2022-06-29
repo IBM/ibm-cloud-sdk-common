@@ -1770,6 +1770,8 @@ When constructing a Context, you receive two values - the context itself, along 
 The returned cancel function can also be invoked in order to cancel an in-flight request.
 Note also that by using the `context.Context` instance with the `<operation-name>WithContext` method,
 the timeout applies only to a single operation invocation.
+
+By default the client has no request timeout, but a 30s connect timeout is set by default.
 </details>
 <details><summary>Java</summary>
 Here is an example of how to set a request timeout in Java:  
@@ -1786,6 +1788,8 @@ myService.setClient(client);
 ```
 
 The request timeout of 10 seconds will be used in each operation invoked using `myService1`.
+
+By default the client has no request timeout, but a 60s connect, a 90s read and a 60s write timeout are set by default.
 </details>
 <details><summary>Node</summary>
 Here is an example of how to set a request timeout in Node:  
@@ -1802,6 +1806,8 @@ const myService = new ExampleServiceV1({
 ```
 
 The request timeout of 10 seconds will be used in each operation invoked using `myService`.
+
+By default the client has no request timeout.
 </details>
 <details><summary>Python</summary>
 As mentioned in the "Configuring the HTTP Client" section above, you can configure the options
@@ -1812,7 +1818,9 @@ in the http client as in this example:
 my_service.set_http_config({'timeout': 10})
 ```
 
-The read timeout of 10 seconds that includes the connect time will be used in each operation invoked using `my_service`.
+The read timeout of 10 seconds, which includes the connect timeout, will be used in each operation invoked using `my_service`.
+
+By default the client has no request timeout, but 60s read timeout, that includes the connect timeout is set by default.
 </details>
 
 
