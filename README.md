@@ -1789,7 +1789,7 @@ myService.setClient(client);
 
 The request timeout of 10 seconds will be used in each operation invoked using `myService1`.
 
-By default the client has no request timeout, but a 60s connect, a 90s read and a 60s write timeout are set by default.
+By default, the client has a 60-second connect timeout, a 90-second read timeout and a 60-second write timeout.  The default client does not set a `call timeout` (which covers the entire HTTP call... including the connection, write and read steps), but you can set that as in the example above.
 </details>
 <details><summary>Node</summary>
 Here is an example of how to set a request timeout in Node:  
