@@ -1770,6 +1770,8 @@ When constructing a Context, you receive two values - the context itself, along 
 The returned cancel function can also be invoked in order to cancel an in-flight request.
 Note also that by using the `context.Context` instance with the `<operation-name>WithContext` method,
 the timeout applies only to a single operation invocation.
+
+By default, a service instance will use a default HTTP client with a 30-second connection timeout, and no request or read timeout.   You can configure a client with your own timeout values, then set it on the service instance by calling the `BaseService.SetHTTPClient()` method.
 </details>
 <details><summary>Java</summary>
 Here is an example of how to set a request timeout in Java:  
@@ -1786,6 +1788,8 @@ myService.setClient(client);
 ```
 
 The request timeout of 10 seconds will be used in each operation invoked using `myService1`.
+
+By default, the client has a 60-second connect timeout, a 90-second read timeout and a 60-second write timeout.  The default client does not set a `call timeout` (which covers the entire HTTP call... including the connection, write and read steps), but you can set that as in the example above.
 </details>
 <details><summary>Node</summary>
 Here is an example of how to set a request timeout in Node:  
@@ -1802,17 +1806,22 @@ const myService = new ExampleServiceV1({
 ```
 
 The request timeout of 10 seconds will be used in each operation invoked using `myService`.
+
+By default the client has no request timeout.
 </details>
 <details><summary>Python</summary>
 As mentioned in the "Configuring the HTTP Client" section above, you can configure the options
 in the http client as in this example:  
 
 ```python
-# Configure a 10-second request timeout.
+# Configure a 10-second combined timeout covering the connection and read operations.
+# In other words, the server should start sending back the response within 10 seconds.
 my_service.set_http_config({'timeout': 10})
 ```
 
-The request timeout of 10 seconds will be used in each operation invoked using `my_service`.
+This timeout setting will be used in each operation invoked using `my_service`.
+
+By default, the client will use a 60-second combined timeout, which means that the server should start sending back the response within 60 seconds.
 </details>
 
 
