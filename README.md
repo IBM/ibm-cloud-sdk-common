@@ -1771,7 +1771,7 @@ The returned cancel function can also be invoked in order to cancel an in-flight
 Note also that by using the `context.Context` instance with the `<operation-name>WithContext` method,
 the timeout applies only to a single operation invocation.
 
-By default the client has no request timeout, but a 30s connect timeout is set by default.
+By default, a service instance will use a default HTTP client with a 30-second connection timeout, and no request or read timeout.   You can configure a client with your own timeout values, then set it on the service instance by calling the `BaseService.SetHTTPClient()` method.
 </details>
 <details><summary>Java</summary>
 Here is an example of how to set a request timeout in Java:  
