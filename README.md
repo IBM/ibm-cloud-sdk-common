@@ -1814,7 +1814,8 @@ As mentioned in the "Configuring the HTTP Client" section above, you can configu
 in the http client as in this example:  
 
 ```python
-# Configure a 10-second read timeout.
+# Configure a 10-second combined timeout covering the connection and read operations.
+# In other words, the server should start sending back the response within 10 seconds.
 my_service.set_http_config({'timeout': 10})
 ```
 
