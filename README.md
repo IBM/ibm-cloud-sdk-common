@@ -1821,7 +1821,7 @@ my_service.set_http_config({'timeout': 10})
 
 The read timeout of 10 seconds, which includes the connect timeout, will be used in each operation invoked using `my_service`.
 
-By default the client has no request timeout, but 60s read timeout, that includes the connect timeout is set by default.
+By default, the client will use a 60-second combined timeout, which means that the server should start sending back the response within 60 seconds.
 </details>
 
 
