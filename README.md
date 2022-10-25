@@ -254,6 +254,12 @@ from mysdk.example_service_v1 import Resource, Resources
 Note: in this example, `Resource` and `Resources` are classes that are defined
 in the service's module (in addition to the ExampleServiceV1 service class).
 
+If you would like to import *all* definitions related to a particular service,
+you can use an import like this:
+```python
+from mysdk.example_service_v1 import *
+```
+
 Be sure to consult the service table for the Python SDK client library you are using
 to obtain the correct module name and service class name for the service(s) you will use in your application.
 </details>
