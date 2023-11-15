@@ -536,6 +536,8 @@ the Compute Resource Identity feature is configured
 in which the Compute Resource Identity feature is configured
 - Cloud Pack for Data Authentication: supports authentication flows implemented specifically as part of
 the Cloud Pack for Data offering
+- Multi-Cloud Saas Platform (MCSP) Authentication: supports a user-supplied API key that is automatically
+exchanged for an access token by interacting with the MCSP offering's token service
 
 Detailed information about these authenticators can be found in the various language-specific
 core libraries:
