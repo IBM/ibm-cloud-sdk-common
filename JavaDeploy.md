@@ -219,7 +219,6 @@ Copy the following files from the
 [Java SDK Template repository](https://github.ibm.com/CloudEngineering/java-sdk-template)
 into the `build` directory of your Java SDK project:
 - `build/generateJavadocIndex.sh`
-- `build/publishCodeCoverage.sh`
 - `build/publishJavadoc.sh`
 - `build/setMavenVersion.sh`
 - `build/setupSigning.sh`
