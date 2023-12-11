@@ -1902,7 +1902,7 @@ If a "retryable" error response (e.g. 429, 503, etc.) contains
 the `Retry-After` header, the value of that response header will be used
 as the retry interval, subject to a maximum of 20 seconds.  If no `Retry-After` header
 is found in the response, then an exponential backoff policy will be used such
-that successive retries would use wait times of 1, 2, and 4, 8 and 16 seconds.
+that successive retries would use wait times of 1, 2, 4, 8 and 16 seconds.
 </details>
 <details><summary>Java</summary>
 To enable automatic retries programmatically in the Java SDK, use the service client's
@@ -1927,7 +1927,7 @@ If a "retryable" error response (e.g. 429, 503, etc.) contains
 the `Retry-After` header, the value of that response header will be used
 as the retry interval, subject to a maximum of 20 seconds.  If no `Retry-After` header
 is found in the response, then an exponential backoff policy will be used such
-that successive retries would use wait times of 1, 2, and 4, 8 and 16 seconds..
+that successive retries would use wait times of 1, 2, 4, 8 and 16 seconds.
 </details>
 <details><summary>Node.js</summary>
 To enable automatic retries programmatically in the Node SDK, use the service client's
