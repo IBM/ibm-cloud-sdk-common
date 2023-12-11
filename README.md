@@ -1862,7 +1862,7 @@ is customizable to support unique requirements.
 
 The Node SDK supports a generalized retry feature that can automatically retry on common
 errors. The default configuration (up to 4 retries, 
-max retry interval of 30 seconds, and exponential backoff if no `Retry-After` response
+max retry interval of 30 seconds, along with exponential backoff if no `Retry-After` response
 header is present) should suffice for most applications, but the retry feature is
 customizable to support unique requirements.
 
