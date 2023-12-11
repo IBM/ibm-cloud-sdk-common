@@ -1888,21 +1888,21 @@ To enable automatic retries programmatically in the Go SDK, use the service clie
 // Construct the service client.
 myService, err := exampleservicev1.NewExampleServiceV1(options)
 
-// Enable automatic retries (with max retries 3, max interval 20 secs).
-myService.EnableRetries(3, 20 * time.Second)
+// Enable automatic retries (with max retries 5, max interval 20 seconds).
+myService.EnableRetries(5, 20 * time.Second)
 
 // Create the resource.
 result, detailedResponse, err := myService.CreateResource(createResourceOptionsModel)
 ```
 
-In this example, the `CreateResource()` operation will be backoff_maxretried up to 3 times
+In this example, the `CreateResource()` operation will be retried up to 5 times
 with a maximum retry interval of 20 seconds.
 
 If a "retryable" error response (e.g. 429, 503, etc.) contains
 the `Retry-After` header, the value of that response header will be used
 as the retry interval, subject to a maximum of 20 seconds.  If no `Retry-After` header
 is found in the response, then an exponential backoff policy will be used such
-that successive retries would use wait times of 1, 2, and 4 seconds.
+that successive retries would use wait times of 1, 2, and 4, 8 and 16 seconds.
 </details>
 <details><summary>Java</summary>
 To enable automatic retries programmatically in the Java SDK, use the service client's
@@ -1912,22 +1912,22 @@ To enable automatic retries programmatically in the Java SDK, use the service cl
 // Construct the service client.
 myService = new ExampleServiceV1(serviceName, authenticator);
 
-// Enable automatic retries (with max retries 3, max interval 20 secs).
-myService.enableRetries(3, 20);
+// Enable automatic retries (with max retries 5, max interval 20 seconds).
+myService.enableRetries(5, 20);
 
 // Create the resource.
 CreateResourceOptions options = /* construct options model */
 Response<Resource> response = myService.createResource(options).execute();
 ```
 
-In this example, the `createResource()` operation will be retried up to 3 times
+In this example, the `createResource()` operation will be retried up to 5 times
 with a maximum retry interval of 20 seconds.
 
 If a "retryable" error response (e.g. 429, 503, etc.) contains
 the `Retry-After` header, the value of that response header will be used
 as the retry interval, subject to a maximum of 20 seconds.  If no `Retry-After` header
 is found in the response, then an exponential backoff policy will be used such
-that successive retries would use wait times of 1, 2, and 4 seconds..
+that successive retries would use wait times of 1, 2, and 4, 8 and 16 seconds..
 </details>
 <details><summary>Node.js</summary>
 To enable automatic retries programmatically in the Node SDK, use the service client's
@@ -1951,8 +1951,7 @@ If a "retryable" error response (e.g. 429, 503, etc.) contains
 the `Retry-After` header, the value of that response header will be used
 as the retry interval.  If no `Retry-After` header
 is found in the response, then an exponential backoff policy will be used such
-that successive retries would use wait times of 1, 2, 4, 8, and 16 seconds
-up to the `maxRetryInterval`.
+that successive retries would use wait times of 1, 2, 4, 8, and 16 seconds.
 </details>
 <details><summary>Python</summary>
 To enable automatic retries programmatically in the Python SDK, use the service client's
@@ -1962,7 +1961,7 @@ To enable automatic retries programmatically in the Python SDK, use the service 
 // Construct the service client.
 my_service = ExampleServiceV1(authenticator=my_authenticator)
 
-// Enable automatic retries (with max retries 5, max retry interval 20.0).
+// Enable automatic retries (with max retries 5, max retry interval 20.0 seconds).
 my_service.enable_retries(max_retries=5, retry_interval=20.0)
 
 // Create the resource.
