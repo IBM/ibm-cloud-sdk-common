@@ -1861,7 +1861,7 @@ is customizable to support unique requirements.
 <details><summary>Node</summary>
 
 The Node SDK supports a generalized retry feature that can automatically retry on common
-errors. The default configuration (up to 4 retries, initial retry interval of 1 second,
+errors. The default configuration (up to 4 retries, 
 max retry interval of 30 seconds, and exponential backoff if no `Retry-After` response
 header is present) should suffice for most applications, but the retry feature is
 customizable to support unique requirements.
@@ -1870,7 +1870,7 @@ customizable to support unique requirements.
 <details><summary>Python</summary>
 
 The Python SDK supports a generalized retry feature that can automatically retry on common
-errors. The default configuration (up to 4 retries with initial retry interval 1 second,
+errors. The default configuration (up to 4 retries with max retry interval of 30 seconds,
 along with exponential backoff if no `Retry-After` response header is present)
 should suffice for most applications, but the retry feature
 is customizable to support unique requirements.
@@ -1895,7 +1895,7 @@ myService.EnableRetries(3, 20 * time.Second)
 result, detailedResponse, err := myService.CreateResource(createResourceOptionsModel)
 ```
 
-In this example, the `CreateResource()` operation will be retried up to 3 times
+In this example, the `CreateResource()` operation will be backoff_maxretried up to 3 times
 with a maximum retry interval of 20 seconds.
 
 If a "retryable" error response (e.g. 429, 503, etc.) contains
@@ -1937,7 +1937,7 @@ To enable automatic retries programmatically in the Node SDK, use the service cl
 // Construct the service client.
 const myService = new ExampleServiceV1({ authenticator: myAuthenticator })
 
-// Enable automatic retries (with max retries 5, max retry interval 3 seconds).
+// Enable automatic retries (with max retries 5, max retry interval 20 seconds).
 myService.enableRetries({ maxRetries: 5, maxRetryInterval: 20 });
 
 // Create the resource.
@@ -1945,7 +1945,7 @@ const response = myService.createResource({ resourceId: "3", name: "Sample Book 
 ```
 
 In this example, the `createResource()` operation will be retried up to 5 times
-with a maximum retry interval of 3 seconds.
+with a maximum retry interval of 20 seconds.
 
 If a "retryable" error response (e.g. 429, 503, etc.) contains
 the `Retry-After` header, the value of that response header will be used
@@ -1962,15 +1962,15 @@ To enable automatic retries programmatically in the Python SDK, use the service 
 // Construct the service client.
 my_service = ExampleServiceV1(authenticator=my_authenticator)
 
-// Enable automatic retries (with max retries 5, initial retry interval 1.0).
-my_service.enable_retries(max_retries=5, retry_interval=1.0)
+// Enable automatic retries (with max retries 5, max retry interval 20.0).
+my_service.enable_retries(max_retries=5, retry_interval=20.0)
 
 // Create the resource.
 response = my_service.create_resource(resource_id="3", name="Sample Book Title")
 ```
 
 In this example, the `create_resource()` operation will be retried up to 5 times
-with an initial retry interval of 1 second.
+with a maximum retry interval of 20 seconds.
 
 If a "retryable" error response (e.g. 429, 503, etc.) contains
 the `Retry-After` header, the value of that response header will be used
