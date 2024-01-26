@@ -23,6 +23,9 @@ to successfully publish build artifacts (jars, pom.xml files, etc.) on the
   * [3.1: Generate a new public/private key pair](#31-generate-a-new-publicprivate-key-pair)
   * [3.2: List keys](#32-list-keys)
   * [3.3: Publish your public key](#33-publish-your-public-key)
+    + [3.3.1 Via gpg command line](#331-via-gpg-command-line)
+    + [3.3.2 Via key server web interface](#332-via-key-server-web-interface)
+    + [3.3.3 Verify your key was published](#333-verify-your-key-was-published)
   * [3.4: Export your key](#34-export-your-key)
 - [4: Modify your Java SDK project to publish artifacts on Maven Central](#4-modify-your-java-sdk-project-to-publish-artifacts-on-maven-central)
   * [4.1: Copy files from the Java SDK template repository](#41-copy-files-from-the-java-sdk-template-repository)
@@ -41,13 +44,25 @@ to successfully publish build artifacts (jars, pom.xml files, etc.) on the
 This document will assist you in configurating your Java SDK project to publish artifacts on
 Maven Central.
 
-The [OSSRH Guide](https://central.sonatype.org/pages/ossrh-guide.html) should be considered
+The [OSSRH Guide](https://central.sonatype.org/publish/publish-guide/) should be considered
 to be the authoritative source of information regarding the proper steps to be followed
 for publishing artifacts on Maven Central. Please familiarize yourself
 with the steps documented in the OSSRH Guide before following the instructions in this document.
 
+Note that this is Sonatype's "legacy" publishing process.  As of January 2024, Sonatype is poised
+to introduce a new publishing process (aka Central Portal). However, IBM Cloud Java SDK projects
+have been publishing their artifacts via the legacy publishing process for quite some time now, and will continue
+to do so even after the new Central Portal process has been introduced. New Java SDK projects
+will also need to use the legacy publishing process if they will be using the `com.ibm.cloud`
+maven group id (see below).  This is due to the fact that Sonatype will not allow group id's (namespaces)
+to be active on both the legacy OSSRH process and the new Central Portal process
+(reference: https://central.sonatype.org/register/central-portal/#existing-ossrh-namespaces).
+
+Link to legacy registration documentation: https://central.sonatype.org/register/legacy/.
+
+
 The intent of this document is to provide specific instructions to guide IBM Cloud Java SDK maintainers in
-performing the steps outlined in the OSSRH Guide.
+performing the steps outlined in the legacy OSSRH Guide.
 
 ## 1: Choose the maven group id for your project
 It is recommended that all IBM Cloud Java SDK projects use a maven group id of `com.ibm.cloud`.
@@ -73,8 +88,8 @@ Note: If your Java SDK project has previously been configured to publish artifac
 and then synchronize them to maven central, then you likely already have a Sonatype account and
 the necessary access to publish artifacts on maven central.
 
-Follow the instructions in the "Create a ticket with Sonatype" section of
-the [OSSRH Guide](https://central.sonatype.org/pages/ossrh-guide.html).
+Follow the instructions in the [Create a ticket with Sonatype](https://central.sonatype.org/register/legacy/)
+section of the legacy OSSRH Guide.
 
 When creating your Sonatype account, keep in mind that this account
 will also be used by your Java SDK project's Travis build
