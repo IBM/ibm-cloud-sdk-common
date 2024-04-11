@@ -1658,27 +1658,28 @@ const axiosInstance = myService.getHttpClient();
 ```
 
 ##### Proxy
-To invoke requests behind an HTTP proxy (e.g. firewall), a special tunneling agent
-must be used.
-Use the package [`tunnel`](https://github.com/koichik/node-tunnel/) for this.
-Configure this agent with your proxy information, and pass it in as the HTTPS agent in the
-service constructor.
-Additionally, you must set `proxy` to `false` in the client constructor.
+To invoke requests behind an HTTP proxy (e.g. firewall), a special tunneling agent must be used.
+Use the package [`https-proxy-agent`](https://github.com/TooTallNate/proxy-agents/tree/main/packages/https-proxy-agent) for this.
+Configure this agent with your proxy information, then pass it in as the HTTPS agent in the
+service constructor and the authenticator constructor, if applicable.
+Additionally, you **must** set `proxy` to `false` in the constructor(s).
 Here's an example:
 
 ```js
-const tunnel = require('tunnel');
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import ExampleServiceV1 from 'ibm-mysdk/example-service/v1';
 import { IamAuthenticator } from 'mysdk/auth';
 
+const proxyUrl = 'http://some.host.org:1234'; // Host: some.host.org, Port: 1234
+const agent = new HttpsProxyAgent(proxyUrl);
+
 const myService = new ExampleServiceV1({
-  authenticator: new IamAuthenticator({ apikey: '{apikey}' }),
-  httpsAgent: tunnel.httpsOverHttp({
-    proxy: {
-      host: 'some.host.org',
-      port: 1234,
-    },
+  authenticator: new IamAuthenticator({
+    apikey: '{apikey}',
+    httpsAgent: agent,
+    proxy: false,
   }),
+  httpsAgent: agent,
   proxy: false,
 });
 ```
@@ -1691,7 +1692,8 @@ for more information about the options.
 Note that the entire contents of the file must be provided - not just the file name.
 
 ```js
-const tunnel = require('tunnel');
+import fs = require('fs');
+import https = require('https');
 import ExampleServiceV1 from 'ibm-mysdk/example-service/v1';
 import { IamAuthenticator } from 'ibm-mysdk/auth';
 
