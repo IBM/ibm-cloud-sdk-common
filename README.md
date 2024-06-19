@@ -2198,6 +2198,7 @@ if err != nil {
 
 In the case of an error response from the server endpoint, the Java SDK will throw an exception
 from the `com.ibm.cloud.sdk.core.service.exception` package.
+
 All service exceptions contain the following fields:  
 - `statusCode`: the HTTP response code that was returned in the response
 - `message`: a message that describes the error
@@ -2205,6 +2206,7 @@ All service exceptions contain the following fields:
 - `debuggingInfo`: a `Map<String, Object>` which contains the unmarshalled error response object
 in the event that a JSON error response is returned.  This will provide more information beyond
 the error message.
+- `responseBody`: a string containing the entire body from the response
 
 An operation may also throw an `IllegalArgumentException` if it detects missing or invalid
 input arguments.
@@ -2240,6 +2242,7 @@ try {
   System.out.println("Service returned status code "
     + e.getStatusCode() + ": " + e.getMessage());
   System.out.println("Detailed error info:\n" + e.getDebuggingInfo().toString());
+  System.out.println("Error response body:\n" + e.getResponseBody());
 }
 ```
 
@@ -2278,6 +2281,7 @@ In the case of an error response from the server endpoint, the Python SDK will t
 with the following fields:  
 - `code`: the HTTP status code that was returned in the response
 - `message`: a message that describes the error
+- `http_response`: a `requests.Response` instance that contains the operation response information
 
 Here's an example:
 
@@ -2288,6 +2292,7 @@ try:
   response = my_service.get_resource(resource_id='does not exist')
 except ApiException as e:
   print("Method failed with status code " + str(e.code) + ": " + e.message)
+  print("Response body: " + e.http_response.text)
 ```
 
 </details>
