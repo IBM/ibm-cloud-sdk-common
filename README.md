@@ -1572,6 +1572,7 @@ like this:
 import {
     "net/http"
     "time"
+    "github.com/IBM/go-sdk-core/v5/core"
 }
 
 // Construct a new http.Client instance with a user-supplied proxy function.
@@ -2303,109 +2304,37 @@ This section describes how to enable logging within the various SDKs.
 
 <details><summary>Go</summary>
 
-Within Go SDKs, a basic logging facility is provided by the Go core library.
-The Go core's logger supports various logging levels: Error, Info, Warn, Debug.
-By default, the Go core uses a logger with log level "Error" configured.  This means
-that only error messages will be displayed.   A logger configured at log level "Warn" would
+Within Go SDKs, the underlying Go core library uses a basic logging facility that supports
+various logging levels: Error, Info, Warn, Debug.
+By default, the Go core logger is configured with log level "Error", which means
+that only error messages will be displayed. A logger configured at log level "Warn" would
 display "Error" and "Warn" messages (but not "Info" or "Debug"), etc.
 
-To configure the logger to display "Info", "Warn" and "Error" messages, use the `core.SetLoggingLevel()`
-method, as in this example:
+For details on how to enable and configure logging in the Go core library, [see this](https://github.com/IBM/go-sdk-core#logging).
 
-```go
-// Enable Info logging.
-core.SetLoggingLevel(core.LevelInfo)
-```
-
-If you have enabled automatic retries and would like to see some brief messages related to each
-of the requests that are retried, you can configure a logger at log level "Debug", like this:
-
-```go
-// Enable Debug logging.
-core.SetLoggingLevel(core.LevelDebug)
-
-// Construct the service client.
-myService, err := exampleservicev1.NewExampleServiceV1(options)
-
-// Enable automatic retries.
-myService.EnableRetries(3, 20 * time.Second)
-
-// Create the resource.
-result, detailedResponse, err := myService.CreateResource(createResourceOptionsModel)
-```
-
-When the "CreateResource()" method is invoked, you should see a handful of debug messages
-displayed on the console reporting on progress of the request, including any retries that
-were performed.  Here is an example:
-
-```
-2020/10/29 10:34:57 [DEBUG] POST http://example-service.cloud.ibm.com/api/v1/resource
-2020/10/29 10:34:57 [DEBUG] POST http://example-service.cloud.ibm.com/api/v1/resource (status: 429): retrying in 1s (5 left)
-2020/10/29 10:34:58 [DEBUG] POST http://example-service.cloud.ibm.com/api/v1/resource (status: 429): retrying in 1s (4 left)
-```
-
-In addition to providing a basic logger implementation, the Go core library also defines
-a `Logger` interface and allows users to supply their own implementation to support unique
-logging requirements (perhaps you need messages logged to a file instead of the console).
-To use this advanced feature, simply implement the `Logger` interface and then call the
-`SetLogger(Logger)` function to set your implementation as the logger to be used by the
-Go core library.
 </details>
 <details><summary>Java</summary>
-For Java, you can configure the HTTP client's logging detail level by using the `HttpConfigOptions` class.
 
-Here's an example:
+For Java SDKs, the underlying Java core library uses the
+[java.util.logging](https://docs.oracle.com/en/java/javase/11/core/java-logging-overview.html) framework
+for logging various messages.
 
-```java
-
-HttpConfigOptions options =
-    new HttpConfigOptions.Builder()
-        .loggingLevel(HttpConfigOptions.LoggingLevel.BASIC)
-	.build();
-
-myService.configureClient(options);
-```
+For details on how to enable and configure logging in the Java core library, [see this](https://github.com/IBM/java-sdk-core#logging).
 
 </details>
 <details><summary>Node.js</summary>
 
-For Node.js, the SDK uses the [`debug`](https://github.com/visionmedia/debug) package for logging.
-Specify the desired environment variable to enable logging debug messages.  
-For more details, see [this section of the Node SDK Core library's README.md](https://github.com/IBM/node-sdk-core#logging).
+For Node.js SDKs, the underlying Node.js core library uses the [`debug`](https://github.com/visionmedia/debug) package
+for logging various messages.
+
+For details on how to enable and configure logging in the Node.js core library, [see this](https://github.com/IBM/node-sdk-core#logging).
 
 </details>
 <details><summary>Python</summary>
 
-For Python, you can enable debug logging by importing the `logging` package and then setting
-the log level to DEBUG as in this example:
+For Python SDKs, the underlying Python core library uses Python's builtin `logging` module for logging various messages.
 
-```
-import logging
-logging.basicConfig(level=logging.DEBUG)
-
-```
-
-This will cause messages like the following to be logged as your application invokes
-various operations:
-
-```
-DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): iam.cloud.ibm.com:443
-DEBUG:urllib3.connectionpool:https://iam.cloud.ibm.com:443 "POST /identity/token HTTP/1.1" 200 1809
-DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): myservice.cloud.ibm.com:443
-DEBUG:urllib3.connectionpool:https://myservice.cloud.ibm.com:443 "POST /myservice/api/v1/resource HTTP/1.1" 201 None
-DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): myservice.cloud.ibm.com:443
-DEBUG:urllib3.connectionpool:https://myservice.cloud.ibm.com:443 "GET /myservice/api/v1/resource/resource-id-1 HTTP/1.1" 200 None
-DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): myservice.cloud.ibm.com:443
-DEBUG:urllib3.connectionpool:https://myservice.cloud.ibm.com:443 "DELETE /myservice/api/v1/resource/resource-id-1 HTTP/1.1" 204 None
-```
-
-To enable detailed logging of request and response messages, you can import the
-`http.client` package, and then enable debug logging within HTTP connections like this:
-
-```
-from http.client import HTTPConnection
-HTTPConnection.debuglevel = 1
-```
+For details on how to enable and configure logging in the Python core library, [see this](https://github.com/IBM/python-sdk-core#logging).
 
 </details>
 
