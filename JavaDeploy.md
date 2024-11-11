@@ -433,7 +433,7 @@ and add the following environment variables to your build configuration:
 - `OSSRH_USERNAME`: the Sonatype username (account) that you created in step 2 and used
 to create the "New Project" ticket with Sonatype.
 
-- `OSSRH_PASSWORD`: the password associated with your Sonatype account.
+- `OSSRH_PASSWORD`: the user token associated with your Sonatype account.
 
 - `GPG_KEYNAME`: this is the name/id of the signing key that will be used by the maven gpg plugin
 to sign your artifacts.  The value used here should be the last 8 characters of the key name.
