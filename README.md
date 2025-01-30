@@ -144,9 +144,9 @@ To use the mythical "Example Service" service client in your Go application, you
 an import to your application code like this:
 
 ```go
-import {
+import (
     "github.com/IBM/mysdk/exampleservicev1"
-}
+)
 ```
 Note: this example assumes that the "Example Service" service client exists in
 the `exampleservicev1` package within the `github.com/IBM/mysdk` module.
@@ -279,10 +279,10 @@ while specifying various client options (authenticator, service endpoint URL, et
 <details><summary>Go</summary>
 
 ```go
-import {
+import (
     "github.com/IBM/go-sdk-core/v5/core"
     "github.com/IBM/mysdk/exampleservicev1"
-}
+)
 
 // Create an IAM authenticator.
 authenticator := &core.IamAuthenticator{
@@ -582,10 +582,10 @@ The IAM authenticator will:
 <details><summary>Go</summary>
 
 ```go
-import {
+import (
     "github.com/IBM/go-sdk-core/v5/core"
     "<appropriate-git-repo-url>/exampleservicev1"
-}
+)
 ...
 // Create the authenticator.
 authenticator, err := core.NewIamAuthenticatorBuilder().
@@ -695,9 +695,9 @@ export EXAMPLE_SERVICE_APIKEY=myapikey
 <details><summary>Go</summary>
 
 ```go
-import {
+import (
     "<appropriate-git-repo-url>/exampleservicev1"
-}
+)
 ...
 
 // Create the service options struct.
@@ -770,10 +770,10 @@ Bearer Token authenticator because you must manage the access token yourself.
 <details><summary>Go</summary>
 
 ```go
-import {
+import (
     "github.com/IBM/go-sdk-core/v5/core"
     "<appropriate-git-repo-url>/exampleservicev1"
-}
+)
 ...
 // Create the authenticator.
 bearerToken := // ... obtain bearer token value ...
@@ -1569,11 +1569,11 @@ For Go, you can create your own `http.Client` instance and set it on your servic
 like this:
 
 ```go
-import {
+import (
     "net/http"
     "time"
     "github.com/IBM/go-sdk-core/v5/core"
-}
+)
 
 // Construct a new http.Client instance with a user-supplied proxy function.
 myHTTPClient := core.DefaultHTTPClient()
