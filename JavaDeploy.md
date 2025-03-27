@@ -17,8 +17,9 @@ to successfully publish build artifacts (jars, pom.xml files, etc.) on the
 <!-- toc -->
 
 - [Overview](#overview)
-- [1: Choose the maven group id for your project](#1-choose-the-maven-group-id-for-your-project)
-- [2: Create a JIRA ticket with Sonatype](#2-create-a-jira-ticket-with-sonatype)
+- [1: Register a new Sonatype account](#1-register-a-new-sonatype-account)
+- [2: Using the com.ibm.cloud maven group id](#2-using-the-comibmcloud-maven-group-id)
+  * [2.1: Request permissions to publish artifacts in com.ibm.cloud group](#21-request-permissions-to-publish-artifacts-in-comibmcloud-group)
 - [3: Create a public/private key pair for signing artifacts](#3-create-a-publicprivate-key-pair-for-signing-artifacts)
   * [3.1: Generate a new public/private key pair](#31-generate-a-new-publicprivate-key-pair)
   * [3.2: List keys](#32-list-keys)
@@ -36,6 +37,8 @@ to successfully publish build artifacts (jars, pom.xml files, etc.) on the
   * [4.6: Update your Travis build settings](#46-update-your-travis-build-settings)
   * [4.7: Commit your changes](#47-commit-your-changes)
 - [5: Java SDK Build lifecycle overview](#5-java-sdk-build-lifecycle-overview)
+- [Appendix:](#appendix)
+  * [Using GitHub Actions instead of Travis-CI for your project's CI/CD](#using-github-actions-instead-of-travis-ci-for-your-projects-cicd)
 - [References:](#references)
 
 <!-- tocstop -->
@@ -44,64 +47,62 @@ to successfully publish build artifacts (jars, pom.xml files, etc.) on the
 This document will assist you in configurating your Java SDK project to publish artifacts on
 Maven Central.
 
-The [OSSRH Guide](https://central.sonatype.org/publish/publish-guide/) should be considered
-to be the authoritative source of information regarding the proper steps to be followed
-for publishing artifacts on Maven Central. Please familiarize yourself
-with the steps documented in the OSSRH Guide before following the instructions in this document.
+These Sonatype documents should be considered to be the authoritative source of information
+regarding the proper steps to be followed for publishing artifacts on Maven Central:
+* [Publishing via OSSRH / Getting Started](https://central.sonatype.org/publish/publish-guide/) -
+this describes the process to publish artifacts using the "legacy" (OSSRH) process.
+* [Register to publish via OSSRH](https://central.sonatype.org/register/legacy/).
+
+Please familiarize yourself in the "Publishing via OSSRH" guide before following the instructions
+in this document.
 
 Note that this is Sonatype's "legacy" publishing process.  As of January 2024, Sonatype is poised
 to introduce a new publishing process (aka Central Portal). However, IBM Cloud Java SDK projects
-have been publishing their artifacts via the legacy publishing process for quite some time now, and will continue
-to do so even after the new Central Portal process has been introduced. New Java SDK projects
-will also need to use the legacy publishing process if they will be using the `com.ibm.cloud`
+have been publishing their artifacts via the legacy publishing process for quite some time now,
+and will continue to do so even after the new Central Portal process has been introduced.
+New Java SDK projects will also need to use the legacy publishing process if they will be using the `com.ibm.cloud`
 maven group id (see below).  This is due to the fact that Sonatype will not allow group id's (namespaces)
 to be active on both the legacy OSSRH process and the new Central Portal process
 (reference: https://central.sonatype.org/register/central-portal/#existing-ossrh-namespaces).
 
-Link to legacy registration documentation: https://central.sonatype.org/register/legacy/.
-
-
 The intent of this document is to provide specific instructions to guide IBM Cloud Java SDK maintainers in
 performing the steps outlined in the legacy OSSRH Guide.
 
-## 1: Choose the maven group id for your project
-It is recommended that all IBM Cloud Java SDK projects use a maven group id of `com.ibm.cloud`.
-This provides some consistency for IBM Cloud customers wishing to use the artifacts
-produced by various SDK projects (i.e. IBM Cloud services).   This is not an absolute requirement, but
-is a recommendation.  Whatever you decide to use for a group id within your SDK project, please
-make sure it is properly documented in your SDK project's `README.md` file.
+## 1: Register a new Sonatype account
+It is highly recommended that you use a functional ID to publish artifacts to Maven Central.
+If you do not already have a Sonatype account, you'll need to create one before proceeding.
 
-A Java SDK project's main artifact (the "parent" project) would have an artifact id that represents
-the service category (e.g. `platform-services`), and each module within the project would have an
+To register a new account, follow the instructions [here](https://central.sonatype.org/register/legacy/#create-an-account).
+While the overall Sonatype Central Portal's registration process supports social logins via Google or Github,
+be sure to use the username/password method instead since you'll be publishing artifacts using the
+OSSRH (legacy) process.
+
+## 2: Using the com.ibm.cloud maven group id
+You'll be publishing your artifacts using the already-existing maven group id `com.ibm.cloud`.
+Therefore, you do not need to create a new namespace as mentioned in the registration documentation
+(https://central.sonatype.org/register/legacy/#create-a-namespace).
+
+Using the existing `com.ibm.cloud` maven group id provides some consistency for IBM Cloud customers
+wishing to use the artifacts produced by various Java SDK projects (i.e. IBM Cloud services).
+
+A Java SDK project's main artifact (the "parent" project) should have an artifact id that represents
+the service category (e.g. `platform-services`), and each module within the project should have an
 artifact id that reflects the name of the service contained in that module (e.g. `resource-controller`,
 `global-catalog`, `configuration-governance`, etc.).
 
 An artifact's group id, artifact id, and version form the maven coordinates needed by users to
 define a dependency on the artifact (e.g. `com.ibm.cloud:global-catalog:1.3.1`).
+Make sure the coordinates of each of your Java SDK project's artifacts are properly documented in your
+project's `README.md` file.
 
-Before moving to the next step, choose the group id that you will use within your SDK project.
-
-## 2: Create a JIRA ticket with Sonatype
-In this step, you'll create a JIRA ticket with Sonatype to obtain the proper access to allow
-you to publish artifacts using your chosen group id.
-Note: If your Java SDK project has previously been configured to publish artifacts on bintray/jcenter
-and then synchronize them to maven central, then you likely already have a Sonatype account and
-the necessary access to publish artifacts on maven central.
-
-Follow the instructions in the [Create a ticket with Sonatype](https://central.sonatype.org/register/legacy/)
-section of the legacy OSSRH Guide.
-
-When creating your Sonatype account, keep in mind that this account
-will also be used by your Java SDK project's Travis build
-to perform the publishing steps, so consider using a functional id rather than
-a personal id.
-
-When creating the "New Project" ticket, you will be requesting that Sonatype
-provides you with the necessary authority to publish artifacts using your
-chosen group id.
-If you will be using the `com.ibm.cloud` group id as recommended above, then
-add this comment to your ticket to request approval from Phil Adams:
-`[~padamstx] please approve this request.`.
+### 2.1: Request permissions to publish artifacts in com.ibm.cloud group
+Follow the instructions [here](https://central.sonatype.org/register/legacy/#add-or-remove-permissions-to-your-project)
+to request permissions to publish artifacts using the `com.ibm.cloud` maven group id.
+Specifically, you'll need to send an email to Sonatype's "Central Support" team and provide the following info
+* request type - add "publish" permissions for the specified user
+* the username (preferably a functional ID)
+* the namespace (maven group id): com.ibm.cloud
+The request will be routed to the person that manages permissions for the `com.ibm` namespace (an IBMer).
 
 ## 3: Create a public/private key pair for signing artifacts
 One of the requirements for publishing artifacts on Maven Central is that
@@ -430,6 +431,9 @@ Open the Travis build settings page for your SDK project
 (i.e. `https://travis-ci.com/github/IBM/<repo-name>`),
 and add the following environment variables to your build configuration:
 
+- `GH_TOKEN`: the github access token for a user (preferably a functional ID) with push access
+to your project's git repository (used when pushing tags and commits).
+
 - `OSSRH_USERNAME`: the Sonatype username (account) that you created in step 2 and used
 to create the "New Project" ticket with Sonatype.
 
@@ -504,6 +508,32 @@ publish them on the git repository's `gh-pages` branch.
 - the `Publish-To-Maven-Central` job will publish the project's artifacts on Maven Central
 through the use of the nexus-staging-maven-plugin.
 
+## Appendix:
+### Using GitHub Actions instead of Travis-CI for your project's CI/CD
+Due to occasional problems with the public Travis-CI service, some open-source IBM SDK projects have
+migrated from the public Travis-CI service to GitHub Actions for performing project builds.
+You can see an example of this in the [IBM Cloud Platform Services Java SDK](https://github.com/IBM/platform-services-java-sdk).
+If you choose to use GitHub Actions for your Java SDK project's CI/CD, this section will provide notes to help you
+adapt the instructions above which refer to Travis-CI.
+
+1. For an example workflow, see https://github.com/IBM/platform-services-java-sdk/tree/main/.github/workflows.
+There, you'll find:
+* build.yaml - performs build and unit test
+* publish.yaml - publishes new releases of the project
+
+2. When using GH Actions, you won't need a `.travis.yml` file, so that can be removed from your project.
+
+3. Instead of defining various secrets as environment variables in the Travis build settings, you will instead
+define these values as "Actions Secrets" (Settings->Secrets and variables->Actions within your git repo).
+Use the same names as those mentioned in the Travis instructions above: `GH_TOKEN`, `GPG_KEYNAME`, `GPG_PASSPHRASE`,
+`OSSRH_USERNAME`, and `OSSRH_PASSWORD`.  Note that the specific names mentioned here will work in conjunction with the
+example `publish.yaml` workflow file mentioned above. If you choose to use different names for your secrets,
+just make sure that your workflow is adjusted accordingly.
+
+4. When using GH Actions, add your signing key to your git repository simply by adding the contents of the signing key
+file as a secret named `GPG_PRIVATE_KEY`, rather than committing an encrypted version of the signing key file to your
+git repo as you would when using Travis-CI.
+
 
 ## References:
 - [OSSRH Guide](https://central.sonatype.org/pages/ossrh-guide.html)
@@ -516,3 +546,7 @@ through the use of the nexus-staging-maven-plugin.
 - [Travis CI Documentation](https://docs.travis-ci.com/)
 - [Travis CI Encrypting Files](https://docs.travis-ci.com/user/encrypting-files/)
 - [Travis CI Command Line Interface (CLI) Documentation](https://github.com/travis-ci/travis.rb#readme)
+- [Quickstart for GitHub Actions](https://docs.github.com/en/actions/writing-workflows/quickstart)
+- [GitHub Actions documentation](https://docs.github.com/en/actions)
+- [Using secrets in GitHub Actions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
+
