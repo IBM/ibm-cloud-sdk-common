@@ -77,7 +77,7 @@ Analytics Engine | [Go SDK](https://github.com/IBM/ibm-iae-go-sdk) | [Java SDK](
 API Gateway | [Go SDK](https://github.com/IBM/apigateway-go-sdk) | | | | |
 App ID (Authorization v4 / Profiles) | | | [Node.js SDK](https://github.com/ibm-cloud-security/appid-serversdk-nodejs) / [JS SDK](https://github.com/ibm-cloud-security/appid-clientsdk-js) | | [Android SDK](https://github.com/ibm-cloud-security/appid-clientsdk-android)<br /> [Swift SDK](https://github.com/ibm-cloud-security/appid-clientsdk-swift)
 Blockchain | [Go SDK](https://github.com/IBM-Blockchain/ibp-go-sdk) | | | | |
-Ceph as a Service | [Go SDK](https://github.com/IBM/sds-go-sdk) | | | | |
+Storage Ceph as a Service | [Go SDK](https://github.com/IBM/sds-go-sdk) | | | | |
 Cloudant | [Go SDK](https://github.com/IBM/cloudant-go-sdk) | [Java SDK](https://github.com/IBM/cloudant-java-sdk) | [Node.js SDK](https://github.com/IBM/cloudant-node-sdk) | [Python SDK](https://github.com/IBM/cloudant-python-sdk)
 Cloud Object Storage | [Go SDK](https://github.com/IBM/ibm-cos-sdk-go) | [Java SDK](https://github.com/IBM/ibm-cos-sdk-java) | [Node.js SDK](https://github.com/IBM/ibm-cos-sdk-js) | [Python SDK](https://github.com/IBM/ibm-cos-sdk-python)
 Cloud Object Storage Configuration | [Go SDK](https://github.com/IBM/ibm-cos-sdk-go-config) | [Java SDK](https://github.com/IBM/ibm-cos-sdk-java-config) | [Node.js SDK](https://github.com/IBM/ibm-cos-sdk-js-config) | [Python SDK](https://github.com/IBM/ibm-cos-sdk-python-config)
