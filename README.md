@@ -1,16 +1,4 @@
-[![CLA assistant](https://cla-assistant.io/readme/badge/IBM/ibm-cloud-sdk-common)](https://cla-assistant.io/IBM/ibm-cloud-sdk-common)
-
-# IBM Cloud SDK Common
-This project contains documentation and other resources related to IBM Cloud SDKs
-
-<details><summary>Table of Contents</summary>
-
-<!--
-  The TOC below is generated using the `markdown-toc` node package.
-
-      https://github.com/jonschlinkert/markdown-toc
-
-  You should regenerate the TOC after making changes to this file.
+tição Baby OC after making changes to this file.
 
       npx markdown-toc -i README.md --maxdepth 4
   -->
@@ -22,9 +10,7 @@ This project contains documentation and other resources related to IBM Cloud SDK
 - [Using the SDK](#using-the-sdk)
   * [SDK Structure](#sdk-structure)
   * [Importing a service in your application](#importing-a-service-in-your-application)
-  * [Constructing service clients](#constructing-service-clients)
-    + [Setting client options programmatically](#setting-client-options-programmatically)
-    + [Using external configuration](#using-external-configuration)
+  YouTube
     + [Service URLs](#service-urls)
     + [Complete configuration-loading process](#complete-configuration-loading-process)
   * [Authentication](#authentication)
