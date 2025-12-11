@@ -34,7 +34,9 @@ to successfully publish build artifacts (jars, pom.xml files, etc.) on the
   * [4.3: Add your signing key to your git repository.](#43-add-your-signing-key-to-your-git-repository)
   * [4.4: Update the parent pom.xml](#44-update-the-parent-pomxml)
   * [4.5: Update the coverage-reports module pom.xml](#45-update-the-coverage-reports-module-pomxml)
-  * [4.6: Update your Travis build settings](#46-update-your-travis-build-settings)
+  * [4.6: Update your build settings](#46-update-your-build-settings)
+  * [4.6.1: For GitHub Actions](#461-for-github-actions)
+  * [4.6.2: For Travis](#462-for-travis)
   * [4.7: Commit your changes](#47-commit-your-changes)
 - [5: Java SDK Build lifecycle overview](#5-java-sdk-build-lifecycle-overview)
 - [Appendix:](#appendix)
@@ -104,10 +106,11 @@ of a public/private key pair.
 Detailed instructions on how to create a new signing key can be found
 [here](https://central.sonatype.org/pages/working-with-pgp-signatures.html).
 
-In order to automatically sign artifacts during your automated Travis builds,
+In order to automatically sign artifacts during your automated CI builds,
 you'll need to export your key, encrypt it, and then add the encrypted file
 to your SDK project's git repository so that it can be used during your automated builds.
-See the instructions below on how to do this.
+See the instructions below on how to do this. This process depends on the CI/CD solution
+that you'll use in the project.
 
 ### 3.1: Generate a new public/private key pair
 
@@ -186,7 +189,7 @@ $ gpg --verify <jar_filename>.asc
 After following the steps above, you should have a new signing key (a public/private key pair)
 within your local keystore.
 This key will need to be exported, encrypted, and then added to your project's git repository
-so that your Travis build can import the key into the Travis build agent's local
+so that your CI/CD build can import the key into the build agent's local
 keystore to allow the maven build running on that agent to automatically sign your artifacts
 with your signing key.
 
@@ -230,17 +233,19 @@ into the `build` directory of your Java SDK project:
 - `build/publishJavadoc.sh`
 - `build/setMavenVersion.sh`
 - `build/setupSigning.sh`
-- `build/.travis.settings.xml`
+
+If you'll use Travis instead of GitHub Actions, add the following files too:
+- [publishJavadoc.sh](https://github.com/IBM/platform-services-java-sdk/blob/3261586d94b0d38461f23dc50a99ef8b81de27af/build/publishJavadoc.sh) (Travis version)
+- `build/.travis.settings.xml` (Only if you are about to use Travis)
 
 Next, within your Java SDK project, modify the `build/generateJavadocIndex.sh` file to reflect
 your Java SDK project (i.e. the `title`, `h1` heading, `<service-category>`, and `<github-repo-url>`).
 
-Next, if you will be building your project on the public travis-ci.com server, modify
-the `build/.travis.settings.xml` file to remove the `<server>` entry with id `na-artifactory-ibmcloud-sdks`.
-Leave the `<server>` entry with id `ossrh` there.
-
-
 ### 4.2: Update your .travis.xml file
+
+Note: this section is only applicable to Travis. If you'll use other CI/CD solution - like GitHub Actions -,
+skip this and move to the next one.
+
 Next, replace your project's `.travis.yml` file with the contents of
 `.travis.yml.sdk` from the [Java SDK Template repository](https://github.ibm.com/CloudEngineering/java-sdk-template).
 If you have project-specific settings in your `.travis.yml` file, be sure to back up the file first,
@@ -251,6 +256,10 @@ Within the `.travis.yml` file, remove the comments from the `stages` and `jobs` 
 
 
 ### 4.3: Add your signing key to your git repository.
+
+Note: this section is only applicable to Travis. If you'll use other CI/CD solution - like GitHub Actions -,
+skip this and move to the next one.
+
 In this step, you'll encrypt the `signing.key` file that you previously
 exported and add it to your git repo within the `build` directory.
 
@@ -415,7 +424,14 @@ module from being published on maven central.
 
 - In the `<build>/<plugins>` section, remove the `<plugin>` entry with id "bintray-maven-plugin".
 
-### 4.6: Update your Travis build settings
+### 4.6: Update your build settings
+
+### 4.6.1: For GitHub Actions
+
+For setting up GitHub Actions, refer to the [Using GitHub Actions instead of Travis-CI for your project's CI/CD](#using-github-actions-instead-of-travis-ci-for-your-projects-cicd)
+part of this document while you are reading the instructions below.
+
+### 4.6.2: For Travis
 
 Open the Travis build settings page for your SDK project
 (i.e. `https://travis-ci.com/github/IBM/<repo-name>`),
@@ -424,9 +440,9 @@ and add the following environment variables to your build configuration:
 - `GH_TOKEN`: the github access token for a user (preferably a functional ID) with push access
 to your project's git repository (used when pushing tags and commits).
 
-- `OSSRH_USERNAME`: the `name` portion of the Sonatype user token that you created earlier.
+- `CP_USERNAME`: the `username` portion of the Sonatype user token that you created earlier.
 
-- `OSSRH_PASSWORD`: the `password` portion of the Sonatype user token that you created earlier.
+- `CP_PASSWORD`: the `password` portion of the Sonatype user token that you created earlier.
 
 - `GPG_KEYNAME`: this is the name/id of the signing key that will be used by the maven gpg plugin
 to sign your artifacts.  The value used here should be the last 8 characters of the key name.
@@ -515,7 +531,7 @@ There, you'll find:
 3. Instead of defining various secrets as environment variables in the Travis build settings, you will instead
 define these values as "Actions Secrets" (Settings->Secrets and variables->Actions within your git repo).
 Use the same names as those mentioned in the Travis instructions above: `GH_TOKEN`, `GPG_KEYNAME`, `GPG_PASSPHRASE`,
-`OSSRH_USERNAME`, and `OSSRH_PASSWORD`.  Note that the specific names mentioned here will work in conjunction with the
+`CP_USERNAME`, and `CP_PASSWORD`.  Note that the specific names mentioned here will work in conjunction with the
 example `publish.yaml` workflow file mentioned above. If you choose to use different names for your secrets,
 just make sure that your workflow is adjusted accordingly.
 
