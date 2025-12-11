@@ -34,7 +34,9 @@ to successfully publish build artifacts (jars, pom.xml files, etc.) on the
   * [4.3: Add your signing key to your git repository.](#43-add-your-signing-key-to-your-git-repository)
   * [4.4: Update the parent pom.xml](#44-update-the-parent-pomxml)
   * [4.5: Update the coverage-reports module pom.xml](#45-update-the-coverage-reports-module-pomxml)
-  * [4.6: Update your Travis build settings](#46-update-your-travis-build-settings)
+  * [4.6: Update your build settings](#46-update-your-build-settings)
+    * [4.6.1: For GitHub Actions](#461-for-github-actions)
+    * [4.6.2: For Travis](#462-for-travis)
   * [4.7: Commit your changes](#47-commit-your-changes)
 - [5: Java SDK Build lifecycle overview](#5-java-sdk-build-lifecycle-overview)
 - [Appendix:](#appendix)
@@ -49,40 +51,30 @@ Maven Central.
 
 These Sonatype documents should be considered to be the authoritative source of information
 regarding the proper steps to be followed for publishing artifacts on Maven Central:
-* [Publishing via OSSRH / Getting Started](https://central.sonatype.org/publish/publish-guide/) -
+* [Getting Started](https://central.sonatype.org/publish/publish-guide/) -
 this describes the process to publish artifacts using the "legacy" (OSSRH) process.
-* [Register to publish via OSSRH](https://central.sonatype.org/register/legacy/).
+* [Register to publish via the Central Portal](https://central.sonatype.org/register/central-portal/).
 
-Note that these documents refer to Sonatype's "legacy" publishing process.
-In early 2024, Sonatype introduced a new publishing process (aka Central Portal), but IBM Cloud Java SDK projects
-have been publishing their artifacts to the `com.ibm.cloud` maven group via the legacy publishing process for quite
-some time now.  New Java SDK projects will also need to use the legacy publishing process since they will also be using
-the existing `com.ibm.cloud` maven group id, and Sonatype will not allow maven group id's (namespaces)
-to be active on both the legacy OSSRH process and the new Central Portal process
-(reference: https://central.sonatype.org/register/central-portal/#existing-ossrh-namespaces).
+Note that the previous publishing process via the OSSRH service (aka Sonatype's "legacy" process)
+has reached end of life, so now all IBM Cloud Java SDK projects must use the new process.
 
 The intent of this document is to provide specific instructions to guide IBM Cloud Java SDK maintainers in
-performing the steps outlined in the legacy OSSRH Guide.
+performing the steps outlined in aforementioned guide.
 
 ## 1: Register a new Sonatype account
 It is highly recommended that you use a functional ID to publish artifacts to Maven Central.
 If you do not already have a Sonatype account, you'll need to create one before proceeding.
 
-To register a new account, follow the instructions [here](https://central.sonatype.org/register/legacy/#create-an-account).
-While the overall Sonatype Central Portal's registration process supports social logins via Google or Github,
-be sure to use the username/password method instead since you'll be publishing artifacts using the
-OSSRH (legacy) process.
+To register a new account, follow the instructions [here](https://central.sonatype.org/register/central-portal/#create-an-account).
 
 After you have established your Sonatype account, follow the instructions
-[here](https://central.sonatype.org/publish/generate-token/) to generate a user token suitable for publishing
-on the OSSRH servers. Note that you must generate the token on the same OSSRH server (oss.sonatype.org)
-that you will use to publish your artifacts on.  After generating the token, be sure to save the `name` and `password`
+[here](https://central.sonatype.org/publish/generate-portal-token/#generating-a-portal-token-for-publishing) to generate a user token suitable for publishing.
+After generating the token, be sure to save the `username` and `password`
 values associated with your token in a safe place (we'll use them later).
 
 ## 2: Using the com.ibm.cloud maven group id
 You'll be publishing your artifacts using the already-existing maven group id `com.ibm.cloud`.
-Therefore, you do not need to create a new namespace as mentioned in the registration documentation
-(https://central.sonatype.org/register/legacy/#create-a-namespace).
+Therefore, you do not need to create a new namespace as mentioned in the registration documentation.
 
 Using the existing `com.ibm.cloud` maven group id provides some consistency for IBM Cloud customers
 wishing to use the artifacts produced by various Java SDK projects (i.e. IBM Cloud services).
@@ -98,9 +90,9 @@ Make sure the coordinates of each of your Java SDK project's artifacts are prope
 project's `README.md` file.
 
 ### 2.1: Request permissions to publish artifacts in com.ibm.cloud group
-Follow the instructions [here](https://central.sonatype.org/register/legacy/#add-or-remove-permissions-to-your-project)
+Follow the instructions [here](https://central.sonatype.org/pages/support/#requesting-publishing-support)
 to request permissions to publish artifacts using the `com.ibm.cloud` maven group id.
-Specifically, you'll need to send an email to Sonatype's "Central Support" team and provide the following info
+Specifically, you'll need to send an email to the "Central Support" team and provide the following info
 * request type - add "publish" permissions for the specified user
 * the username (the username associated with the account you created above)
 * the namespace (maven group id): com.ibm.cloud
@@ -114,10 +106,11 @@ of a public/private key pair.
 Detailed instructions on how to create a new signing key can be found
 [here](https://central.sonatype.org/pages/working-with-pgp-signatures.html).
 
-In order to automatically sign artifacts during your automated Travis builds,
+In order to automatically sign artifacts during your automated CI builds,
 you'll need to export your key, encrypt it, and then add the encrypted file
 to your SDK project's git repository so that it can be used during your automated builds.
-See the instructions below on how to do this.
+See the instructions below on how to do this. This process depends on the CI/CD solution
+that you'll use in the project.
 
 ### 3.1: Generate a new public/private key pair
 
@@ -196,7 +189,7 @@ $ gpg --verify <jar_filename>.asc
 After following the steps above, you should have a new signing key (a public/private key pair)
 within your local keystore.
 This key will need to be exported, encrypted, and then added to your project's git repository
-so that your Travis build can import the key into the Travis build agent's local
+so that your CI/CD build can import the key into the build agent's local
 keystore to allow the maven build running on that agent to automatically sign your artifacts
 with your signing key.
 
@@ -240,17 +233,19 @@ into the `build` directory of your Java SDK project:
 - `build/publishJavadoc.sh`
 - `build/setMavenVersion.sh`
 - `build/setupSigning.sh`
-- `build/.travis.settings.xml`
+
+If you'll use Travis instead of GitHub Actions, add the following files too:
+- [publishJavadoc.sh](https://github.com/IBM/platform-services-java-sdk/blob/3261586d94b0d38461f23dc50a99ef8b81de27af/build/publishJavadoc.sh) (Travis version)
+- `build/.travis.settings.xml` (Only if you are about to use Travis)
 
 Next, within your Java SDK project, modify the `build/generateJavadocIndex.sh` file to reflect
 your Java SDK project (i.e. the `title`, `h1` heading, `<service-category>`, and `<github-repo-url>`).
 
-Next, if you will be building your project on the public travis-ci.com server, modify
-the `build/.travis.settings.xml` file to remove the `<server>` entry with id `na-artifactory-ibmcloud-sdks`.
-Leave the `<server>` entry with id `ossrh` there.
-
-
 ### 4.2: Update your .travis.xml file
+
+Note: this section is only applicable to Travis. If you'll use other CI/CD solution - like GitHub Actions -,
+skip this and move to the next one.
+
 Next, replace your project's `.travis.yml` file with the contents of
 `.travis.yml.sdk` from the [Java SDK Template repository](https://github.ibm.com/CloudEngineering/java-sdk-template).
 If you have project-specific settings in your `.travis.yml` file, be sure to back up the file first,
@@ -261,6 +256,10 @@ Within the `.travis.yml` file, remove the comments from the `stages` and `jobs` 
 
 
 ### 4.3: Add your signing key to your git repository.
+
+Note: this section is only applicable to Travis. If you'll use other CI/CD solution - like GitHub Actions -,
+skip this and move to the next one.
+
 In this step, you'll encrypt the `signing.key` file that you previously
 exported and add it to your git repo within the `build` directory.
 
@@ -312,8 +311,8 @@ However, I'll attempt to summarize the changes here:
 
 - In the `<properties>` section, remove the `<bintray-plugin-version>` property, then add these properties:
 ```
-<nexus-staging-plugin-version>1.6.8</nexus-staging-plugin-version>
-<maven-gpg-plugin-version>1.6</maven-gpg-plugin-version>
+<central-publish-plugin-version>0.8.0</central-publish-plugin-version>
+<maven-gpg-plugin-version>3.1.0</maven-gpg-plugin-version>
 ```
 
 - Also in the `<properties>` section, remove these properties:  
@@ -330,9 +329,9 @@ after the `coverage-reports` module.
 and add the following:
 ```
 <plugin>
-    <groupId>org.sonatype.plugins</groupId>
-    <artifactId>nexus-staging-maven-plugin</artifactId>
-    <version>${nexus-staging-plugin-version}</version>
+    <groupId>org.sonatype.central</groupId>
+    <artifactId>central-publishing-maven-plugin</artifactId>
+    <version>${central-publish-plugin-version}</version>
 </plugin>
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
@@ -360,22 +359,20 @@ add the following `<profiles>` section:
                 </snapshotRepository>
                 <repository>
                     <!-- This is where the nexus staging plugin will publish artifacts -->
-                    <id>ossrh</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                    <id>central</id>
+                    <url>https://central.sonatype.com/repository/maven-snapshots/</url>
                 </repository>
             </distributionManagement>
 
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                            <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
                         </configuration>
                     </plugin>
                     <plugin>
@@ -427,7 +424,14 @@ module from being published on maven central.
 
 - In the `<build>/<plugins>` section, remove the `<plugin>` entry with id "bintray-maven-plugin".
 
-### 4.6: Update your Travis build settings
+### 4.6: Update your build settings
+
+### 4.6.1: For GitHub Actions
+
+For setting up GitHub Actions, refer to the [Using GitHub Actions instead of Travis-CI for your project's CI/CD](#using-github-actions-instead-of-travis-ci-for-your-projects-cicd)
+part of this document while you are reading the instructions below.
+
+### 4.6.2: For Travis
 
 Open the Travis build settings page for your SDK project
 (i.e. `https://travis-ci.com/github/IBM/<repo-name>`),
@@ -436,9 +440,9 @@ and add the following environment variables to your build configuration:
 - `GH_TOKEN`: the github access token for a user (preferably a functional ID) with push access
 to your project's git repository (used when pushing tags and commits).
 
-- `OSSRH_USERNAME`: the `name` portion of the Sonatype user token that you created earlier.
+- `CP_USERNAME`: the `username` portion of the Sonatype user token that you created earlier.
 
-- `OSSRH_PASSWORD`: the `password` portion of the Sonatype user token that you created earlier.
+- `CP_PASSWORD`: the `password` portion of the Sonatype user token that you created earlier.
 
 - `GPG_KEYNAME`: this is the name/id of the signing key that will be used by the maven gpg plugin
 to sign your artifacts.  The value used here should be the last 8 characters of the key name.
@@ -527,7 +531,7 @@ There, you'll find:
 3. Instead of defining various secrets as environment variables in the Travis build settings, you will instead
 define these values as "Actions Secrets" (Settings->Secrets and variables->Actions within your git repo).
 Use the same names as those mentioned in the Travis instructions above: `GH_TOKEN`, `GPG_KEYNAME`, `GPG_PASSPHRASE`,
-`OSSRH_USERNAME`, and `OSSRH_PASSWORD`.  Note that the specific names mentioned here will work in conjunction with the
+`CP_USERNAME`, and `CP_PASSWORD`.  Note that the specific names mentioned here will work in conjunction with the
 example `publish.yaml` workflow file mentioned above. If you choose to use different names for your secrets,
 just make sure that your workflow is adjusted accordingly.
 
