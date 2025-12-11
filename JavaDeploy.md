@@ -49,40 +49,30 @@ Maven Central.
 
 These Sonatype documents should be considered to be the authoritative source of information
 regarding the proper steps to be followed for publishing artifacts on Maven Central:
-* [Publishing via OSSRH / Getting Started](https://central.sonatype.org/publish/publish-guide/) -
+* [Getting Started](https://central.sonatype.org/publish/publish-guide/) -
 this describes the process to publish artifacts using the "legacy" (OSSRH) process.
-* [Register to publish via OSSRH](https://central.sonatype.org/register/legacy/).
+* [Register to publish via the Central Portal](https://central.sonatype.org/register/central-portal/).
 
-Note that these documents refer to Sonatype's "legacy" publishing process.
-In early 2024, Sonatype introduced a new publishing process (aka Central Portal), but IBM Cloud Java SDK projects
-have been publishing their artifacts to the `com.ibm.cloud` maven group via the legacy publishing process for quite
-some time now.  New Java SDK projects will also need to use the legacy publishing process since they will also be using
-the existing `com.ibm.cloud` maven group id, and Sonatype will not allow maven group id's (namespaces)
-to be active on both the legacy OSSRH process and the new Central Portal process
-(reference: https://central.sonatype.org/register/central-portal/#existing-ossrh-namespaces).
+Note that the previous publishing process via the OSSRH service (aka Sonatype's "legacy" process)
+has reached end of life, so now all IBM Cloud Java SDK projects must use the new process.
 
 The intent of this document is to provide specific instructions to guide IBM Cloud Java SDK maintainers in
-performing the steps outlined in the legacy OSSRH Guide.
+performing the steps outlined in aforementioned guide.
 
 ## 1: Register a new Sonatype account
 It is highly recommended that you use a functional ID to publish artifacts to Maven Central.
 If you do not already have a Sonatype account, you'll need to create one before proceeding.
 
-To register a new account, follow the instructions [here](https://central.sonatype.org/register/legacy/#create-an-account).
-While the overall Sonatype Central Portal's registration process supports social logins via Google or Github,
-be sure to use the username/password method instead since you'll be publishing artifacts using the
-OSSRH (legacy) process.
+To register a new account, follow the instructions [here](https://central.sonatype.org/register/central-portal/#create-an-account).
 
 After you have established your Sonatype account, follow the instructions
-[here](https://central.sonatype.org/publish/generate-token/) to generate a user token suitable for publishing
-on the OSSRH servers. Note that you must generate the token on the same OSSRH server (oss.sonatype.org)
-that you will use to publish your artifacts on.  After generating the token, be sure to save the `name` and `password`
+[here](https://central.sonatype.org/publish/generate-portal-token/#generating-a-portal-token-for-publishing) to generate a user token suitable for publishing.
+After generating the token, be sure to save the `username` and `password`
 values associated with your token in a safe place (we'll use them later).
 
 ## 2: Using the com.ibm.cloud maven group id
 You'll be publishing your artifacts using the already-existing maven group id `com.ibm.cloud`.
-Therefore, you do not need to create a new namespace as mentioned in the registration documentation
-(https://central.sonatype.org/register/legacy/#create-a-namespace).
+Therefore, you do not need to create a new namespace as mentioned in the registration documentation.
 
 Using the existing `com.ibm.cloud` maven group id provides some consistency for IBM Cloud customers
 wishing to use the artifacts produced by various Java SDK projects (i.e. IBM Cloud services).
@@ -98,9 +88,9 @@ Make sure the coordinates of each of your Java SDK project's artifacts are prope
 project's `README.md` file.
 
 ### 2.1: Request permissions to publish artifacts in com.ibm.cloud group
-Follow the instructions [here](https://central.sonatype.org/register/legacy/#add-or-remove-permissions-to-your-project)
+Follow the instructions [here](https://central.sonatype.org/pages/support/#requesting-publishing-support)
 to request permissions to publish artifacts using the `com.ibm.cloud` maven group id.
-Specifically, you'll need to send an email to Sonatype's "Central Support" team and provide the following info
+Specifically, you'll need to send an email to the "Central Support" team and provide the following info
 * request type - add "publish" permissions for the specified user
 * the username (the username associated with the account you created above)
 * the namespace (maven group id): com.ibm.cloud
@@ -312,8 +302,8 @@ However, I'll attempt to summarize the changes here:
 
 - In the `<properties>` section, remove the `<bintray-plugin-version>` property, then add these properties:
 ```
-<nexus-staging-plugin-version>1.6.8</nexus-staging-plugin-version>
-<maven-gpg-plugin-version>1.6</maven-gpg-plugin-version>
+<central-publish-plugin-version>0.8.0</central-publish-plugin-version>
+<maven-gpg-plugin-version>3.1.0</maven-gpg-plugin-version>
 ```
 
 - Also in the `<properties>` section, remove these properties:  
@@ -330,9 +320,9 @@ after the `coverage-reports` module.
 and add the following:
 ```
 <plugin>
-    <groupId>org.sonatype.plugins</groupId>
-    <artifactId>nexus-staging-maven-plugin</artifactId>
-    <version>${nexus-staging-plugin-version}</version>
+    <groupId>org.sonatype.central</groupId>
+    <artifactId>central-publishing-maven-plugin</artifactId>
+    <version>${central-publish-plugin-version}</version>
 </plugin>
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
@@ -360,22 +350,20 @@ add the following `<profiles>` section:
                 </snapshotRepository>
                 <repository>
                     <!-- This is where the nexus staging plugin will publish artifacts -->
-                    <id>ossrh</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                    <id>central</id>
+                    <url>https://central.sonatype.com/repository/maven-snapshots/</url>
                 </repository>
             </distributionManagement>
 
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                            <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
                         </configuration>
                     </plugin>
                     <plugin>
