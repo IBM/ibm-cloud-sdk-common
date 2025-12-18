@@ -77,13 +77,12 @@ Analytics Engine | [Go SDK](https://github.com/IBM/ibm-iae-go-sdk) | [Java SDK](
 API Gateway | [Go SDK](https://github.com/IBM/apigateway-go-sdk) | | | | |
 App ID (Authorization v4 / Profiles) | | | [Node.js SDK](https://github.com/ibm-cloud-security/appid-serversdk-nodejs) / [JS SDK](https://github.com/ibm-cloud-security/appid-clientsdk-js) | | [Android SDK](https://github.com/ibm-cloud-security/appid-clientsdk-android)<br /> [Swift SDK](https://github.com/ibm-cloud-security/appid-clientsdk-swift)
 Blockchain | [Go SDK](https://github.com/IBM-Blockchain/ibp-go-sdk) | | | | |
-Storage as a Service | [Go SDK](https://github.com/IBM/sds-go-sdk) | | | | |
 Cloudant | [Go SDK](https://github.com/IBM/cloudant-go-sdk) | [Java SDK](https://github.com/IBM/cloudant-java-sdk) | [Node.js SDK](https://github.com/IBM/cloudant-node-sdk) | [Python SDK](https://github.com/IBM/cloudant-python-sdk)
 Cloud Object Storage | [Go SDK](https://github.com/IBM/ibm-cos-sdk-go) | [Java SDK](https://github.com/IBM/ibm-cos-sdk-java) | [Node.js SDK](https://github.com/IBM/ibm-cos-sdk-js) | [Python SDK](https://github.com/IBM/ibm-cos-sdk-python)
 Cloud Object Storage Configuration | [Go SDK](https://github.com/IBM/ibm-cos-sdk-go-config) | [Java SDK](https://github.com/IBM/ibm-cos-sdk-java-config) | [Node.js SDK](https://github.com/IBM/ibm-cos-sdk-js-config) | [Python SDK](https://github.com/IBM/ibm-cos-sdk-python-config)
 Cloud Pak For Data | [Go SDK](https://github.com/ibm/cloudpakfordata-go-sdk) | [Java SDK](https://github.com/IBM/cloudpakfordata-java-sdk) | [Node.js SDK](https://github.com/IBM/cloudpakfordata-node-sdk) | [Python SDK](https://github.com/IBM/cloudpakfordata-python-sdk)
 Code Engine | [Go SDK](https://github.com/IBM/code-engine-go-sdk) | [Java SDK](https://github.com/IBM/code-engine-java-sdk) | [Node.js SDK](https://github.com/IBM/code-engine-node-sdk) | [Python SDK](https://github.com/IBM/code-engine-python-sdk)
-Container Registry | [Go SDK](https://github.com/IBM/container-registry-go-sdk) | [Java SDK](https://github.com/IBM/container-registry-java-sdk) | [Node.js SDK](https://github.com/IBM/container-registry-node-sdk) | [Python SDK](https://github.com/IBM/container-registry-python-sdk) 
+Container Registry | [Go SDK](https://github.com/IBM/container-registry-go-sdk) | [Java SDK](https://github.com/IBM/container-registry-java-sdk) | [Node.js SDK](https://github.com/IBM/container-registry-node-sdk) | [Python SDK](https://github.com/IBM/container-registry-python-sdk)
 DB2 On Cloud v4 | [Go SDK](https://github.com/ibmdb/go_ibm_db) | [Java SDK](https://github.com/ibmdb/java-db2) | [Node.js SDK](https://github.com/ibmdb/node-ibm_db) | [Python SDK](https://github.com/ibmdb/python-ibmdb)
 DNS Services | [Go SDK](https://github.com/IBM/dns-svcs-go-sdk) | | | | |
 Key Protect | [Go SDK](https://github.com/IBM/keyprotect-go-client) | [Java SDK](https://github.com/IBM/keyprotect-java-client) | [Node.js SDK](https://github.com/IBM/keyprotect-nodejs-client) | [Python SDK](https://github.com/IBM/keyprotect-python-client) <br /> [Redstone SDK](https://github.com/IBM/redstone)
@@ -91,8 +90,9 @@ Networking Services | [Go SDK](https://github.com/IBM/networking-go-sdk) | [Java
 Platform Services  | [Go SDK](https://github.com/IBM/platform-services-go-sdk) | [Java SDK](https://github.com/IBM/platform-services-java-sdk) | [Node.js SDK](https://github.com/IBM/platform-services-node-sdk) | [Python SDK](https://github.com/IBM/platform-services-python-sdk)
 Projects  | [Go SDK](https://github.com/IBM/project-go-sdk) | | [Node.js SDK](https://github.com/IBM/project-node-sdk) | [Python SDK](https://github.com/IBM/project-python-sdk) | |
 Push Notifications  | | [Java Push Server Side SDK](https://github.com/ibm-bluemix-mobile-services/bms-pushnotifications-serversdk-java) | [Node.js Push Server Side SDK](https://github.com/ibm-bluemix-mobile-services/bms-pushnotifications-serversdk-nodejs)<br /> [JS Web Push Client SDK](https://github.com/ibm-bluemix-mobile-services/bms-clientsdk-javascript-webpush) | | [Android Push Client SDK](https://github.com/ibm-bluemix-mobile-services/bms-clientsdk-android-push)<br /> [React.js Push SDK](https://github.com/ibm-bluemix-mobile-services/bms-push-react-native)<br /> [Swift Push Client SDK](https://github.com/ibm-bluemix-mobile-services/bms-clientsdk-swift-push)<br /> [Swift Push Server Side SDK](https://github.com/ibm-bluemix-mobile-services/bms-pushnotifications-serversdk-swift)<br />
-Security and Compliance Center | [Go SDK](https://github.com/IBM/scc-go-sdk) | [Java SDK](https://github.com/IBM/scc-java-sdk) | [Node.js SDK](https://github.com/IBM/scc-node-sdk) | [Python SDK](https://github.com/IBM/scc-python-sdk) 
+Security and Compliance Center | [Go SDK](https://github.com/IBM/scc-go-sdk) | [Java SDK](https://github.com/IBM/scc-java-sdk) | [Node.js SDK](https://github.com/IBM/scc-node-sdk) | [Python SDK](https://github.com/IBM/scc-python-sdk)
 Secrets Manager | [Go SDK](https://github.com/IBM/secrets-manager-go-sdk) | [Java SDK](https://github.com/IBM/secrets-manager-java-sdk) | [Node.js SDK](https://github.com/IBM/secrets-manager-node-sdk) | [Python SDK](https://github.com/IBM/secrets-manager-python-sdk)
+Storage Ceph as a Service | [Go SDK](https://github.com/IBM/sds-go-sdk) | | | | |
 Virtual Private Cloud | [Go SDK](https://github.com/IBM/vpc-go-sdk) | [Java SDK](https://github.com/IBM/vpc-java-sdk) | [Node.js SDK](https://github.com/IBM/vpc-node-sdk) | [Python SDK](https://github.com/IBM/vpc-python-sdk)
 Watson | [Go SDK](https://github.com/watson-developer-cloud/go-sdk) | [Java SDK](https://github.com/watson-developer-cloud/java-sdk) | [Node.js SDK](https://github.com/watson-developer-cloud/node-sdk) | [Python SDK](https://github.com/watson-developer-cloud/python-sdk)
 Watson Health Cognitive Services | [Go SDK](https://github.com/IBM/whcs-go-sdk) | [Java SDK](https://github.com/IBM/whcs-java-sdk) | [Node.js SDK](https://github.com/IBM/whcs-node-sdk) | [Python SDK](https://github.com/IBM/whcs-python-sdk)
@@ -126,7 +126,7 @@ invoking a REST operation over the network:
 The mythical "Example Service" service client mentioned above is implemented as:
 - Go: the `ExampleServiceV1` struct within the `exampleservicev1` package
 - Java: the `ExampleService` class within the `com.ibm.cloud.mysdk.example_service.v1` package
-- Node.js: the `ExampleServiceV1` class within the `example-service/v1` module 
+- Node.js: the `ExampleServiceV1` class within the `example-service/v1` module
 - Python: the `ExampleServiceV1` class within the `example_service_v1` module
 
 ### Importing a service in your application
@@ -166,7 +166,7 @@ would like to use.  For more details about the `go.mod` file, please see this
 <details><summary>Java</summary>
 For Java SDK client libraries, each IBM Cloud service is packaged within its own jar containing
 the classes associated with that service.  Each jar is identified by its artifact coordinates,
-which consist of the jar's group id, artifact id and version in the form:  
+which consist of the jar's group id, artifact id and version in the form:
 
 ```xml
 <group-id>:<artifact-id>:<version>
@@ -527,7 +527,7 @@ with a service client.   When an operation is invoked on a service client, the s
 uses the associated authenticator instance to "authenticate" the outbound request, which typically
 involves adding an Authorization header containing an appropriate security token.
 
-Examples of authenticators include: 
+Examples of authenticators include:
 - Basic Authentication: supports a basic auth username and password
 - Bearer Token Authentication: supports a user-supplied bearer token
 - Identity and Access Management (IAM) Authentication: supports a user-supplied API key that is automatically
@@ -572,7 +572,7 @@ There are two ways to construct and use an IAM authenticator:
 In this scenario, you construct an IAM authenticator instance,
 supplying your IAM API key programmatically.
 
-The IAM authenticator will:  
+The IAM authenticator will:
 - Use your API key to obtain an access token from the IAM token service
 - Ensure that the access token is valid
 - Include the access token in each outbound request within an Authorization header
@@ -885,7 +885,7 @@ regarding these parameter container structures:
 <details><summary>Go</summary>
 
 For Go, a struct is defined for each operation, where the name of the struct will be
-`<operation-name>Options` and it will contain a field for each operation parameter.  
+`<operation-name>Options` and it will contain a field for each operation parameter.
 
 Here's an example of an options struct for the `GetResource` operation:
 
@@ -902,7 +902,7 @@ type GetResourceOptions struct {
 In this example, the `GetResource` operation has one parameter - `ResourceID`.
 When invoking this operation, the application first creates an instance of the `GetResourceOptions`
 struct, sets the parameter value within it, then passes the options struct instance to the operation.
-Along with the "options" struct, a constructor function is also provided.  
+Along with the "options" struct, a constructor function is also provided.
 
 Here's an example:
 
@@ -916,7 +916,7 @@ result, detailedResponse, err := myService.GetResource(options)
 <details><summary>Java</summary>
 
 For Java, a class is defined for each operation, where the name of the class will be
-`<operation-name>Options` and it will contain a field for each operation parameter.  
+`<operation-name>Options` and it will contain a field for each operation parameter.
 
 Here's an example of an options class for the `getResource` operation:
 
@@ -963,7 +963,7 @@ Resource result = response.getResult();
 <details><summary>Node.js</summary>
 
 For Node.js, an interface is defined for each operation, where the name of the interface will be
-`<operation-name>Params` and it will contain a field for each operation parameter.  
+`<operation-name>Params` and it will contain a field for each operation parameter.
 
 Here's an example of a params object for the `getResource` operation:
 
@@ -1012,16 +1012,16 @@ This section contains language-specific information about how an application rec
 
 <details><summary>Go</summary>
 
-Each operation will return the following values:  
-1. `result` - An operation-specific response object (if the operation is defined as returning a response object).  
-2. `detailedResponse` - An instance of the `core.DetailedResponse` struct. This will contain the following fields:  
-  * `StatusCode` - the HTTP status code returned in the response message  
+Each operation will return the following values:
+1. `result` - An operation-specific response object (if the operation is defined as returning a response object).
+2. `detailedResponse` - An instance of the `core.DetailedResponse` struct. This will contain the following fields:
+  * `StatusCode` - the HTTP status code returned in the response message
   * `Headers` - the HTTP headers returned in the response message. Keys in the map are canonicalized
     (see [CanonicalHeaderKey](https://golang.org/pkg/net/http/#CanonicalHeaderKey))
   * `Result` - the operation result (if available). This is the same value returned in the `result` return value mentioned above.
   * `RawResult` - the raw response body as a byte array if there was a problem un-marshalling a JSON response body
     or if the operation was unsuccessful and the response body content is not JSON.
-3. `err` - An error object.  This will be nil if the operation was successful, or non-nil  
+3. `err` - An error object.  This will be nil if the operation was successful, or non-nil
 if an error occurred.
 
 Here is an example of how to access the response and get additional Information
@@ -1040,10 +1040,10 @@ responseId := responseHeaders.Get("Response-Id")
 Each operation will return an instance of `com.ibm.sdk.cloud.sdk.core.http.Response<T>`
 where `T` is the class representing the specific
 response model associated with the operation (operations that return no response object
-will return an instance of `com.ibm.sdk.cloud.sdk.core.http.Response<Void>` instead).  
+will return an instance of `com.ibm.sdk.cloud.sdk.core.http.Response<Void>` instead).
 
 Here's an example of how to access that response and get additional information
-beyond the response object:  
+beyond the response object:
 
 ```java
 // Invoke the operation.
@@ -1065,9 +1065,9 @@ String responseId = responseHeaders.values("response-id").get(0);
 
 Each operation will return a response via a Promise.
 The response is an object containing the result of the operation, HTTP status code and text message,
-and the HTTP response headers.  
+and the HTTP response headers.
 
-Here is an example of how to access the various fields and headers from an operation response:  
+Here is an example of how to access the various fields and headers from an operation response:
 
 ```js
 myService.getResource({
@@ -1092,10 +1092,10 @@ myService.getResource({
 <details><summary>Python</summary>
 
 Each operation will return a DetailedResponse instance which encapsulates the operation response
-object (if applicable), the HTTP status code and response headers.  
+object (if applicable), the HTTP status code and response headers.
 
 Here's an example of how to access that response and get additional information
-beyond the response object:  
+beyond the response object:
 
 ```python
 detailedResponse = my_service.get_resource(resource_id='resource-id-1')
@@ -1122,7 +1122,7 @@ This would display a `DetailedResponse` instance having the structure:
 ### Pagination
 For list-type operations that comply with the
 [API Handbook's pagination requirements](https://cloud.ibm.com/docs/api-handbook?topic=api-handbook-pagination),
-SDKs may contain special "Pager" classes (Java, Node.js and Python) or structs (Go) that can be used 
+SDKs may contain special "Pager" classes (Java, Node.js and Python) or structs (Go) that can be used
 as a convenience wrapper around the list-type operation.
 
 This section provides language-specific examples of how to use these Pager classes and structs.
@@ -1788,7 +1788,7 @@ the timeout applies only to a single operation invocation.
 By default, a service instance will use a default HTTP client with a 30-second connection timeout, and no request or read timeout.   You can configure a client with your own timeout values, then set it on the service instance by calling the `BaseService.SetHTTPClient()` method.
 </details>
 <details><summary>Java</summary>
-Here is an example of how to set a request timeout in Java:  
+Here is an example of how to set a request timeout in Java:
 
 ```java
 // Retrieve the current HTTP client instance.
@@ -1806,7 +1806,7 @@ The request timeout of 10 seconds will be used in each operation invoked using `
 By default, the client has a 60-second connect timeout, a 90-second read timeout and a 60-second write timeout.  The default client does not set a `call timeout` (which covers the entire HTTP call... including the connection, write and read steps), but you can set that as in the example above.
 </details>
 <details><summary>Node</summary>
-Here is an example of how to set a request timeout in Node:  
+Here is an example of how to set a request timeout in Node:
 
 ```js
 import ExampleServiceV1 from 'ibm-mysdk/example-service/v1';
@@ -1825,7 +1825,7 @@ By default the client has no request timeout.
 </details>
 <details><summary>Python</summary>
 As mentioned in the "Configuring the HTTP Client" section above, you can configure the options
-in the http client as in this example:  
+in the http client as in this example:
 
 ```python
 # Configure a 10-second combined timeout covering the connection and read operations.
@@ -1866,7 +1866,7 @@ is customizable to support unique requirements.
 <details><summary>Node</summary>
 
 The Node SDK supports a generalized retry feature that can automatically retry on common
-errors. The default configuration (up to 4 retries, 
+errors. The default configuration (up to 4 retries,
 max retry interval of 30 seconds, along with exponential backoff if no `Retry-After` response
 header is present) should suffice for most applications, but the retry feature is
 customizable to support unique requirements.
@@ -1887,7 +1887,7 @@ is customizable to support unique requirements.
 <details><summary>Go</summary>
 
 To enable automatic retries programmatically in the Go SDK, use the service client's
-`EnableRetries()` method, as in this example:  
+`EnableRetries()` method, as in this example:
 
 ```go
 // Construct the service client.
@@ -1911,7 +1911,7 @@ that successive retries would use wait times of 1, 2, 4, 8 and 16 seconds.
 </details>
 <details><summary>Java</summary>
 To enable automatic retries programmatically in the Java SDK, use the service client's
-`enableRetries()` method, as in this example:  
+`enableRetries()` method, as in this example:
 
 ```java
 // Construct the service client.
@@ -1987,7 +1987,7 @@ that successive retries would use wait times of 1, 2, 4, 8, and 16 seconds.
 #### With external configuration
 If you are constructing your service client with external configuration properties, you can
 enable automatic retries in the service client by setting
-properties as in the example below for the "Example Service" service:  
+properties as in the example below for the "Example Service" service:
 
 ```sh
 export EXAMPLE_SERVICE_URL=https://example-service.cloud.ibm.com/v1
@@ -2038,7 +2038,7 @@ See the expandable sections below to see how this is done in each language:
 <details><summary>Go</summary>
 
 For Go, you can disable SSL verification in both the service client and in the authenticator
-like this:  
+like this:
 
 ```go
 
@@ -2109,7 +2109,7 @@ myService.configureClient(options);
 </details>
 <details><summary>Node.js</summary>
 For Node.js, set `disableSslVerification` to `true` in the service constructor and/or
-authenticator constructor, like this:  
+authenticator constructor, like this:
 
 ```js
 import ExampleServiceV1 from 'ibm-mysdk/example-service/v1';
@@ -2164,7 +2164,7 @@ that cannot be resolved by the user.
 
 <details><summary>Go</summary>
 
-In the case of an error response from the server endpoint, the Go SDK will do the following:  
+In the case of an error response from the server endpoint, the Go SDK will do the following:
 1. The service method (operation) will return a non-nil `error` object.  This `error` object will
 contain the error message retrieved from the HTTP response if possible, or a generic error message
 otherwise.
@@ -2201,7 +2201,7 @@ if err != nil {
 In the case of an error response from the server endpoint, the Java SDK will throw an exception
 from the `com.ibm.cloud.sdk.core.service.exception` package.
 
-All service exceptions contain the following fields:  
+All service exceptions contain the following fields:
 - `statusCode`: the HTTP response code that was returned in the response
 - `message`: a message that describes the error
 - `headers`: the HTTP headers returned in the response
@@ -2254,7 +2254,7 @@ try {
 In the case of an error response from the server endpoint, the Node SDK will
 create an `Error` object with information that describes the error that occurred.
 This error object is passed as the first parameter to the callback function for the method,
-and will contain the following fields:  
+and will contain the following fields:
 - `status`: the HTTP status code that was returned in the response
 - `statusText`: a text description of the status code
 - `message`: the error message returned in the response
@@ -2280,7 +2280,7 @@ myService.getResource({
 <details><summary>Python</summary>
 
 In the case of an error response from the server endpoint, the Python SDK will throw an exception
-with the following fields:  
+with the following fields:
 - `code`: the HTTP status code that was returned in the response
 - `message`: a message that describes the error
 - `http_response`: a `requests.Response` instance that contains the operation response information
@@ -2354,7 +2354,7 @@ For Java, all service methods implement the [`ServiceCall`][service-call] interf
 [service-call]: https://ibm.github.io/java-sdk-core/docs/9.1.0/com/ibm/cloud/sdk/core/http/ServiceCall.html
 
 To call a method synchronously, use the `execute()` method of the `ServiceCall<T>` interface,
-like this:  
+like this:
 
 ```java
 // Invoke the operation.
@@ -2400,8 +2400,8 @@ const resourceMetadata = () => {
 
 // With async/await
 const resourceMetadata = async () => {
-  const res = await getResource('/users.json') 
-  const data = await getResourceMetadata(res) 
+  const res = await getResource('/users.json')
+  const data = await getResourceMetadata(res)
   return data
 }
 ```
