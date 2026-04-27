@@ -85,6 +85,7 @@ Code Engine | [Go SDK](https://github.com/IBM/code-engine-go-sdk) | [Java SDK](h
 Container Registry | [Go SDK](https://github.com/IBM/container-registry-go-sdk) | [Java SDK](https://github.com/IBM/container-registry-java-sdk) | [Node.js SDK](https://github.com/IBM/container-registry-node-sdk) | [Python SDK](https://github.com/IBM/container-registry-python-sdk)
 DB2 On Cloud v4 | [Go SDK](https://github.com/ibmdb/go_ibm_db) | [Java SDK](https://github.com/ibmdb/java-db2) | [Node.js SDK](https://github.com/ibmdb/node-ibm_db) | [Python SDK](https://github.com/ibmdb/python-ibmdb)
 DNS Services | [Go SDK](https://github.com/IBM/dns-svcs-go-sdk) | | | | |
+HA and DR Automation for IBM Power Virtual Server | [Go SDK](https://github.com/IBM/dra-go-sdk) | [Java SDK](https://github.com/IBM/dra-java-sdk) | [Node.js SDK](https://github.com/IBM/dra-node-sdk) | [Python SDK](https://github.com/IBM/dra-python-sdk)
 Key Protect | [Go SDK](https://github.com/IBM/keyprotect-go-client) | [Java SDK](https://github.com/IBM/keyprotect-java-client) | [Node.js SDK](https://github.com/IBM/keyprotect-nodejs-client) | [Python SDK](https://github.com/IBM/keyprotect-python-client) <br /> [Redstone SDK](https://github.com/IBM/redstone)
 Networking Services | [Go SDK](https://github.com/IBM/networking-go-sdk) | [Java SDK](https://github.com/IBM/networking-java-sdk) | [Node.js SDK](https://github.com/IBM/networking-node-sdk) | [Python SDK](https://github.com/IBM/networking-python-sdk)
 Platform Services  | [Go SDK](https://github.com/IBM/platform-services-go-sdk) | [Java SDK](https://github.com/IBM/platform-services-java-sdk) | [Node.js SDK](https://github.com/IBM/platform-services-node-sdk) | [Python SDK](https://github.com/IBM/platform-services-python-sdk)
@@ -96,7 +97,6 @@ Storage Ceph as a Service | [Go SDK](https://github.com/IBM/sds-go-sdk) | | | | 
 Virtual Private Cloud | [Go SDK](https://github.com/IBM/vpc-go-sdk) | [Java SDK](https://github.com/IBM/vpc-java-sdk) | [Node.js SDK](https://github.com/IBM/vpc-node-sdk) | [Python SDK](https://github.com/IBM/vpc-python-sdk)
 Watson | [Go SDK](https://github.com/watson-developer-cloud/go-sdk) | [Java SDK](https://github.com/watson-developer-cloud/java-sdk) | [Node.js SDK](https://github.com/watson-developer-cloud/node-sdk) | [Python SDK](https://github.com/watson-developer-cloud/python-sdk)
 Watson Health Cognitive Services | [Go SDK](https://github.com/IBM/whcs-go-sdk) | [Java SDK](https://github.com/IBM/whcs-java-sdk) | [Node.js SDK](https://github.com/IBM/whcs-node-sdk) | [Python SDK](https://github.com/IBM/whcs-python-sdk)
-HA and DR Automation for IBM Power Virtual Server | [Go SDK](https://github.com/IBM/dra-go-sdk) | [Java SDK](https://github.com/IBM/dra-java-sdk) | [Node.js SDK](https://github.com/IBM/dra-node-sdk) | [Python SDK](https://github.com/IBM/dra-python-sdk)
 
 
 ## Using the SDK
