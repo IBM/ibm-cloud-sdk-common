@@ -96,6 +96,7 @@ Storage Ceph as a Service | [Go SDK](https://github.com/IBM/sds-go-sdk) | | | | 
 Virtual Private Cloud | [Go SDK](https://github.com/IBM/vpc-go-sdk) | [Java SDK](https://github.com/IBM/vpc-java-sdk) | [Node.js SDK](https://github.com/IBM/vpc-node-sdk) | [Python SDK](https://github.com/IBM/vpc-python-sdk)
 Watson | [Go SDK](https://github.com/watson-developer-cloud/go-sdk) | [Java SDK](https://github.com/watson-developer-cloud/java-sdk) | [Node.js SDK](https://github.com/watson-developer-cloud/node-sdk) | [Python SDK](https://github.com/watson-developer-cloud/python-sdk)
 Watson Health Cognitive Services | [Go SDK](https://github.com/IBM/whcs-go-sdk) | [Java SDK](https://github.com/IBM/whcs-java-sdk) | [Node.js SDK](https://github.com/IBM/whcs-node-sdk) | [Python SDK](https://github.com/IBM/whcs-python-sdk)
+HA and DR Automation for IBM Power Virtual Server | [Go SDK](https://github.com/IBM/dra-go-sdk) | [Java SDK](https://github.com/IBM/dra-java-sdk) | [Node.js SDK](https://github.com/IBM/dra-node-sdk) | [Python SDK](https://github.com/IBM/dra-python-sdk)
 
 
 ## Using the SDK
