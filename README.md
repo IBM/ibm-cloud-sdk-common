@@ -87,6 +87,7 @@ DB2 On Cloud v4 | [Go SDK](https://github.com/ibmdb/go_ibm_db) | [Java SDK](http
 DNS Services | [Go SDK](https://github.com/IBM/dns-svcs-go-sdk) | | | | |
 HA and DR Automation for IBM Power Virtual Server | [Go SDK](https://github.com/IBM/dra-go-sdk) | [Java SDK](https://github.com/IBM/dra-java-sdk) | [Node.js SDK](https://github.com/IBM/dra-node-sdk) | [Python SDK](https://github.com/IBM/dra-python-sdk)
 Key Protect | [Go SDK](https://github.com/IBM/keyprotect-go-client) | [Java SDK](https://github.com/IBM/keyprotect-java-client) | [Node.js SDK](https://github.com/IBM/keyprotect-nodejs-client) | [Python SDK](https://github.com/IBM/keyprotect-python-client) <br /> [Redstone SDK](https://github.com/IBM/redstone)
+Logs | [Go SDK](https://github.com/IBM/logs-go-sdk)
 Networking Services | [Go SDK](https://github.com/IBM/networking-go-sdk) | [Java SDK](https://github.com/IBM/networking-java-sdk) | [Node.js SDK](https://github.com/IBM/networking-node-sdk) | [Python SDK](https://github.com/IBM/networking-python-sdk)
 Platform Services  | [Go SDK](https://github.com/IBM/platform-services-go-sdk) | [Java SDK](https://github.com/IBM/platform-services-java-sdk) | [Node.js SDK](https://github.com/IBM/platform-services-node-sdk) | [Python SDK](https://github.com/IBM/platform-services-python-sdk)
 Projects  | [Go SDK](https://github.com/IBM/project-go-sdk) | | [Node.js SDK](https://github.com/IBM/project-node-sdk) | [Python SDK](https://github.com/IBM/project-python-sdk) | |
